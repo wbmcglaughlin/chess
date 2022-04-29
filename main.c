@@ -47,13 +47,41 @@ int main(void)
     Texture2D *textures[] = {&pw, &pb, &rw, &rb, &nw, &nb, &bw, &bb, &kw, &kb, &qw, &qb};
 
     //---------------------------------------------------------------------------------------
+    int selected = -1;
+    int pieceHeld = 0;
+
+    int turn = 1;
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
         //----------------------------------------------------------------------------------
-        // TODO: Update your variables here
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+            if (selected != -1) {
+                pieceHeld = 1;
+            } else {
+                GetSelected(&selected,
+                            GetMousePosition().x,
+                            GetMousePosition().y,
+                            borderSize,
+                            borderSize,
+                            boardSideSize);
+            }
+        } else if (!IsMouseButtonDown(MOUSE_BUTTON_LEFT) && pieceHeld) {
+            int pieceSquare = selected;
+            GetSelected(&selected,
+                        GetMousePosition().x,
+                        GetMousePosition().y,
+                        borderSize,
+                        borderSize,
+                        boardSideSize);
+            if (selected != -1) {
+                UpdateBoard(board, pieceSquare, selected);
+            }
+            pieceHeld = 0;
+            selected = -1;
+        }
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -62,8 +90,15 @@ int main(void)
 
         ClearBackground(RAYWHITE);
 
-        DrawBoard(borderSize, borderSize, boardSideSize);
-        DrawPieces(borderSize, borderSize, boardSideSize, board, textures);
+        DrawBoard(borderSize, borderSize, boardSideSize, selected);
+        DrawPieces(borderSize,
+                   borderSize,
+                   boardSideSize,
+                   board,
+                   textures,
+                   pieceHeld,
+                   selected,
+                   GetMousePosition());
 
         // DrawFPS(5, 5);
 

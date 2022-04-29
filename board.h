@@ -18,6 +18,14 @@
 
 #define PIECES "pPrRnNbBkKqQ"
 
+struct BoardSquare {
+    int x;
+    int y;
+    int cornerX;
+    int cornerY;
+    int sideSize;
+};
+
 struct Piece {
     char type;
     int pos;
@@ -31,12 +39,15 @@ struct Board {
     int blackCastle;
 };
 
-typedef struct PieceTextures PieceTextures;
+typedef struct BoardSquare BoardSquare;
 typedef struct Board Board;
 typedef struct Piece Piece;
 
-void DrawBoard(int cornerX, int cornerY, int sideSize);
-void DrawPieces(int cornerX, int cornerY, int sideSize, Board *board, Texture2D *pieceTextures[12]);
-void FenToBoard(char *fen, Board *board);
+void UpdateBoard(Board *board, int pieceSquare, int selected);
+void GetSelected(int *selected, float mousePosX, float mousePosY, int cornerX, int cornerY, int sideSize);
+void GetSquare(BoardSquare *boardSquare, int i, int sideSize, int cornerX, int cornerY);
+void DrawBoard(int cornerX, int cornerY, int sideSize, int selected);
+void DrawPieces(int cornerX, int cornerY, int sideSize, Board *board, Texture2D *pieceTextures[12], int pieceHeld, int selected, Vector2 mousePosition);
+void FenToBoard(const char *fen, Board *board);
 
 #endif //EXAMPLE_BOARD_H
