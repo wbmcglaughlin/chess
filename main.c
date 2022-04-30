@@ -10,8 +10,8 @@ int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    int screenWidth = 600;
-    int screenHeight = 400;
+    int screenWidth = 1000;
+    int screenHeight = 800;
 
     int definingLength = screenWidth;
     if (screenWidth > screenHeight) {
@@ -73,7 +73,9 @@ int main(void)
                             borderSize,
                             borderSize,
                             boardSideSize);
-                GetMoves(board, moves, selected);
+                if (board->Board[selected].color == board->turn) {
+                    GetMoves(board, moves, selected);
+                }
                 getMoves = (getMoves + 1) % 2;
                 if (board->Board[selected].color != board->turn) {
                     selected = -1;
@@ -89,8 +91,8 @@ int main(void)
                         boardSideSize);
 
             // If valid square and not the same square
-            if (selected != -1 && selected != pieceSquare) {
-                UpdateBoard(board, pieceSquare, selected);
+            if (selected != -1 && selected != pieceSquare && moves[selected] > 0) {
+                UpdateBoard(board, pieceSquare, selected, moves[selected]);
             }
             pieceHeld = 0;
             getMoves = (getMoves + 1) % 2;

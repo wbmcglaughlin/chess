@@ -19,6 +19,13 @@
 
 #define PIECES "PpRrNnBbQqKk"
 
+enum MoveType {
+    INVALID = 0,
+    TO_EMPTY = 1,
+    CAPTURE = 2,
+    ENPASSANT = 3
+};
+
 struct BoardSquare {
     int x;
     int y;
@@ -44,7 +51,7 @@ typedef struct BoardSquare BoardSquare;
 typedef struct Board Board;
 typedef struct Piece Piece;
 
-void UpdateBoard(Board *board, int pieceSquare, int selected);
+void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType);
 void GetSelected(int *selected, float mousePosX, float mousePosY, int cornerX, int cornerY, int sideSize);
 void GetMoves(Board *board, int *moves, int selected);
 void ClearMoves(int *moves);

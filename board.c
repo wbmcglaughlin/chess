@@ -49,11 +49,28 @@ void GetPawnMoves(Board *board, int *moves, int selected) {
         f2 = selected + dir * 2 * SQUARE_COUNT;
     }
 
-    if (f1 > 0 && f1 < SQUARE_COUNT * SQUARE_COUNT) {
-        moves[f1] = 1;
+    if (f1 >= 0 && f1 < SQUARE_COUNT * SQUARE_COUNT && board->Board[f1].type == 'e') {
+        moves[f1] = TO_EMPTY;
+        if (f2 >= 0 && f2 < SQUARE_COUNT * SQUARE_COUNT && board->Board[f1].type == 'e') {
+            moves[f2] = TO_EMPTY;
+        }
     }
-    if (f2 > 0 && f2 < SQUARE_COUNT * SQUARE_COUNT) {
-        moves[f2] = 1;
+
+    int fL = selected + dir * SQUARE_COUNT - dir;
+    int fR = selected + dir * SQUARE_COUNT + dir;
+    if (fL >= 0 && fL < SQUARE_COUNT * SQUARE_COUNT && (int) (selected / SQUARE_COUNT) + dir == (int) fL / SQUARE_COUNT) {
+        if (board->Board[fL].color == (col + 1) % 2) {
+            moves[fL] = CAPTURE;
+        } else if (fL == board->enpassant) {
+            moves[fL] = ENPASSANT;
+        }
+    }
+    if (fR >= 0 && fR < SQUARE_COUNT * SQUARE_COUNT && (int) (selected / SQUARE_COUNT) + dir == (int) fR / SQUARE_COUNT) {
+        if (board->Board[fR].color == (col + 1) % 2) {
+            moves[fR] = CAPTURE;
+        } else if (fR == board->enpassant) {
+            moves[fR] = ENPASSANT;
+        }
     }
 }
 
@@ -63,12 +80,27 @@ void ClearMoves(int *moves) {
     }
 }
 
-void UpdateBoard(Board *board, int pieceSquare, int selected) {
+void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
+    // Check if enpassant
+    board->enpassant = -1 ;
+    if (board->Board[pieceSquare].type == 'p' || board->Board[pieceSquare].type == 'P') {
+        if (abs(pieceSquare - selected) == SQUARE_COUNT * 2) {
+            board->enpassant = (pieceSquare + selected) / 2;
+        }
+    }
+
+
     Piece *piece = malloc(sizeof (Piece));
     *piece = board->Board[pieceSquare];
     board->Board[pieceSquare] = (Piece) {'e', pieceSquare, -1};
+    if (moveType == ENPASSANT) {
+        int takenSquare = pieceSquare;
+        takenSquare += ((pieceSquare % SQUARE_COUNT - selected % SQUARE_COUNT) == 1 ? -1 : 1);
+        board->Board[takenSquare] = (Piece) {'e', takenSquare, -1};
+    }
     board->Board[selected] = *piece;
     board->turn = (board->turn + 1) % 2;
+
     free(piece);
 }
 
@@ -94,7 +126,7 @@ void DrawBoard(int cornerX, int cornerY, int sideSize, int *moves, int selected)
                           GREEN
                           );
         }
-        if (moves[i] == 1) {
+        if (moves[i] > 0) {
             DrawRectangle(boardSquare->cornerX,
                           boardSquare->cornerY,
                           squareWidth,
