@@ -1,8 +1,10 @@
-#include "raylib.h"
-#include "board.h"
 #include "stdlib.h"
 
-#define BOARD_PERCENT .9
+#include "raylib.h"
+
+#include "board.h"
+
+#define TARGET_FPS 244
 
 int main(void)
 {
@@ -25,10 +27,13 @@ int main(void)
     Board *board = malloc(sizeof (*board));
     board->Board = malloc(sizeof (Piece) * 64);
 
+    int *moves = malloc(sizeof (int) * SQUARE_COUNT * SQUARE_COUNT);
+    ClearMoves(moves);
+
     FenToBoard(fen, board);
 
     InitWindow(screenWidth, screenHeight, "Chess - v.0.1 [Will McGlaughlin]");
-    SetTargetFPS(244);
+    SetTargetFPS(TARGET_FPS);
 
     // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
     Texture2D pw = LoadTexture("resources/pieces/pw.png");
@@ -39,18 +44,19 @@ int main(void)
     Texture2D nb = LoadTexture("resources/pieces/nb.png");
     Texture2D bw = LoadTexture("resources/pieces/bw.png");
     Texture2D bb = LoadTexture("resources/pieces/bb.png");
-    Texture2D kw = LoadTexture("resources/pieces/kw.png");
-    Texture2D kb = LoadTexture("resources/pieces/kb.png");
     Texture2D qw = LoadTexture("resources/pieces/qw.png");
     Texture2D qb = LoadTexture("resources/pieces/qb.png");
+    Texture2D kw = LoadTexture("resources/pieces/kw.png");
+    Texture2D kb = LoadTexture("resources/pieces/kb.png");
 
-    Texture2D *textures[] = {&pw, &pb, &rw, &rb, &nw, &nb, &bw, &bb, &kw, &kb, &qw, &qb};
+    Texture2D *textures[] = {&pw, &pb, &rw, &rb, &nw, &nb, &bw, &bb,&qw, &qb, &kw, &kb};
 
-    //---------------------------------------------------------------------------------------
+    // Game Variables
     int selected = -1;
     int pieceHeld = 0;
+    int getMoves = 1;
 
-    int turn = 1;
+    board->turn = 1;
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
@@ -67,6 +73,11 @@ int main(void)
                             borderSize,
                             borderSize,
                             boardSideSize);
+                GetMoves(board, moves, selected);
+                getMoves = (getMoves + 1) % 2;
+                if (board->Board[selected].color != board->turn) {
+                    selected = -1;
+                }
             }
         } else if (!IsMouseButtonDown(MOUSE_BUTTON_LEFT) && pieceHeld) {
             int pieceSquare = selected;
@@ -76,10 +87,14 @@ int main(void)
                         borderSize,
                         borderSize,
                         boardSideSize);
-            if (selected != -1) {
+
+            // If valid square and not the same square
+            if (selected != -1 && selected != pieceSquare) {
                 UpdateBoard(board, pieceSquare, selected);
             }
             pieceHeld = 0;
+            getMoves = (getMoves + 1) % 2;
+            ClearMoves(moves);
             selected = -1;
         }
         //----------------------------------------------------------------------------------
@@ -90,7 +105,7 @@ int main(void)
 
         ClearBackground(RAYWHITE);
 
-        DrawBoard(borderSize, borderSize, boardSideSize, selected);
+        DrawBoard(borderSize, borderSize, boardSideSize, moves, selected);
         DrawPieces(borderSize,
                    borderSize,
                    boardSideSize,
@@ -100,7 +115,7 @@ int main(void)
                    selected,
                    GetMousePosition());
 
-        // DrawFPS(5, 5);
+        DrawFPS(5, 5);
 
         EndDrawing();
         //----------------------------------------------------------------------------------

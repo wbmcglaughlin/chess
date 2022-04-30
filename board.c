@@ -28,15 +28,52 @@ void GetSelected(int *selected, float mousePosX, float mousePosY, int cornerX, i
     }
 }
 
+void GetMoves(Board *board, int *moves, int selected) {
+    char c = board->Board[selected].type;
+    if (c == 'p' || c == 'P') {
+        GetPawnMoves(board, moves, selected);
+    }
+}
+
+void GetPawnMoves(Board *board, int *moves, int selected) {
+    ClearMoves(moves);
+    int dir = 1;
+    int col = board->Board[selected].color;
+    if (col == 0) {
+        dir = -1;
+    }
+
+    int f1 = selected + dir * SQUARE_COUNT;
+    int f2 = -1;
+    if (((int) selected / SQUARE_COUNT == 1 && col == 1) || ((int) selected / SQUARE_COUNT == 6 && col == 0)) {
+        f2 = selected + dir * 2 * SQUARE_COUNT;
+    }
+
+    if (f1 > 0 && f1 < SQUARE_COUNT * SQUARE_COUNT) {
+        moves[f1] = 1;
+    }
+    if (f2 > 0 && f2 < SQUARE_COUNT * SQUARE_COUNT) {
+        moves[f2] = 1;
+    }
+}
+
+void ClearMoves(int *moves) {
+    for (int i = 0; i < SQUARE_COUNT * SQUARE_COUNT; i++) {
+        moves[i] = 0;
+    }
+}
+
 void UpdateBoard(Board *board, int pieceSquare, int selected) {
     Piece *piece = malloc(sizeof (Piece));
     *piece = board->Board[pieceSquare];
-    board->Board[pieceSquare] = (Piece) {'e', pieceSquare, 0};
+    board->Board[pieceSquare] = (Piece) {'e', pieceSquare, -1};
     board->Board[selected] = *piece;
+    board->turn = (board->turn + 1) % 2;
+    free(piece);
 }
 
 
-void DrawBoard(int cornerX, int cornerY, int sideSize, int selected) {
+void DrawBoard(int cornerX, int cornerY, int sideSize, int *moves, int selected) {
     int squareWidth = (int) sideSize / SQUARE_COUNT;
     for (int i = 0; i < SQUARE_COUNT * SQUARE_COUNT; i++) {
         BoardSquare *boardSquare = malloc(sizeof (BoardSquare));
@@ -57,51 +94,73 @@ void DrawBoard(int cornerX, int cornerY, int sideSize, int selected) {
                           GREEN
                           );
         }
+        if (moves[i] == 1) {
+            DrawRectangle(boardSquare->cornerX,
+                          boardSquare->cornerY,
+                          squareWidth,
+                          squareWidth,
+                          DARKGREEN
+            );
+        }
+        free(boardSquare);
     }
 }
 
 void DrawPieces(int cornerX, int cornerY, int sideSize, Board *board, Texture2D *pieceTextures[12], int pieceHeld, int selected, Vector2 mousePosition) {
     int squareWidth = (int) sideSize / SQUARE_COUNT;
     for (int i = 0; i < SQUARE_COUNT * SQUARE_COUNT; i++) {
-            BoardSquare *boardSquare = malloc(sizeof (BoardSquare));
-            GetSquare(boardSquare, i, squareWidth, cornerX, cornerY);
-            char type = board->Board[i].type;
-            if (type != 'e') {
-                for (int j = 0; j < UNIQUE_PIECE_TEXTURES; j++) {
-                    if (type == PIECES[j]) {
-                        if (pieceHeld && i == selected) {
-                            DrawTextureEx(*pieceTextures[j],
-                                       (Vector2) {mousePosition.x - squareWidth / 2, mousePosition.y - squareWidth / 2},
-                                       0,
-                                       squareWidth / (float) (*pieceTextures[0]).height,
-                                       WHITE);
-                        } else {
-                            DrawTextureEx(*pieceTextures[j],
-                                          (Vector2) {boardSquare->cornerX, boardSquare->cornerY},
-                                          0,
-                                          squareWidth / (float) (*pieceTextures[0]).height,
-                                          WHITE);
-                        }
+        BoardSquare *boardSquare = malloc(sizeof (BoardSquare));
+        GetSquare(boardSquare, i, squareWidth, cornerX, cornerY);
+        char type = board->Board[i].type;
+        if (type != 'e') {
+            for (int j = 0; j < UNIQUE_PIECE_TEXTURES; j++) {
+                if (type == PIECES[j]) {
+                    if (pieceHeld && i == selected) {
+                        DrawTextureEx(*pieceTextures[j],
+                                   (Vector2) {mousePosition.x - squareWidth / 2, mousePosition.y - squareWidth / 2},
+                                   0,
+                                   squareWidth / (float) (*pieceTextures[0]).height,
+                                   WHITE);
+                    } else {
+                        DrawTextureEx(*pieceTextures[j],
+                                      (Vector2) {boardSquare->cornerX, boardSquare->cornerY},
+                                      0,
+                                      squareWidth / (float) (*pieceTextures[0]).height,
+                                      WHITE);
                     }
+                }
             }
+            free(boardSquare);
         }
     }
 }
 
 void FenToBoard(const char *fen, Board *board) {
-    int pos = 0;
+    int row = 7;
+    int col = 0;
+    int pos;
+
     for (int c = 0; c < MAX_FEN_LENGTH; c++) {
         char ch = fen[c];
-        if (pos < 64) {
+        if (row >= 0) {
+            if (ch == ' ') {
+                --row;
+                break;
+            }
+            pos = row * SQUARE_COUNT + col;
             if (strchr(PIECES, ch) != NULL) {
-                board->Board[pos] = (Piece) {ch, pos, isupper(ch) == 0 ? 0 : 1};
-                ++pos;
+                board->Board[pos] = (Piece) {ch, pos, isupper(ch) ? 1 : 0};
+                ++col;
             } else if (ch != '/') {
                 int pos_change = atoi(&ch);
                 for (int i = 0; i < pos_change; i++) {
-                    board->Board[pos] = (Piece) {'e', pos, 0};
-                    ++pos;
+                    pos = row * SQUARE_COUNT + col;
+                    board->Board[pos] = (Piece) {'e', pos, -1};
+                    ++col;
                 }
+            } else if (ch == '/') {
+                --row;
+                col = 0;
             }
         }
     }
