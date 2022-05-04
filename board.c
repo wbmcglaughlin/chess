@@ -32,11 +32,19 @@ void GetMoves(Board *board, int *moves, int selected) {
     char c = board->Board[selected].type;
     if (c == 'p' || c == 'P') {
         GetPawnMoves(board, moves, selected);
+    } else if (c == 'r' || c == 'R') {
+        GetRookMoves(board, moves, selected);
+    } else if (c == 'b' || c == 'B') {
+        GetBishopMoves(board, moves, selected);
+    } else if (c == 'q' || c == 'Q') {
+        GetRookMoves(board, moves, selected);
+        GetBishopMoves(board, moves, selected);
+    } else if (c == 'k' || c == 'K') {
+        GetKingMoves(board, moves, selected);
     }
 }
 
 void GetPawnMoves(Board *board, int *moves, int selected) {
-    ClearMoves(moves);
     int dir = 1;
     int col = board->Board[selected].color;
     if (col == 0) {
@@ -49,23 +57,23 @@ void GetPawnMoves(Board *board, int *moves, int selected) {
         f2 = selected + dir * 2 * SQUARE_COUNT;
     }
 
-    if (f1 >= 0 && f1 < SQUARE_COUNT * SQUARE_COUNT && board->Board[f1].type == 'e') {
+    if (f1 >= 0 && f1 < SQUARES && board->Board[f1].type == 'e') {
         moves[f1] = TO_EMPTY;
-        if (f2 >= 0 && f2 < SQUARE_COUNT * SQUARE_COUNT && board->Board[f1].type == 'e') {
+        if (f2 >= 0 && f2 < SQUARES && board->Board[f2].type == 'e') {
             moves[f2] = TO_EMPTY;
         }
     }
 
     int fL = selected + dir * SQUARE_COUNT - dir;
     int fR = selected + dir * SQUARE_COUNT + dir;
-    if (fL >= 0 && fL < SQUARE_COUNT * SQUARE_COUNT && (int) (selected / SQUARE_COUNT) + dir == (int) fL / SQUARE_COUNT) {
+    if (PosIsValid(fL) && (int) (selected / SQUARE_COUNT) + dir == (int) fL / SQUARE_COUNT) {
         if (board->Board[fL].color == (col + 1) % 2) {
             moves[fL] = CAPTURE;
         } else if (fL == board->enpassant) {
             moves[fL] = ENPASSANT;
         }
     }
-    if (fR >= 0 && fR < SQUARE_COUNT * SQUARE_COUNT && (int) (selected / SQUARE_COUNT) + dir == (int) fR / SQUARE_COUNT) {
+    if (PosIsValid(fR) && (int) (selected / SQUARE_COUNT) + dir == (int) fR / SQUARE_COUNT) {
         if (board->Board[fR].color == (col + 1) % 2) {
             moves[fR] = CAPTURE;
         } else if (fR == board->enpassant) {
@@ -74,8 +82,120 @@ void GetPawnMoves(Board *board, int *moves, int selected) {
     }
 }
 
+void GetRookMoves(Board *board, int *moves, int selected) {
+    int dirUpDown[2] = {SQUARE_COUNT, -SQUARE_COUNT};
+    int dirLeftRight[2] = {1, -1};
+    int col = board->Board[selected].color;
+
+    for (int i = 0; i < 2; i++) {
+        int pos = selected + dirUpDown[i];
+        int blocked = 0;
+        while (PosIsValid(pos) && !blocked) {
+            if (board->Board[pos].type == 'e') {
+                moves[pos] = TO_EMPTY;
+            } else if (board->Board[pos].color != col) {
+                moves[pos] = CAPTURE;
+                blocked = 1;
+            } else {
+                blocked = 1;
+            }
+            pos += dirUpDown[i];
+        }
+
+        pos = selected + dirLeftRight[i];
+        blocked = 0;
+        while (selected / SQUARE_COUNT == pos / SQUARE_COUNT && !blocked) {
+            if (board->Board[pos].type == 'e') {
+                moves[pos] = TO_EMPTY;
+            } else if (board->Board[pos].color != col) {
+                moves[pos] = CAPTURE;
+                blocked = 1;
+            } else {
+                blocked = 1;
+            }
+            pos += dirLeftRight[i];
+        }
+    }
+}
+
+void GetBishopMoves(Board *board, int *moves, int selected) {
+    int dir[4] = {SQUARE_COUNT + 1, SQUARE_COUNT - 1,- SQUARE_COUNT + 1, - SQUARE_COUNT - 1};
+    int correctDiagDir[4] = {1, -1, 1, -1};
+    int col = board->Board[selected].color;
+
+    for (int i = 0; i < 4; i++) {
+        int pos_old = selected;
+        int pos = selected + dir[i];
+        int blocked = 0;
+        int diagDir = (pos % SQUARE_COUNT - pos_old % SQUARE_COUNT);
+        while (PosIsValid(pos) && !blocked && diagDir == correctDiagDir[i]) {
+            if (board->Board[pos].type == 'e') {
+                moves[pos] = TO_EMPTY;
+            } else if (board->Board[pos].color != col) {
+                moves[pos] = CAPTURE;
+                blocked = 1;
+            } else {
+                blocked = 1;
+            }
+            pos_old = pos;
+            pos += dir[i];
+            diagDir = (pos % SQUARE_COUNT - pos_old % SQUARE_COUNT);
+        }
+    }
+}
+
+void GetKingMoves(Board *board, int *moves, int selected) {
+    int dirDiag[4] = {SQUARE_COUNT + 1, SQUARE_COUNT - 1,- SQUARE_COUNT + 1, - SQUARE_COUNT - 1};
+    int correctDiagDir[4] = {1, -1, 1, -1};
+    int col = board->Board[selected].color;
+
+    for (int i = 0; i < 4; i++) {
+        int pos_old = selected;
+        int pos = selected + dirDiag[i];
+
+        int diagDir = (pos % SQUARE_COUNT - pos_old % SQUARE_COUNT);
+        if (PosIsValid(pos) && diagDir == correctDiagDir[i]) {
+            if (board->Board[pos].type == 'e') {
+                moves[pos] = TO_EMPTY;
+            } else if (board->Board[pos].color != col) {
+                moves[pos] = CAPTURE;
+            }
+        }
+    }
+
+    int dirUpDown[2] = {SQUARE_COUNT, -SQUARE_COUNT};
+    int dirLeftRight[2] = {1, -1};
+
+    for (int i = 0; i < 2; i++) {
+        int pos = selected + dirUpDown[i];
+        if (PosIsValid(pos)) {
+            if (board->Board[pos].type == 'e') {
+                moves[pos] = TO_EMPTY;
+            } else if (board->Board[pos].color != col) {
+                moves[pos] = CAPTURE;
+            }
+        }
+
+        pos = selected + dirLeftRight[i];
+        if (selected / SQUARE_COUNT == pos / SQUARE_COUNT) {
+            if (board->Board[pos].type == 'e') {
+                moves[pos] = TO_EMPTY;
+            } else if (board->Board[pos].color != col) {
+                moves[pos] = CAPTURE;
+            }
+        }
+    }
+}
+
+int PosIsValid(int pos) {
+    if (pos < SQUARES && pos >= 0) {
+        return 1;
+    }
+    return 0;
+}
+
 void ClearMoves(int *moves) {
-    for (int i = 0; i < SQUARE_COUNT * SQUARE_COUNT; i++) {
+    for (int i = 0; i < SQUARES; i++) {
         moves[i] = 0;
     }
 }
@@ -88,7 +208,6 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
             board->enpassant = (pieceSquare + selected) / 2;
         }
     }
-
 
     Piece *piece = malloc(sizeof (Piece));
     *piece = board->Board[pieceSquare];
@@ -107,7 +226,7 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
 
 void DrawBoard(int cornerX, int cornerY, int sideSize, int *moves, int selected) {
     int squareWidth = (int) sideSize / SQUARE_COUNT;
-    for (int i = 0; i < SQUARE_COUNT * SQUARE_COUNT; i++) {
+    for (int i = 0; i < SQUARES; i++) {
         BoardSquare *boardSquare = malloc(sizeof (BoardSquare));
         GetSquare(boardSquare, i, squareWidth, cornerX, cornerY);
         DrawRectangle(boardSquare->cornerX,
@@ -131,7 +250,7 @@ void DrawBoard(int cornerX, int cornerY, int sideSize, int *moves, int selected)
                           boardSquare->cornerY,
                           squareWidth,
                           squareWidth,
-                          DARKGREEN
+                          LIGHTGRAY
             );
         }
         free(boardSquare);
@@ -140,7 +259,7 @@ void DrawBoard(int cornerX, int cornerY, int sideSize, int *moves, int selected)
 
 void DrawPieces(int cornerX, int cornerY, int sideSize, Board *board, Texture2D *pieceTextures[12], int pieceHeld, int selected, Vector2 mousePosition) {
     int squareWidth = (int) sideSize / SQUARE_COUNT;
-    for (int i = 0; i < SQUARE_COUNT * SQUARE_COUNT; i++) {
+    for (int i = 0; i < SQUARES; i++) {
         BoardSquare *boardSquare = malloc(sizeof (BoardSquare));
         GetSquare(boardSquare, i, squareWidth, cornerX, cornerY);
         char type = board->Board[i].type;

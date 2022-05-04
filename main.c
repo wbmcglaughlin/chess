@@ -74,6 +74,7 @@ int main(void)
                             borderSize,
                             boardSideSize);
                 if (board->Board[selected].color == board->turn) {
+                    ClearMoves(moves);
                     GetMoves(board, moves, selected);
                 }
                 getMoves = (getMoves + 1) % 2;
