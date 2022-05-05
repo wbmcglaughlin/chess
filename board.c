@@ -41,6 +41,8 @@ void GetMoves(Board *board, int *moves, int selected) {
         GetBishopMoves(board, moves, selected);
     } else if (c == 'k' || c == 'K') {
         GetKingMoves(board, moves, selected);
+    } else if (c == 'n' || c == 'N') {
+        GetKnightMoves(board, moves, selected);
     }
 }
 
@@ -178,6 +180,32 @@ void GetKingMoves(Board *board, int *moves, int selected) {
 
         pos = selected + dirLeftRight[i];
         if (selected / SQUARE_COUNT == pos / SQUARE_COUNT) {
+            if (board->Board[pos].type == 'e') {
+                moves[pos] = TO_EMPTY;
+            } else if (board->Board[pos].color != col) {
+                moves[pos] = CAPTURE;
+            }
+        }
+    }
+}
+
+void GetKnightMoves(Board *board, int *moves, int selected) {
+    int col = board->Board[selected].color;
+    int dir[4] = {-SQUARE_COUNT - 2, -SQUARE_COUNT + 2, -2*SQUARE_COUNT - 1, -2*SQUARE_COUNT + 1};
+    int rowDif[4] = {-2, 2, -1, 1};
+    int pos;
+    for (int i = 0; i < 4; i++) {
+        pos = selected + dir[i];
+        if (PosIsValid(pos) && selected % SQUARE_COUNT - pos % SQUARE_COUNT == -rowDif[i]) {
+            if (board->Board[pos].type == 'e') {
+                moves[pos] = TO_EMPTY;
+            } else if (board->Board[pos].color != col) {
+                moves[pos] = CAPTURE;
+            }
+        }
+
+        pos = selected - dir[i];
+        if (PosIsValid(pos) && selected % SQUARE_COUNT - pos % SQUARE_COUNT == rowDif[i]) {
             if (board->Board[pos].type == 'e') {
                 moves[pos] = TO_EMPTY;
             } else if (board->Board[pos].color != col) {

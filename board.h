@@ -62,6 +62,7 @@ void GetPawnMoves(Board *board, int *moves, int selected);
 void GetRookMoves(Board *board, int *moves, int selected);
 void GetBishopMoves(Board *board, int *moves, int selected);
 void GetKingMoves(Board *board, int *moves, int selected);
+void GetKnightMoves(Board *board, int *moves, int selected);
 
 void GetSquare(BoardSquare *boardSquare, int i, int sideSize, int cornerX, int cornerY);
 void DrawBoard(int cornerX, int cornerY, int sideSize, int *moves, int selected);
