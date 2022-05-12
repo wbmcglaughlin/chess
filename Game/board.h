@@ -63,22 +63,7 @@ void SwapPieces(Board *board, int pos1, int pos2);
 void GetSelected(int *selected, float mousePosX, float mousePosY, int cornerX, int cornerY, int sideSize);
 int PosIsValid(int pos);
 void CopyBoard(Board *newBoard, Board *oldBoard);
-
-void GetMoves(Board *board, int *moves, int selected);
-void ClearMoves(int *moves);
-void GetPawnMoves(Board *board, int *moves, int selected);
-void GetRookMoves(Board *board, int *moves, int selected, int findLegal);
-void GetBishopMoves(Board *board, int *moves, int selected);
-void GetKingMoves(Board *board, int *moves, int selected);
-void GetKnightMoves(Board *board, int *moves, int selected);
-
-int KingInCheck(Board *board, int kingPos);
-void UpdateMovesLegality(Board *board, int *moves, int selected);
-int IsMoveLegal(Board *board, int selected, int move, int moveType);
-
 void GetSquare(BoardSquare *boardSquare, int i, int sideSize, int cornerX, int cornerY);
-void DrawBoard(int cornerX, int cornerY, int sideSize, int *moves, int selected);
-void DrawPieces(int cornerX, int cornerY, int sideSize, Board *board, Texture2D *pieceTextures[12], int pieceHeld, int selected, Vector2 mousePosition);
 void FenToBoard(const char *fen, Board *board);
 
 #endif //EXAMPLE_BOARD_H

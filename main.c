@@ -2,7 +2,8 @@
 
 #include "raylib.h"
 
-#include "board.h"
+#include "Game/board.h"
+#include "Game/moves.h"
 
 #define TARGET_FPS 244
 
