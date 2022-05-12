@@ -33,11 +33,11 @@ void GetMoves(Board *board, int *moves, int selected) {
     if (c == 'p' || c == 'P') {
         GetPawnMoves(board, moves, selected);
     } else if (c == 'r' || c == 'R') {
-        GetRookMoves(board, moves, selected);
+        GetRookMoves(board, moves, selected, 1);
     } else if (c == 'b' || c == 'B') {
         GetBishopMoves(board, moves, selected);
     } else if (c == 'q' || c == 'Q') {
-        GetRookMoves(board, moves, selected);
+        GetRookMoves(board, moves, selected, 0);
         GetBishopMoves(board, moves, selected);
     } else if (c == 'k' || c == 'K') {
         GetKingMoves(board, moves, selected);
@@ -91,9 +91,11 @@ void GetPawnMoves(Board *board, int *moves, int selected) {
             moves[fR] = PROMOTION;
         }
     }
+
+    UpdateMovesLegality(board, moves, selected);
 }
 
-void GetRookMoves(Board *board, int *moves, int selected) {
+void GetRookMoves(Board *board, int *moves, int selected, int findLegal) {
     int dirUpDown[2] = {SQUARE_COUNT, -SQUARE_COUNT};
     int dirLeftRight[2] = {1, -1};
     int col = board->Board[selected].color;
@@ -115,7 +117,7 @@ void GetRookMoves(Board *board, int *moves, int selected) {
 
         pos = selected + dirLeftRight[i];
         blocked = 0;
-        while (selected / SQUARE_COUNT == pos / SQUARE_COUNT && !blocked) {
+        while (selected / SQUARE_COUNT == pos / SQUARE_COUNT && !blocked && PosIsValid(pos)) {
             if (board->Board[pos].type == 'e') {
                 moves[pos] = TO_EMPTY;
             } else if (board->Board[pos].color != col) {
@@ -126,6 +128,10 @@ void GetRookMoves(Board *board, int *moves, int selected) {
             }
             pos += dirLeftRight[i];
         }
+    }
+
+    if (findLegal) {
+        UpdateMovesLegality(board, moves, selected);
     }
 }
 
@@ -153,6 +159,8 @@ void GetBishopMoves(Board *board, int *moves, int selected) {
             diagDir = (pos % SQUARE_COUNT - pos_old % SQUARE_COUNT);
         }
     }
+
+    UpdateMovesLegality(board, moves, selected);
 }
 
 void GetKingMoves(Board *board, int *moves, int selected) {
@@ -213,13 +221,13 @@ void GetKingMoves(Board *board, int *moves, int selected) {
         // Queen Side Castle White
         isempty = 1;
         if (board->castle[1] == 1) {
-            for (int i = board->kingPos[1] - 1; i > 0; i--) {
+            for (int i = board->kingPos[1] - 1; i > 1; i--) {
                 if (board->Board[i].type != 'e') {
                     isempty = 0;
                 }
             }
             if (isempty == 1) {
-                moves[1] = CASTLE;
+                moves[2] = CASTLE;
             }
         }
     } else if (col == 0) {
@@ -238,16 +246,18 @@ void GetKingMoves(Board *board, int *moves, int selected) {
         // Queen Side Castle Black
         isempty = 1;
         if (board->castle[3] == 1) {
-            for (int i = board->kingPos[0] - 1; i > SQUARES - SQUARE_COUNT; i--) {
+            for (int i = board->kingPos[0] - 1; i > SQUARES - SQUARE_COUNT + 1; i--) {
                 if (board->Board[i].type != 'e') {
                     isempty = 0;
                 }
             }
             if (isempty == 1) {
-                moves[SQUARES - SQUARE_COUNT + 1] = CASTLE;
+                moves[SQUARES - SQUARE_COUNT + 2] = CASTLE;
             }
         }
     }
+
+    UpdateMovesLegality(board, moves, selected);
 }
 
 void GetKnightMoves(Board *board, int *moves, int selected) {
@@ -282,6 +292,18 @@ void GetKnightMoves(Board *board, int *moves, int selected) {
             }
         }
     }
+
+    UpdateMovesLegality(board, moves, selected);
+}
+
+void UpdateMovesLegality(Board *board, int *moves, int selected) {
+    for (int i = 0; i < SQUARES; i++) {
+        if (moves[i] > 0) {
+            if (!IsMoveLegal(board, selected, i, moves[i])) {
+                moves[i] = 0;
+            }
+        }
+    }
 }
 
 int PosIsValid(int pos) {
@@ -299,7 +321,7 @@ void ClearMoves(int *moves) {
 
 void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
     // Check if enpassant
-    board->enpassant = -1 ;
+    board->enpassant = -1;
     if (board->Board[pieceSquare].type == 'p' || board->Board[pieceSquare].type == 'P') {
         if (abs(pieceSquare - selected) == SQUARE_COUNT * 2) {
             board->enpassant = (pieceSquare + selected) / 2;
@@ -320,6 +342,9 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
             }
         }
     }
+    if (board->Board[pieceSquare].type == 'k' || board->Board[pieceSquare].type == 'K') {
+        board->kingPos[board->Board[pieceSquare].color] = selected;
+    }
 
     Piece *piece = malloc(sizeof (Piece));
     *piece = board->Board[pieceSquare];
@@ -338,37 +363,51 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
         }
     }
     if (moveType == CASTLE) {
-        if (pieceSquare == 0) {
+        if (board->turn == 1) {
             board->castle[0] = 0;
             board->castle[1] = 0;
         } else {
             board->castle[2] = 0;
             board->castle[3] = 0;
         }
-        SwapPieces(board, selected - 1, selected + 1);
+        if (pieceSquare > selected) {
+            SwapPieces(board, selected - 2, selected + 1);
+        } else {
+            SwapPieces(board, selected - 1, selected + 1);
+        }
     }
     board->turn = (board->turn + 1) % 2;
     free(piece);
 }
 
 int IsMoveLegal(Board *board, int selected, int move, int moveType) {
-    Board *boardUpdated = malloc(sizeof (Board));
-    for (int i = 0; i < SQUARES; i++) {
-        boardUpdated->Board[i] = board->Board[i];
-    }
+    int col = board->turn;
+    Board *boardUpdated = malloc(sizeof (*boardUpdated));;
+    CopyBoard(boardUpdated, board);
     UpdateBoard(boardUpdated, selected, move, moveType);
-    if (!KingInCheck(boardUpdated, boardUpdated->kingPos[boardUpdated->Board[selected].color])) {
+    if (!KingInCheck(boardUpdated, col)) {
         return 1;
     }
+    free(boardUpdated);
     return 0;
 }
 
-int KingInCheck(Board *board, int kingPos) {
-    int col = board->Board[kingPos].color;
+void CopyBoard(Board *newBoard, Board *oldBoard) {
+    newBoard->Board = malloc(sizeof (Piece) * SQUARES);
+    for (int i = 0; i < SQUARES; i++) {
+        newBoard->Board[i] = oldBoard->Board[i];
+    }
+    newBoard->kingPos[0] = oldBoard->kingPos[0];
+    newBoard->kingPos[1] = oldBoard->kingPos[1];
+    newBoard->turn = oldBoard->turn;
+}
+
+int KingInCheck(Board *board, int col) {
+    int kingPos = board->kingPos[col];
 
     // Check For Knights
-    char type = 'k';
-    if (col == 1) {
+    char type = 'n';
+    if (col == 0) {
         type = (char) toupper(type);
     }
     int dir[4] = {-SQUARE_COUNT - 2, -SQUARE_COUNT + 2, -2*SQUARE_COUNT - 1, -2*SQUARE_COUNT + 1};
@@ -379,8 +418,6 @@ int KingInCheck(Board *board, int kingPos) {
         if (PosIsValid(pos) && kingPos % SQUARE_COUNT - pos % SQUARE_COUNT == -rowDif[i]) {
             if (board->Board[pos].type == type) {
                 return 1;
-            } else if (board->Board[pos].color != col) {
-                return 1;
             }
         }
 
@@ -388,11 +425,73 @@ int KingInCheck(Board *board, int kingPos) {
         if (PosIsValid(pos) && kingPos % SQUARE_COUNT - pos % SQUARE_COUNT == rowDif[i]) {
             if (board->Board[pos].type == type) {
                 return 1;
-            } else if (board->Board[pos].color != col) {
-                return 1;
             }
         }
     }
+
+    // Check For Rooks or Queens
+    type = 'r';
+    char type2 = 'q';
+    if (col == 0) {
+        type = (char) toupper(type);
+        type2 = (char) toupper(type2);
+    }
+    int dirUpDown[2] = {SQUARE_COUNT, -SQUARE_COUNT};
+    int dirLeftRight[2] = {1, -1};
+
+    for (int i = 0; i < 2; i++) {
+        pos = kingPos + dirUpDown[i];
+        while (PosIsValid(pos)) {
+            if (board->Board[pos].type == 'e') {
+                pos += dirUpDown[i];
+                continue;
+            } else if (board->Board[pos].type == type || board->Board[pos].type == type2) {
+                return 1;
+            } else {
+                break;
+            }
+        }
+
+        pos = kingPos + dirLeftRight[i];
+        while (kingPos / SQUARE_COUNT == pos / SQUARE_COUNT && PosIsValid(pos)) {
+            if (board->Board[pos].type == 'e') {
+                pos += dirLeftRight[i];
+                continue;
+            } else if (board->Board[pos].type == type || board->Board[pos].type == type2) {
+                return 1;
+            } else {
+                break;
+            }
+        }
+    }
+
+    // Check for Bishop
+    type = 'b';
+    if (col == 0) {
+        type = (char) toupper(type);
+    }
+    int dirBishop[4] = {SQUARE_COUNT + 1, SQUARE_COUNT - 1,- SQUARE_COUNT + 1, - SQUARE_COUNT - 1};
+    int correctDiagDir[4] = {1, -1, 1, -1};
+
+    for (int i = 0; i < 4; i++) {
+        int pos_old = kingPos;
+        pos = kingPos + dirBishop[i];
+        int blocked = 0;
+        int diagDir = (pos % SQUARE_COUNT - pos_old % SQUARE_COUNT);
+        while (PosIsValid(pos) && !blocked && diagDir == correctDiagDir[i]) {
+            if (board->Board[pos].type == 'e') {
+                pos_old = pos;
+                pos += dirBishop[i];
+                diagDir = (pos % SQUARE_COUNT - pos_old % SQUARE_COUNT);
+                continue;
+            } else if (board->Board[pos].type == type) {
+                return 1;
+            } else {
+                break;
+            }
+        }
+    }
+
     return 0;
 }
 
