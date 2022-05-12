@@ -4,6 +4,7 @@
 
 #include "Game/board.h"
 #include "Game/moves.h"
+#include "Game/draw.h"
 
 #define TARGET_FPS 244
 
