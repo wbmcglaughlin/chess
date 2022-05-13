@@ -4,11 +4,11 @@
 
 #include "draw.h"
 
-void DrawBoard(int cornerX, int cornerY, int sideSize, int *moves, int selected) {
-    int squareWidth = (int) sideSize / SQUARE_COUNT;
+void DrawBoard(BoardDimensions *boardDimensions, int *moves, int selected) {
+    int squareWidth = (int) boardDimensions->sideSize / SQUARE_COUNT;
     for (int i = 0; i < SQUARES; i++) {
         BoardSquare *boardSquare = malloc(sizeof (BoardSquare));
-        GetSquare(boardSquare, i, squareWidth, cornerX, cornerY);
+        GetSquare(boardSquare, i, squareWidth, boardDimensions->cornerX, boardDimensions->cornerY);
         DrawRectangle(boardSquare->cornerX,
                       boardSquare->cornerY,
                       squareWidth,
@@ -37,11 +37,11 @@ void DrawBoard(int cornerX, int cornerY, int sideSize, int *moves, int selected)
     }
 }
 
-void DrawPieces(int cornerX, int cornerY, int sideSize, Board *board, Texture2D *pieceTextures[12], int pieceHeld, int selected, Vector2 mousePosition) {
-    int squareWidth = (int) sideSize / SQUARE_COUNT;
+void DrawPieces(BoardDimensions *boardDimensions, Board *board, Texture2D *pieceTextures[12], int pieceHeld, int selected, Vector2 mousePosition) {
+    int squareWidth = (int) boardDimensions->sideSize / SQUARE_COUNT;
     for (int i = 0; i < SQUARES; i++) {
         BoardSquare *boardSquare = malloc(sizeof (BoardSquare));
-        GetSquare(boardSquare, i, squareWidth, cornerX, cornerY);
+        GetSquare(boardSquare, i, squareWidth, boardDimensions->cornerX, boardDimensions->cornerY);
         char type = board->Board[i].type;
         if (type != 'e') {
             for (int j = 0; j < UNIQUE_PIECE_TEXTURES; j++) {

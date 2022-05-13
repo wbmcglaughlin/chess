@@ -395,4 +395,8 @@ int IsKingInCheck(Board *board, int col) {
     return 0;
 }
 
+void GetAllLegalMoves(Board *board, int **moves) {
+
+}
+
 

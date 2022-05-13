@@ -8,7 +8,8 @@
 #include "raylib.h"
 #include "board.h"
 
-void DrawBoard(int cornerX, int cornerY, int sideSize, int *moves, int selected);
-void DrawPieces(int cornerX, int cornerY, int sideSize, Board *board, Texture2D *pieceTextures[12], int pieceHeld, int selected, Vector2 mousePosition);
+void DrawBoard(BoardDimensions *boardDimensions, int *moves, int selected);
+void DrawPieces(BoardDimensions *boardDimensions, Board *board, Texture2D *pieceTextures[12], int pieceHeld, int selected, Vector2 mousePosition);
+void DrawBoardInfo(Board *board, BoardDimensions *boardDimensions);
 
 #endif //CHESS_DRAW_H

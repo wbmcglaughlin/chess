@@ -15,13 +15,13 @@ void GetSquare(BoardSquare *boardSquare, int i, int squareSize, int cornerX, int
     boardSquare->cornerY = cornerY + (SQUARE_COUNT - y - 1) * squareSize;
 }
 
-void GetSelected(int *selected, float mousePosX, float mousePosY, int cornerX, int cornerY, int sideSize) {
-    int squareWidth = (int) sideSize / SQUARE_COUNT;
+void GetSelected(int *selected, float mousePosX, float mousePosY, BoardDimensions *boardDimensions) {
+    int squareWidth = (int) boardDimensions->sideSize / SQUARE_COUNT;
 
     // mousePosX = cornerX + x * squareWidth
     // mousePosY = cornerY + (SQUARE_COUNT - y - 1) * squareWidth;
-    int x = (int) ((mousePosX - cornerX) / squareWidth);
-    int y = SQUARE_COUNT - (int) ((mousePosY - cornerY) / squareWidth) - 1;
+    int x = (int) ((mousePosX - boardDimensions->cornerX) / squareWidth);
+    int y = SQUARE_COUNT - (int) ((mousePosY - boardDimensions->cornerY) / squareWidth) - 1;
 
     if (x >= 0 && x < SQUARE_COUNT && y >= 0 && y < SQUARE_COUNT) {
         *selected = x + SQUARE_COUNT * y;

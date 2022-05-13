@@ -1,12 +1,10 @@
 #include "stdlib.h"
-
 #include "raylib.h"
-
 #include "Game/board.h"
 #include "Game/moves.h"
 #include "Game/draw.h"
 
-#define TARGET_FPS 244
+#define TARGET_FPS 500
 
 int main(void)
 {
@@ -20,8 +18,10 @@ int main(void)
         definingLength = screenHeight;
     }
 
-    int boardSideSize = (int) (definingLength * BOARD_PERCENT);
-    int borderSize = (int) (definingLength * (1 - BOARD_PERCENT) / 2);
+    BoardDimensions *boardDimensions = malloc(sizeof (BoardDimensions));
+    boardDimensions->cornerX = (int) (definingLength * (1 - BOARD_PERCENT) / 2);
+    boardDimensions->cornerY = (int) (definingLength * (1 - BOARD_PERCENT) / 2);
+    boardDimensions->sideSize = (int) (definingLength * BOARD_PERCENT);
 
     char *fen;
     fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -34,7 +34,7 @@ int main(void)
 
     FenToBoard(fen, board);
 
-    InitWindow(screenWidth, screenHeight, "Chess - v.0.1 [Will McGlaughlin]");
+    InitWindow(screenWidth, screenHeight, "Chess - v.0.2 [Will McGlaughlin]");
     SetTargetFPS(TARGET_FPS);
 
     // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
@@ -60,6 +60,9 @@ int main(void)
 
     board->turn = 1;
 
+    int playerWhite = PLAYER;
+    int playerBlack = BOT;
+
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -72,9 +75,7 @@ int main(void)
                 GetSelected(&selected,
                             GetMousePosition().x,
                             GetMousePosition().y,
-                            borderSize,
-                            borderSize,
-                            boardSideSize);
+                            boardDimensions);
                 if (board->Board[selected].color == board->turn) {
                     ClearMoves(moves);
                     GetMoves(board, moves, selected);
@@ -89,9 +90,7 @@ int main(void)
             GetSelected(&selected,
                         GetMousePosition().x,
                         GetMousePosition().y,
-                        borderSize,
-                        borderSize,
-                        boardSideSize);
+                        boardDimensions);
 
             // If valid square and not the same square
             if (selected != -1 && selected != pieceSquare && moves[selected] > 0) {
@@ -110,17 +109,10 @@ int main(void)
 
         ClearBackground(RAYWHITE);
 
-        DrawBoard(borderSize, borderSize, boardSideSize, moves, selected);
-        DrawPieces(borderSize,
-                   borderSize,
-                   boardSideSize,
-                   board,
-                   textures,
-                   pieceHeld,
-                   selected,
-                   GetMousePosition());
+        DrawBoard(boardDimensions, moves, selected);
+        DrawPieces(boardDimensions, board, textures, pieceHeld, selected, GetMousePosition());
 
-        DrawFPS(5, 5);
+        // DrawFPS(5, 5);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -128,10 +120,10 @@ int main(void)
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
+    // Texture unloading
     for (int i = 0; i < UNIQUE_PIECE_TEXTURES; i++) {
         UnloadTexture(*textures[i]);
     }
-    // Texture unloading
 
     CloseWindow();                // Close window and OpenGL context
     //--------------------------------------------------------------------------------------

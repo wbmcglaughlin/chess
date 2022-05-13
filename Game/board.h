@@ -29,6 +29,17 @@ enum MoveType {
     PROMOTION
 };
 
+enum PlayerType {
+    BOT = 0,
+    PLAYER = 1
+};
+
+struct BoardDimensions {
+    int cornerX;
+    int cornerY;
+    int sideSize;
+};
+
 struct BoardSquare {
     int x;
     int y;
@@ -57,10 +68,11 @@ struct Board {
 typedef struct BoardSquare BoardSquare;
 typedef struct Board Board;
 typedef struct Piece Piece;
+typedef struct BoardDimensions BoardDimensions;
 
 void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType);
 void SwapPieces(Board *board, int pos1, int pos2);
-void GetSelected(int *selected, float mousePosX, float mousePosY, int cornerX, int cornerY, int sideSize);
+void GetSelected(int *selected, float mousePosX, float mousePosY, BoardDimensions *boardDimensions);
 int PosIsValid(int pos);
 void CopyBoard(Board *newBoard, Board *oldBoard);
 void GetSquare(BoardSquare *boardSquare, int i, int sideSize, int cornerX, int cornerY);
