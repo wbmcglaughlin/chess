@@ -363,10 +363,12 @@ int IsKingInCheck(Board *board, int col) {
         }
     }
 
-    // Check for Bishop
+    // Check for Bishop or Queens
     type = 'b';
+    type2 = 'q';
     if (col == 0) {
         type = (char) toupper(type);
+        type2 = (char) toupper(type2);
     }
     int dirBishop[4] = {SQUARE_COUNT + 1, SQUARE_COUNT - 1,- SQUARE_COUNT + 1, - SQUARE_COUNT - 1};
     int correctDiagDir[4] = {1, -1, 1, -1};
@@ -374,15 +376,15 @@ int IsKingInCheck(Board *board, int col) {
     for (int i = 0; i < 4; i++) {
         int pos_old = kingPos;
         pos = kingPos + dirBishop[i];
-        int blocked = 0;
+
         int diagDir = (pos % SQUARE_COUNT - pos_old % SQUARE_COUNT);
-        while (PosIsValid(pos) && !blocked && diagDir == correctDiagDir[i]) {
+        while (PosIsValid(pos) && diagDir == correctDiagDir[i]) {
             if (board->Board[pos].type == 'e') {
                 pos_old = pos;
                 pos += dirBishop[i];
                 diagDir = (pos % SQUARE_COUNT - pos_old % SQUARE_COUNT);
                 continue;
-            } else if (board->Board[pos].type == type) {
+            } else if (board->Board[pos].type == type || board->Board[pos].type == type2) {
                 return 1;
             } else {
                 break;
