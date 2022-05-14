@@ -65,3 +65,28 @@ void DrawPieces(BoardDimensions *boardDimensions, Board *board, Texture2D *piece
         }
     }
 }
+
+void DrawBoardInfo(Board *board, BoardDimensions *boardDimensions) {
+    int moves = GetAllMovesCount(board);
+    DrawText(TextFormat("Moves: %i", moves),
+             (int) (1.2 * boardDimensions->cornerX + boardDimensions->sideSize),
+             boardDimensions->cornerY,
+             FONT_SIZE,
+             BLACK);
+
+    DrawText(TextFormat("Castle: K: %i Q: %i k: %i q: %i",
+                        board->castle[0],
+                        board->castle[1],
+                        board->castle[2],
+                        board->castle[3]),
+             (int) (1.2 * boardDimensions->cornerX + boardDimensions->sideSize),
+             boardDimensions->cornerY + FONT_SIZE * 1,
+             FONT_SIZE,
+             BLACK);
+
+    DrawText(TextFormat("Turn: %i", board->turn),
+             (int) (1.2 * boardDimensions->cornerX + boardDimensions->sideSize),
+             boardDimensions->cornerY + FONT_SIZE * 2,
+             FONT_SIZE,
+             BLACK);
+}

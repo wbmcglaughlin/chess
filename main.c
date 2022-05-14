@@ -4,7 +4,7 @@
 #include "Game/moves.h"
 #include "Game/draw.h"
 
-#define TARGET_FPS 30
+#define TARGET_FPS 120
 
 int main(void)
 {
@@ -13,7 +13,7 @@ int main(void)
 
     BoardDimensions *boardDimensions = malloc(sizeof (BoardDimensions));
     boardDimensions->screenWidth = 1200;
-    boardDimensions->screenHeight = 800;
+    boardDimensions->screenHeight = 1000;
     boardDimensions->definingLength = boardDimensions->screenWidth > boardDimensions->screenHeight
             ? boardDimensions->screenHeight : boardDimensions->screenWidth;
     boardDimensions->cornerX = (int) (boardDimensions->definingLength * (1 - BOARD_PERCENT) / 2);
@@ -34,6 +34,7 @@ int main(void)
     InitWindow(boardDimensions->screenWidth, boardDimensions->screenHeight, "Chess - v.0.2 [Will McGlaughlin]");
     SetTargetFPS(TARGET_FPS);
 
+    SetTextureFilter(GetFontDefault().texture, TEXTURE_FILTER_POINT);
     // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
     Texture2D pw = LoadTexture("resources/pieces/pw.png");
     Texture2D pb = LoadTexture("resources/pieces/pb.png");
@@ -108,7 +109,7 @@ int main(void)
 
         DrawBoard(boardDimensions, moves, selected);
         DrawPieces(boardDimensions, board, textures, pieceHeld, selected, GetMousePosition());
-
+        DrawBoardInfo(board, boardDimensions);
         // DrawFPS(5, 5);
 
         EndDrawing();

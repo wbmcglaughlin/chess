@@ -60,6 +60,13 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
     }
     if (board->Board[pieceSquare].type == 'k' || board->Board[pieceSquare].type == 'K') {
         board->kingPos[board->Board[pieceSquare].color] = selected;
+        if (board->Board[pieceSquare].type == 'k') {
+            board->castle[2] = 0;
+            board->castle[3] = 0;
+        } else {
+            board->castle[0] = 0;
+            board->castle[1] = 0;
+        }
     }
 
     Piece *piece = malloc(sizeof (Piece));

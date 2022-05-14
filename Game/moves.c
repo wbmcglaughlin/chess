@@ -303,12 +303,34 @@ int IsMoveLegal(Board *board, int selected, int move, int moveType) {
 int IsKingInCheck(Board *board, int col) {
     int kingPos = board->kingPos[col];
 
-    // Check For Knights
-    char type = 'n';
+    // Check for Pawns
+    char type = 'p';
     if (col == 0) {
         type = (char) toupper(type);
     }
-    int dir[4] = {-SQUARE_COUNT - 2, -SQUARE_COUNT + 2, -2*SQUARE_COUNT - 1, -2*SQUARE_COUNT + 1};
+    int dirPawn = 1;
+    if (col == 0) {
+        dirPawn = -1;
+    }
+    int fL = kingPos + dirPawn * SQUARE_COUNT - dirPawn;
+    int fR = kingPos + dirPawn * SQUARE_COUNT + dirPawn;
+    if (PosIsValid(fL) && (int) (kingPos / SQUARE_COUNT) + dirPawn == (int) fL / SQUARE_COUNT) {
+        if (board->Board[fL].type == type) {
+            return 1;
+        }
+    }
+    if (PosIsValid(fR) && (int) (kingPos / SQUARE_COUNT) + dirPawn == (int) fR / SQUARE_COUNT) {
+        if (board->Board[fR].type == type) {
+            return 1;
+        }
+    }
+
+    // Check For Knights
+    type = 'n';
+    if (col == 0) {
+        type = (char) toupper(type);
+    }
+    int dir[4] = {-SQUARE_COUNT - 2, -SQUARE_COUNT + 2, -2 * SQUARE_COUNT - 1, -2 * SQUARE_COUNT + 1};
     int rowDif[4] = {-2, 2, -1, 1};
     int pos;
     for (int i = 0; i < 4; i++) {
@@ -397,6 +419,21 @@ int IsKingInCheck(Board *board, int col) {
 
 void GetAllLegalMoves(Board *board, int **moves) {
 
+}
+
+int GetAllMovesCount(Board *board) {
+    int *moves = malloc(SQUARES * sizeof (int));
+    ClearMoves(moves);
+    int moveCount = 0;
+    for (int i = 0; i < SQUARES; i++) {
+        if (board->Board[i].type != 'e' && board->Board[i].color == board->turn) {
+            GetMoves(board, moves, i);
+            moveCount += GetSumIntArray(moves, SQUARES);
+            ClearMoves(moves);
+        }
+    }
+    free(moves);
+    return moveCount;
 }
 
 
