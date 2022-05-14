@@ -182,11 +182,11 @@ void GetKingMoves(Board *board, int *moves, int selected) {
     }
 
     int isempty = 1;
-    if (col == 1) {
+    if (col == 1 && !IsKingInCheck(board, 1)) {
         // King Side Castle White
         if (board->castle[0] == 1) {
             for (int i = board->kingPos[1] + 1; i < SQUARE_COUNT - 1; i++) {
-                if (board->Board[i].type != 'e') {
+                if (board->Board[i].type != 'e' || !IsMoveLegal(board, board->kingPos[1], i, TO_EMPTY)) {
                     isempty = 0;
                 }
             }
@@ -198,7 +198,7 @@ void GetKingMoves(Board *board, int *moves, int selected) {
         isempty = 1;
         if (board->castle[1] == 1) {
             for (int i = board->kingPos[1] - 1; i > 1; i--) {
-                if (board->Board[i].type != 'e') {
+                if (board->Board[i].type != 'e' || !IsMoveLegal(board, board->kingPos[1], i, TO_EMPTY)) {
                     isempty = 0;
                 }
             }
@@ -206,12 +206,12 @@ void GetKingMoves(Board *board, int *moves, int selected) {
                 moves[2] = CASTLE;
             }
         }
-    } else if (col == 0) {
+    } else if (col == 0 && !IsKingInCheck(board, 0)) {
         // King Side Castle Black
         isempty = 1;
         if (board->castle[2] == 1) {
             for (int i = board->kingPos[0] + 1; i < SQUARES - 1; i++) {
-                if (board->Board[i].type != 'e') {
+                if (board->Board[i].type != 'e' || !IsMoveLegal(board, board->kingPos[0], i, TO_EMPTY)) {
                     isempty = 0;
                 }
             }
@@ -223,7 +223,7 @@ void GetKingMoves(Board *board, int *moves, int selected) {
         isempty = 1;
         if (board->castle[3] == 1) {
             for (int i = board->kingPos[0] - 1; i > SQUARES - SQUARE_COUNT + 1; i--) {
-                if (board->Board[i].type != 'e') {
+                if (board->Board[i].type != 'e' || !IsMoveLegal(board, board->kingPos[0], i, TO_EMPTY)) {
                     isempty = 0;
                 }
             }
