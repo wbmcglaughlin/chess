@@ -11,8 +11,9 @@
 
 #define FONT_SIZE 20
 
-void DrawBoard(BoardDimensions *boardDimensions, int *moves, int selected);
+void DrawBoard(BoardDimensions *boardDimensions, const int *moves, int selected);
 void DrawPieces(BoardDimensions *boardDimensions, Board *board, Texture2D *pieceTextures[12], int pieceHeld, int selected, Vector2 mousePosition);
 void DrawBoardInfo(Board *board, BoardDimensions *boardDimensions);
+void ListLegalMoves(Move *moves, int movesCount, BoardDimensions *boardDimensions);
 
 #endif //CHESS_DRAW_H

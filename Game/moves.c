@@ -417,8 +417,24 @@ int IsKingInCheck(Board *board, int col) {
     return 0;
 }
 
-void GetAllLegalMoves(Board *board, int **moves) {
-
+void GetAllLegalMoves(Board *board, Move *moves, int *movesCount) {
+    int *movesArr = malloc(SQUARES * sizeof (int));
+    int movesCountInner = 0;
+    ClearMoves(movesArr);
+    for (int i = 0; i < SQUARES; i++) {
+        if (board->Board[i].type != 'e' && board->Board[i].color == board->turn) {
+            GetMoves(board, movesArr, i);
+            for (int j = 0; j < SQUARES; j++) {
+                if (movesArr[j] != 0) {
+                    moves[movesCountInner] = (Move) {i, j, movesArr[j]};
+                    movesCountInner++;
+                }
+            }
+            ClearMoves(movesArr);
+        }
+    }
+    *movesCount = movesCountInner;
+    free(movesArr);
 }
 
 int GetAllMovesCount(Board *board) {
@@ -428,12 +444,10 @@ int GetAllMovesCount(Board *board) {
     for (int i = 0; i < SQUARES; i++) {
         if (board->Board[i].type != 'e' && board->Board[i].color == board->turn) {
             GetMoves(board, moves, i);
-            moveCount += GetSumIntArray(moves, SQUARES);
+            moveCount += GetNonZeroCountArray(moves, SQUARES);
             ClearMoves(moves);
         }
     }
     free(moves);
     return moveCount;
 }
-
-

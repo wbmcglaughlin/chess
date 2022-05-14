@@ -6,5 +6,6 @@
 #define CHESS_ARRAYFUNC_H
 
 int GetSumIntArray(const int *array, int size);
+int GetNonZeroCountArray(const int *array, int size);
 
 #endif //CHESS_ARRAYFUNC_H

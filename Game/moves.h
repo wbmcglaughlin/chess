@@ -10,13 +10,21 @@
 
 #define MAX_MOVES 218
 
+struct Move {
+    int pos;
+    int target;
+    enum MoveType moveType;
+};
+
+typedef struct Move Move;
+
 void GetMoves(Board *board, int *moves, int selected);
 void ClearMoves(int *moves);
 void UpdateMovesLegality(Board *board, int *moves, int selected);
 int IsMoveLegal(Board *board, int selected, int move, int moveType);
 int IsKingInCheck(Board *board, int col);
 
-void GetAllLegalMoves(Board *board, int **moves);
+void GetAllLegalMoves(Board *board, Move *moves, int *movesCount);
 int GetAllMovesCount(Board *board);
 
 void GetPawnMoves(Board *board, int *moves, int selected);

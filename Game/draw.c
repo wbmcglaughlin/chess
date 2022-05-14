@@ -4,7 +4,7 @@
 
 #include "draw.h"
 
-void DrawBoard(BoardDimensions *boardDimensions, int *moves, int selected) {
+void DrawBoard(BoardDimensions *boardDimensions, const int *moves, int selected) {
     int squareWidth = (int) boardDimensions->sideSize / SQUARE_COUNT;
     for (int i = 0; i < SQUARES; i++) {
         BoardSquare *boardSquare = malloc(sizeof (BoardSquare));
@@ -89,4 +89,14 @@ void DrawBoardInfo(Board *board, BoardDimensions *boardDimensions) {
              boardDimensions->cornerY + FONT_SIZE * 2,
              FONT_SIZE,
              BLACK);
+}
+
+void ListLegalMoves(Move *moves, int movesCount, BoardDimensions *boardDimensions) {
+    for (int i = 0; i < movesCount; i++) {
+        DrawText(TextFormat("%i %i", moves[i].pos, moves[i].target),
+                 (int) (1.2 * boardDimensions->cornerX + boardDimensions->sideSize),
+                 boardDimensions->cornerY + FONT_SIZE / 2 * i,
+                 FONT_SIZE / 2,
+                 BLACK);
+    }
 }

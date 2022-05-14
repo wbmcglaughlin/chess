@@ -26,8 +26,11 @@ int main(void)
     Board *board = malloc(sizeof (*board));
     board->Board = malloc(sizeof (Piece) * 64);
 
-    int *moves = malloc(sizeof (int) * SQUARE_COUNT * SQUARE_COUNT);
-    ClearMoves(moves);
+    int *moveSquares = malloc(sizeof (int) * SQUARE_COUNT * SQUARE_COUNT);
+    ClearMoves(moveSquares);
+
+    int movesCount = 0;
+    Move *moves = malloc(sizeof (Move) * MAX_MOVES);
 
     FenToBoard(fen, board);
 
@@ -75,8 +78,8 @@ int main(void)
                             GetMousePosition().y,
                             boardDimensions);
                 if (board->Board[selected].color == board->turn) {
-                    ClearMoves(moves);
-                    GetMoves(board, moves, selected);
+                    ClearMoves(moveSquares);
+                    GetMoves(board, moveSquares, selected);
                 }
                 getMoves = (getMoves + 1) % 2;
                 if (board->Board[selected].color != board->turn) {
@@ -91,14 +94,15 @@ int main(void)
                         boardDimensions);
 
             // If valid square and not the same square
-            if (selected != -1 && selected != pieceSquare && moves[selected] > 0) {
-                UpdateBoard(board, pieceSquare, selected, moves[selected]);
+            if (selected != -1 && selected != pieceSquare && moveSquares[selected] > 0) {
+                UpdateBoard(board, pieceSquare, selected, moveSquares[selected]);
             }
             pieceHeld = 0;
             getMoves = (getMoves + 1) % 2;
-            ClearMoves(moves);
+            ClearMoves(moveSquares);
             selected = -1;
         }
+        GetAllLegalMoves(board, moves, &movesCount);
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -107,9 +111,10 @@ int main(void)
 
         ClearBackground(RAYWHITE);
 
-        DrawBoard(boardDimensions, moves, selected);
+        DrawBoard(boardDimensions, moveSquares, selected);
         DrawPieces(boardDimensions, board, textures, pieceHeld, selected, GetMousePosition());
-        DrawBoardInfo(board, boardDimensions);
+        // DrawBoardInfo(board, boardDimensions);
+        ListLegalMoves(moves, movesCount, boardDimensions);
         // DrawFPS(5, 5);
 
         EndDrawing();

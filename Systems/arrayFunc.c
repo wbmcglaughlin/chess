@@ -9,3 +9,13 @@ int GetSumIntArray(const int *array, int size) {
     }
     return sum;
 }
+
+int GetNonZeroCountArray(const int *array, int size) {
+    int sum = 0;
+    for (int i = 0; i < size; i++) {
+        if (array[i] > 0) {
+            sum += 1;
+        }
+    }
+    return sum;
+}
