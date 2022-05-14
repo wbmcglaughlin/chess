@@ -35,6 +35,9 @@ enum PlayerType {
 };
 
 struct BoardDimensions {
+    int screenWidth;
+    int screenHeight;
+    int definingLength;
     int cornerX;
     int cornerY;
     int sideSize;

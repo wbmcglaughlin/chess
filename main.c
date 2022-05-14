@@ -4,24 +4,21 @@
 #include "Game/moves.h"
 #include "Game/draw.h"
 
-#define TARGET_FPS 500
+#define TARGET_FPS 30
 
 int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    int screenWidth = 1000;
-    int screenHeight = 800;
-
-    int definingLength = screenWidth;
-    if (screenWidth > screenHeight) {
-        definingLength = screenHeight;
-    }
 
     BoardDimensions *boardDimensions = malloc(sizeof (BoardDimensions));
-    boardDimensions->cornerX = (int) (definingLength * (1 - BOARD_PERCENT) / 2);
-    boardDimensions->cornerY = (int) (definingLength * (1 - BOARD_PERCENT) / 2);
-    boardDimensions->sideSize = (int) (definingLength * BOARD_PERCENT);
+    boardDimensions->screenWidth = 1200;
+    boardDimensions->screenHeight = 800;
+    boardDimensions->definingLength = boardDimensions->screenWidth > boardDimensions->screenHeight
+            ? boardDimensions->screenHeight : boardDimensions->screenWidth;
+    boardDimensions->cornerX = (int) (boardDimensions->definingLength * (1 - BOARD_PERCENT) / 2);
+    boardDimensions->cornerY = (int) (boardDimensions->definingLength * (1 - BOARD_PERCENT) / 2);
+    boardDimensions->sideSize = (int) (boardDimensions->definingLength * BOARD_PERCENT);
 
     char *fen;
     fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -34,7 +31,7 @@ int main(void)
 
     FenToBoard(fen, board);
 
-    InitWindow(screenWidth, screenHeight, "Chess - v.0.2 [Will McGlaughlin]");
+    InitWindow(boardDimensions->screenWidth, boardDimensions->screenHeight, "Chess - v.0.2 [Will McGlaughlin]");
     SetTargetFPS(TARGET_FPS);
 
     // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)

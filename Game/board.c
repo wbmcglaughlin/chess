@@ -20,8 +20,8 @@ void GetSelected(int *selected, float mousePosX, float mousePosY, BoardDimension
 
     // mousePosX = cornerX + x * squareWidth
     // mousePosY = cornerY + (SQUARE_COUNT - y - 1) * squareWidth;
-    int x = (int) ((mousePosX - boardDimensions->cornerX) / squareWidth);
-    int y = SQUARE_COUNT - (int) ((mousePosY - boardDimensions->cornerY) / squareWidth) - 1;
+    int x = (int) ((mousePosX - (float) boardDimensions->cornerX) / (float) squareWidth);
+    int y = SQUARE_COUNT - (int) ((mousePosY - (float) boardDimensions->cornerY) / (float) squareWidth) - 1;
 
     if (x >= 0 && x < SQUARE_COUNT && y >= 0 && y < SQUARE_COUNT) {
         *selected = x + SQUARE_COUNT * y;
