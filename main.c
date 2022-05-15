@@ -3,19 +3,19 @@
 #include "Game/board.h"
 #include "Game/moves.h"
 #include "Game/draw.h"
+#include "Systems/bot.h"
 
 #define TARGET_FPS 120
 
-int main(void)
-{
+int main(void) {
     // Initialization
     //--------------------------------------------------------------------------------------
 
-    BoardDimensions *boardDimensions = malloc(sizeof (BoardDimensions));
-    boardDimensions->screenWidth = 1200;
-    boardDimensions->screenHeight = 1000;
+    BoardDimensions *boardDimensions = malloc(sizeof(BoardDimensions));
+    boardDimensions->screenWidth = 700;
+    boardDimensions->screenHeight = 500;
     boardDimensions->definingLength = boardDimensions->screenWidth > boardDimensions->screenHeight
-            ? boardDimensions->screenHeight : boardDimensions->screenWidth;
+                                      ? boardDimensions->screenHeight : boardDimensions->screenWidth;
     boardDimensions->cornerX = (int) (boardDimensions->definingLength * (1 - BOARD_PERCENT) / 2);
     boardDimensions->cornerY = (int) (boardDimensions->definingLength * (1 - BOARD_PERCENT) / 2);
     boardDimensions->sideSize = (int) (boardDimensions->definingLength * BOARD_PERCENT);
@@ -23,14 +23,15 @@ int main(void)
     char *fen;
     fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-    Board *board = malloc(sizeof (*board));
-    board->Board = malloc(sizeof (Piece) * 64);
+    Board *board = malloc(sizeof(*board));
+    board->Board = malloc(sizeof(Piece) * 64);
+    board->checkMate = 0;
 
-    int *moveSquares = malloc(sizeof (int) * SQUARE_COUNT * SQUARE_COUNT);
+    int *moveSquares = malloc(sizeof(int) * SQUARE_COUNT * SQUARE_COUNT);
     ClearMoves(moveSquares);
 
     int movesCount = 0;
-    Move *moves = malloc(sizeof (Move) * MAX_MOVES);
+    Move *moves = malloc(sizeof(Move) * MAX_MOVES);
 
     FenToBoard(fen, board);
 
@@ -52,7 +53,7 @@ int main(void)
     Texture2D kw = LoadTexture("resources/pieces/kw.png");
     Texture2D kb = LoadTexture("resources/pieces/kb.png");
 
-    Texture2D *textures[] = {&pw, &pb, &rw, &rb, &nw, &nb, &bw, &bb,&qw, &qb, &kw, &kb};
+    Texture2D *textures[] = {&pw, &pb, &rw, &rb, &nw, &nb, &bw, &bb, &qw, &qb, &kw, &kb};
 
     // Game Variables
     int selected = -1;
@@ -69,53 +70,64 @@ int main(void)
     {
         // Update
         //----------------------------------------------------------------------------------
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-            if (selected != -1) {
-                pieceHeld = 1;
-            } else {
-                GetSelected(&selected,
-                            GetMousePosition().x,
-                            GetMousePosition().y,
-                            boardDimensions);
-                if (board->Board[selected].color == board->turn) {
+        if (!board->checkMate) {
+            if (board->turn == PLAYER) {
+                if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+                    if (selected != -1) {
+                        pieceHeld = 1;
+                    } else {
+                        GetSelected(&selected,
+                                    GetMousePosition().x,
+                                    GetMousePosition().y,
+                                    boardDimensions);
+                        if (board->Board[selected].color == board->turn) {
+                            ClearMoves(moveSquares);
+                            GetMoves(board, moveSquares, selected);
+                        }
+                        getMoves = (getMoves + 1) % 2;
+                        if (board->Board[selected].color != board->turn) {
+                            selected = -1;
+                        }
+                    }
+                } else if (!IsMouseButtonDown(MOUSE_BUTTON_LEFT) && pieceHeld) {
+                    int pieceSquare = selected;
+                    GetSelected(&selected,
+                                GetMousePosition().x,
+                                GetMousePosition().y,
+                                boardDimensions);
+
+                    // If valid square and not the same square
+                    if (selected != -1 && selected != pieceSquare && moveSquares[selected] > 0) {
+                        UpdateBoard(board, pieceSquare, selected, moveSquares[selected]);
+                    }
+                    pieceHeld = 0;
+                    getMoves = (getMoves + 1) % 2;
                     ClearMoves(moveSquares);
-                    GetMoves(board, moveSquares, selected);
-                }
-                getMoves = (getMoves + 1) % 2;
-                if (board->Board[selected].color != board->turn) {
                     selected = -1;
                 }
+            } else {
+                Move botMove = CaptureFirstBot(board);
+                UpdateBoard(board, botMove.pos, botMove.target, botMove.moveType);
+                board->turn = PLAYER;
             }
-        } else if (!IsMouseButtonDown(MOUSE_BUTTON_LEFT) && pieceHeld) {
-            int pieceSquare = selected;
-            GetSelected(&selected,
-                        GetMousePosition().x,
-                        GetMousePosition().y,
-                        boardDimensions);
+            GetAllLegalMoves(board, moves, &movesCount);
 
-            // If valid square and not the same square
-            if (selected != -1 && selected != pieceSquare && moveSquares[selected] > 0) {
-                UpdateBoard(board, pieceSquare, selected, moveSquares[selected]);
+            if (movesCount == 0) {
+                board->checkMate = 1;
             }
-            pieceHeld = 0;
-            getMoves = (getMoves + 1) % 2;
-            ClearMoves(moveSquares);
-            selected = -1;
-        }
-        GetAllLegalMoves(board, moves, &movesCount);
-        //----------------------------------------------------------------------------------
-
-        // Draw
+        }     // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-        ClearBackground(RAYWHITE);
-
+        ClearBackground(DARKGRAY);
         DrawBoard(boardDimensions, moveSquares, selected);
         DrawPieces(boardDimensions, board, textures, pieceHeld, selected, GetMousePosition());
         // DrawBoardInfo(board, boardDimensions);
         ListLegalMoves(moves, movesCount, boardDimensions);
-        // DrawFPS(5, 5);
+        DrawFPS(5, 5);
+        if (board->checkMate) {
+            DrawText("Checkmate!", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);
+        }
 
         EndDrawing();
         //----------------------------------------------------------------------------------

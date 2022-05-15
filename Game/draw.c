@@ -13,7 +13,7 @@ void DrawBoard(BoardDimensions *boardDimensions, const int *moves, int selected)
                       boardSquare->cornerY,
                       squareWidth,
                       squareWidth,
-                      ((boardSquare->x + boardSquare->y) % 2 == 0) ? DARKGRAY : WHITE
+                      ((boardSquare->x + boardSquare->y) % 2 == 0) ? DARKGRAY : RAYWHITE
         );
 
         if (i == selected) {
@@ -30,7 +30,7 @@ void DrawBoard(BoardDimensions *boardDimensions, const int *moves, int selected)
                           boardSquare->cornerY,
                           squareWidth,
                           squareWidth,
-                          LIGHTGRAY
+                          DARKGREEN
             );
         }
         free(boardSquare);

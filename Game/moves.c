@@ -50,21 +50,21 @@ void GetPawnMoves(Board *board, int *moves, int selected) {
     if (PosIsValid(fL) && (int) (selected / SQUARE_COUNT) + dir == (int) fL / SQUARE_COUNT) {
         if (board->Board[fL].color == (col + 1) % 2) {
             moves[fL] = CAPTURE;
+            if (((int) fL / SQUARE_COUNT == 0 && col == 0) || ((int) fL / SQUARE_COUNT == SQUARE_COUNT - 1 && col == 1)) {
+                moves[fL] = PROMOTION;
+            }
         } else if (fL == board->enpassant) {
             moves[fL] = ENPASSANT;
-        }
-        if (((int) fL / SQUARE_COUNT == 0 && col == 0) || ((int) fL / SQUARE_COUNT == SQUARE_COUNT - 1 && col == 1)) {
-            moves[fL] = PROMOTION;
         }
     }
     if (PosIsValid(fR) && (int) (selected / SQUARE_COUNT) + dir == (int) fR / SQUARE_COUNT) {
         if (board->Board[fR].color == (col + 1) % 2) {
             moves[fR] = CAPTURE;
+            if (((int) fR / SQUARE_COUNT == 0 && col == 0) || ((int) fR / SQUARE_COUNT == SQUARE_COUNT - 1 && col == 1)) {
+                moves[fR] = PROMOTION;
+            }
         } else if (fR == board->enpassant) {
             moves[fR] = ENPASSANT;
-        }
-        if (((int) fR / SQUARE_COUNT == 0 && col == 0) || ((int) fR / SQUARE_COUNT == SQUARE_COUNT - 1 && col == 1)) {
-            moves[fR] = PROMOTION;
         }
     }
 

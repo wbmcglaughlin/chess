@@ -26,7 +26,7 @@ enum MoveType {
     CAPTURE = 2,
     ENPASSANT = 3,
     CASTLE = 4,
-    PROMOTION
+    PROMOTION = 5
 };
 
 enum PlayerType {
@@ -66,6 +66,7 @@ struct Board {
     int enpassant;
     int halfMoveClock;
     int moveCount;
+    int checkMate;
 };
 
 typedef struct BoardSquare BoardSquare;
@@ -77,6 +78,8 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType);
 void SwapPieces(Board *board, int pos1, int pos2);
 void GetSelected(int *selected, float mousePosX, float mousePosY, BoardDimensions *boardDimensions);
 int PosIsValid(int pos);
+
+int GetBoardScore(Board *board);
 void CopyBoard(Board *newBoard, Board *oldBoard);
 void GetSquare(BoardSquare *boardSquare, int i, int sideSize, int cornerX, int cornerY);
 void FenToBoard(const char *fen, Board *board);
