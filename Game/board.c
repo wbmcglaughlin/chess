@@ -103,6 +103,14 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
     free(piece);
 }
 
+void SwapPieces(Board *board, int pos1, int pos2) {
+    Piece *tempPiece = malloc(sizeof (Piece));
+    *tempPiece = board->Board[pos1];
+    board->Board[pos1] = board->Board[pos2];
+    board->Board[pos2] = *tempPiece;
+    free(tempPiece);
+}
+
 void CopyBoard(Board *newBoard, Board *oldBoard) {
     newBoard->Board = malloc(sizeof (Piece) * SQUARES);
     for (int i = 0; i < SQUARES; i++) {
@@ -113,18 +121,20 @@ void CopyBoard(Board *newBoard, Board *oldBoard) {
     newBoard->turn = oldBoard->turn;
 }
 
-void SwapPieces(Board *board, int pos1, int pos2) {
-    Piece *tempPiece = malloc(sizeof (Piece));
-    *tempPiece = board->Board[pos1];
-    board->Board[pos1] = board->Board[pos2];
-    board->Board[pos2] = *tempPiece;
-    free(tempPiece);
+float GetBoardScore(Board *board) {
+    float score;
+    for (int i = 0; i < SQUARES; i++) {
+        score += board->Board[i].score;
+    }
+    return score;
 }
 
 void FenToBoard(const char *fen, Board *board) {
     int row = 7;
     int col = 0;
     int pos;
+
+    int values[12] = {1, -1, 5, -5, 3, -3, 3, -3, 9, -9, 1000, -1000};
 
     int section = 0;
     char *ptr;
@@ -138,7 +148,11 @@ void FenToBoard(const char *fen, Board *board) {
         if (row >= 0 && section == 0) {
             pos = row * SQUARE_COUNT + col;
             if (strchr(PIECES, character) != NULL) {
-                board->Board[pos] = (Piece) {character, pos, isupper(character) ? 1 : 0};
+                char *e;
+                int index;
+                e = strchr(PIECES, character);
+                index = (int) (e - PIECES);
+                board->Board[pos] = (Piece) {character, pos, isupper(character) ? 1 : 0, (float) values[index]};
                 if (character == 'k') {
                     board->kingPos[0] = pos;
                 } else if (character == 'K') {
@@ -151,7 +165,7 @@ void FenToBoard(const char *fen, Board *board) {
                     if (posChange <= 8) {
                         for (int i = 0; i < posChange; i++) {
                             pos = row * SQUARE_COUNT + col;
-                            board->Board[pos] = (Piece) {'e', pos, -1};
+                            board->Board[pos] = (Piece) {'e', pos, -1, 0.0f};
                             ++col;
                         }
                     } else {

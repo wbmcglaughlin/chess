@@ -55,6 +55,7 @@ struct Piece {
     char type;
     int pos;
     int color;
+    float score;
 };
 
 struct Board {
@@ -79,7 +80,7 @@ void SwapPieces(Board *board, int pos1, int pos2);
 void GetSelected(int *selected, float mousePosX, float mousePosY, BoardDimensions *boardDimensions);
 int PosIsValid(int pos);
 
-int GetBoardScore(Board *board);
+float GetBoardScore(Board *board);
 void CopyBoard(Board *newBoard, Board *oldBoard);
 void GetSquare(BoardSquare *boardSquare, int i, int sideSize, int cornerX, int cornerY);
 void FenToBoard(const char *fen, Board *board);

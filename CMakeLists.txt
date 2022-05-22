@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.11) # FetchContent is available in 3.11+
 project(Chess)
-
+# set(CMAKE_C_FLAGS_DEBUG -fsanitize=address)
 # Dependencies
 find_package(raylib 4.0.0 QUIET) # QUIET or REQUIRED
 if (NOT raylib_FOUND) # If there's none, fetch and build raylib
@@ -20,7 +20,7 @@ endif()
 
 # Our Project
 
-add_executable(${PROJECT_NAME} main.c Game/board.c Game/board.h Game/moves.h Game/moves.c Game/draw.h Game/draw.c Systems/arrayFunc.h Systems/arrayFunc.c Systems/bot.h Systems/bot.c)
+add_executable(${PROJECT_NAME} main.c Game/board.c Game/board.h Game/moves.h Game/moves.c Game/draw.h Game/draw.c Systems/arrayFunc.h Systems/arrayFunc.c Systems/bot.h Systems/bot.c Analysis/minMax.c)
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
 

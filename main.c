@@ -123,6 +123,11 @@ int main(void) {
         DrawBoard(boardDimensions, moveSquares, selected);
         DrawPieces(boardDimensions, board, textures, pieceHeld, selected, GetMousePosition());
         // DrawBoardInfo(board, boardDimensions);
+        DrawText(TextFormat("Score: %.2f", GetBoardScore(board)),
+                 (int) (1.2 * boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+                 boardDimensions->cornerY,
+                 FONT_SIZE,
+                 BLACK);
         ListLegalMoves(moves, movesCount, boardDimensions);
         DrawFPS(5, 5);
         if (board->checkMate) {
