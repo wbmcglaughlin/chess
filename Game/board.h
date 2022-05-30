@@ -75,6 +75,8 @@ typedef struct Board Board;
 typedef struct Piece Piece;
 typedef struct BoardDimensions BoardDimensions;
 
+void BoardUpdateLoop();
+
 void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType);
 void SwapPieces(Board *board, int pos1, int pos2);
 void GetSelected(int *selected, float mousePosX, float mousePosY, BoardDimensions *boardDimensions);
