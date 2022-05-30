@@ -290,13 +290,12 @@ void UpdateMovesLegality(Board *board, int *moves, int selected) {
 
 int IsMoveLegal(Board *board, int selected, int move, int moveType) {
     int col = board->turn;
-    Board *boardUpdated = malloc(sizeof (*boardUpdated));;
-    CopyBoard(boardUpdated, board);
+    Board *boardUpdated = CopyBoard(board);
     UpdateBoard(boardUpdated, selected, move, moveType);
     if (!IsKingInCheck(boardUpdated, col)) {
         return 1;
     }
-    free(boardUpdated);
+    FreeBoard(boardUpdated);
     return 0;
 }
 
@@ -434,6 +433,23 @@ void GetAllLegalMoves(Board *board, Move *moves, int *movesCount) {
         }
     }
     *movesCount = movesCountInner;
+    free(movesArr);
+}
+
+void GetAllLegalMovesToDepthCount(Board *board, Move *moves, int *movesCount, int depth) {
+    if (depth == 0) {
+        return;
+    }
+    int movesCountInner = 0;
+    Move *movesArr = malloc(SQUARES * sizeof (Move));
+    GetAllLegalMoves(board, movesArr, &movesCountInner);
+    movesCount += movesCountInner;
+    for (int i = 0; i < movesCountInner; i++) {
+        Board *boardNew = CopyBoard(board);
+        UpdateBoard(boardNew, movesArr[i].pos, movesArr[i].target, movesArr[i].moveType);
+        GetAllLegalMovesToDepthCount(boardNew, movesArr, &movesCountInner, depth - 1);
+        free(boardNew);
+    }
     free(movesArr);
 }
 

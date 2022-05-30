@@ -81,8 +81,11 @@ void GetSelected(int *selected, float mousePosX, float mousePosY, BoardDimension
 int PosIsValid(int pos);
 
 float GetBoardScore(Board *board);
-void CopyBoard(Board *newBoard, Board *oldBoard);
 void GetSquare(BoardSquare *boardSquare, int i, int sideSize, int cornerX, int cornerY);
 void FenToBoard(const char *fen, Board *board);
+
+Board* CopyBoard(Board *oldBoard);
+Board* CreateBoard(void);
+void FreeBoard(Board *board);
 
 #endif //EXAMPLE_BOARD_H

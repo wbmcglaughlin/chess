@@ -25,6 +25,7 @@ int IsMoveLegal(Board *board, int selected, int move, int moveType);
 int IsKingInCheck(Board *board, int col);
 
 void GetAllLegalMoves(Board *board, Move *moves, int *movesCount);
+void GetAllLegalMovesToDepthCount(Board *board, Move *moves, int *movesCount, int depth);
 int GetAllMovesCount(Board *board);
 
 void GetPawnMoves(Board *board, int *moves, int selected);

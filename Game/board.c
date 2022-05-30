@@ -111,16 +111,6 @@ void SwapPieces(Board *board, int pos1, int pos2) {
     free(tempPiece);
 }
 
-void CopyBoard(Board *newBoard, Board *oldBoard) {
-    newBoard->Board = malloc(sizeof (Piece) * SQUARES);
-    for (int i = 0; i < SQUARES; i++) {
-        newBoard->Board[i] = oldBoard->Board[i];
-    }
-    newBoard->kingPos[0] = oldBoard->kingPos[0];
-    newBoard->kingPos[1] = oldBoard->kingPos[1];
-    newBoard->turn = oldBoard->turn;
-}
-
 float GetBoardScore(Board *board) {
     float score;
     for (int i = 0; i < SQUARES; i++) {
@@ -214,4 +204,47 @@ void FenToBoard(const char *fen, Board *board) {
             board->moveCount = (int) strtol(&character, &ptr, 10);
         }
     }
+}
+
+// Functions for Operating on the Board Struct
+Board* CopyBoard(Board *oldBoard) {
+    Board *newBoard = CreateBoard();
+
+    // Allocate information
+    for (int i = 0; i < SQUARES; i++) {
+        newBoard->Board[i] = oldBoard->Board[i];
+    }
+    newBoard->kingPos[0] = oldBoard->kingPos[0];
+    newBoard->kingPos[1] = oldBoard->kingPos[1];
+    newBoard->turn = oldBoard->turn;
+
+    return newBoard;
+}
+
+Board* CreateBoard(void) {
+    // Creates a board, allocating memory for the pieces
+    Board *board = malloc(sizeof (*board));
+    if (board == NULL) {
+        return NULL;
+    }
+
+    board->Board = malloc(sizeof (Piece) * SQUARES);
+    if (board->Board == NULL) {
+        free(board);
+        return NULL;
+    }
+
+    // Reasonable values
+    board->checkMate = 0; // gets checked on fen
+
+    return board;
+}
+
+void FreeBoard(Board *board) {
+    // Frees the board and the pieces
+    free(board->Board);
+    board->Board = NULL;
+
+    free(board);
+    board = NULL;
 }

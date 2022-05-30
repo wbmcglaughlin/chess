@@ -23,9 +23,10 @@ int main(void) {
     char *fen;
     fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-    Board *board = malloc(sizeof(*board));
-    board->Board = malloc(sizeof(Piece) * 64);
-    board->checkMate = 0;
+    Board *board = CreateBoard();
+    if (board == NULL) {
+        exit(-1);
+    }
 
     int *moveSquares = malloc(sizeof(int) * SQUARE_COUNT * SQUARE_COUNT);
     ClearMoves(moveSquares);
