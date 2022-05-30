@@ -61,6 +61,7 @@ struct Piece {
 struct Board {
     struct Piece *Board;
     int turn;
+    int movesCount;
     int castle[4];
     int kingPos[2];
     int kingInCheck[2];

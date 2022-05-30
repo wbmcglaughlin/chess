@@ -13,7 +13,11 @@
 #include "moves.h"
 #include "../Systems/bot.h"
 
+#define DEPTH_SEARCH 2
+
 void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, int *moveSquares, int *movesCount, Move *moves,
+                     int *getMoves, int *selected, int *pieceHeld);
+void PlayerTurnCheck(Board *board, BoardDimensions *boardDimensions, int *moveSquares, int *movesCount, Move *moves,
                      int *getMoves, int *selected, int *pieceHeld);
 
 #endif //CHESS_UPDATE_H

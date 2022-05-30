@@ -413,10 +413,45 @@ int IsKingInCheck(Board *board, int col) {
         }
     }
 
+    type = 'k';
+    if (col == 0) {
+        type = (char) toupper(type);
+    }
+    int kingDirDiag[4] = {SQUARE_COUNT + 1, SQUARE_COUNT - 1,- SQUARE_COUNT + 1, - SQUARE_COUNT - 1};
+
+    for (int i = 0; i < 4; i++) {
+        int pos_old = kingPos;
+        pos = kingPos + kingDirDiag[i];
+
+        int diagDir = (pos % SQUARE_COUNT - pos_old % SQUARE_COUNT);
+        if (PosIsValid(pos) && diagDir == correctDiagDir[i]) {
+            if (board->Board[pos].type == type) {
+                return 1;
+            }
+        }
+    }
+
+    for (int i = 0; i < 2; i++) {
+        pos = kingPos + dirUpDown[i];
+        if (PosIsValid(pos)) {
+            if (board->Board[pos].type == type) {
+                return 1;
+            }
+        }
+
+        pos = kingPos + dirLeftRight[i];
+        if (kingPos / SQUARE_COUNT == pos / SQUARE_COUNT) {
+            if (board->Board[pos].type == type) {
+                return 1;
+            }
+        }
+    }
+
     return 0;
 }
 
 void GetAllLegalMoves(Board *board, Move *moves, int *movesCount) {
+    *movesCount = 0;
     int *movesArr = malloc(SQUARES * sizeof (int));
     int movesCountInner = 0;
     ClearMoves(movesArr);
@@ -436,19 +471,28 @@ void GetAllLegalMoves(Board *board, Move *moves, int *movesCount) {
     free(movesArr);
 }
 
-void GetAllLegalMovesToDepthCount(Board *board, Move *moves, int *movesCount, int depth) {
+void GetAllLegalMovesToDepthCount(Board *board, int *movesCount, int depth) {
     if (depth == 0) {
         return;
     }
-    int movesCountInner = 0;
-    Move *movesArr = malloc(SQUARES * sizeof (Move));
-    GetAllLegalMoves(board, movesArr, &movesCountInner);
-    movesCount += movesCountInner;
-    for (int i = 0; i < movesCountInner; i++) {
+
+    int movesCountInner;
+    int loopMoves = 0;
+    Move *movesArr = malloc(sizeof (Move) * SQUARES);
+    GetAllLegalMoves(board, movesArr, &loopMoves);
+    *movesCount += loopMoves;
+
+    if (depth - 1 == 0) {
+        return;
+    }
+    for (int i = 0; i < loopMoves; i++) {
         Board *boardNew = CopyBoard(board);
+        if (movesArr[i].pos >= SQUARES || movesArr[i].target >= SQUARES) {
+            exit(-1);
+        }
         UpdateBoard(boardNew, movesArr[i].pos, movesArr[i].target, movesArr[i].moveType);
-        GetAllLegalMovesToDepthCount(boardNew, movesArr, &movesCountInner, depth - 1);
-        free(boardNew);
+        GetAllLegalMovesToDepthCount(boardNew, movesCount, depth - 1);
+        FreeBoard(boardNew);
     }
     free(movesArr);
 }

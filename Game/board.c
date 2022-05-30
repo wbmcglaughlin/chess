@@ -112,7 +112,7 @@ void SwapPieces(Board *board, int pos1, int pos2) {
 }
 
 float GetBoardScore(Board *board) {
-    float score;
+    float score = 0.0f;
     for (int i = 0; i < SQUARES; i++) {
         score += board->Board[i].score;
     }
@@ -216,7 +216,10 @@ Board* CopyBoard(Board *oldBoard) {
     }
     newBoard->kingPos[0] = oldBoard->kingPos[0];
     newBoard->kingPos[1] = oldBoard->kingPos[1];
+    newBoard->enpassant = oldBoard->enpassant;
+    newBoard->checkMate = oldBoard->checkMate;
     newBoard->turn = oldBoard->turn;
+    newBoard->movesCount = oldBoard->movesCount;
 
     return newBoard;
 }

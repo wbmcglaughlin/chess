@@ -3,7 +3,6 @@
 #include "Game/board.h"
 #include "Game/moves.h"
 #include "Game/draw.h"
-#include "Systems/bot.h"
 #include "Game/update.h"
 
 #define TARGET_FPS 120
@@ -40,8 +39,8 @@ int main(void) {
     InitWindow(boardDimensions->screenWidth, boardDimensions->screenHeight, "Chess - v.0.2 [Will McGlaughlin]");
     SetTargetFPS(TARGET_FPS);
 
-    SetTextureFilter(GetFontDefault().texture, TEXTURE_FILTER_POINT);
     // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
+    SetTextureFilter(GetFontDefault().texture, TEXTURE_FILTER_POINT);
     Texture2D pw = LoadTexture("resources/pieces/pw.png");
     Texture2D pb = LoadTexture("resources/pieces/pb.png");
     Texture2D rw = LoadTexture("resources/pieces/rw.png");
@@ -81,13 +80,20 @@ int main(void) {
         ClearBackground(DARKGRAY);
         DrawBoard(boardDimensions, moveSquares, selected);
         DrawPieces(boardDimensions, board, textures, pieceHeld, selected, GetMousePosition());
-        // DrawBoardInfo(board, boardDimensions);
+
         DrawText(TextFormat("Score: %.2f", GetBoardScore(board)),
                  (int) (1.2 * boardDimensions->cornerX * 2 + boardDimensions->sideSize),
                  boardDimensions->cornerY,
                  FONT_SIZE,
                  BLACK);
-        ListLegalMoves(moves, movesCount, boardDimensions);
+
+        DrawText(TextFormat("Moves: %i", movesCount),
+                 (int) (1.2 * boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+                 boardDimensions->cornerY + 20,
+                 FONT_SIZE,
+                 BLACK);
+
+        // ListLegalMoves(moves, movesCount, boardDimensions);
         DrawFPS(5, 5);
         if (board->checkMate) {
             DrawText("Checkmate!", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);
@@ -106,6 +112,10 @@ int main(void) {
 
     CloseWindow();                // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
+
+    FreeBoard(board);
+    free(moves);
+    free(moveSquares);
 
     return 0;
 }
