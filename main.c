@@ -116,6 +116,7 @@ int main(void) {
     FreeBoard(board);
     free(moves);
     free(moveSquares);
+    free(boardDimensions);
 
     return 0;
 }

@@ -64,7 +64,6 @@ struct Board {
     int movesCount;
     int castle[4];
     int kingPos[2];
-    int kingInCheck[2];
     int enpassant;
     int halfMoveClock;
     int moveCount;

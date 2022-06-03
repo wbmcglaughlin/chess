@@ -214,19 +214,29 @@ Board* CopyBoard(Board *oldBoard) {
     for (int i = 0; i < SQUARES; i++) {
         newBoard->Board[i] = oldBoard->Board[i];
     }
-    newBoard->kingPos[0] = oldBoard->kingPos[0];
-    newBoard->kingPos[1] = oldBoard->kingPos[1];
-    newBoard->enpassant = oldBoard->enpassant;
-    newBoard->checkMate = oldBoard->checkMate;
+
+    // Set other conditions
     newBoard->turn = oldBoard->turn;
     newBoard->movesCount = oldBoard->movesCount;
+
+    for (int i = 0; i < 4; i++) {
+        newBoard->castle[i] = oldBoard->castle[i];
+    }
+    for (int i = 0; i < 2; i++) {
+        newBoard->kingPos[i] = oldBoard->kingPos[i];
+    }
+
+    newBoard->enpassant = oldBoard->enpassant;
+    newBoard->halfMoveClock = oldBoard->halfMoveClock;
+    newBoard->moveCount = oldBoard->movesCount;
+    newBoard->checkMate = oldBoard->checkMate;
 
     return newBoard;
 }
 
 Board* CreateBoard(void) {
     // Creates a board, allocating memory for the pieces
-    Board *board = malloc(sizeof (*board));
+    Board *board = malloc(sizeof (Board));
     if (board == NULL) {
         return NULL;
     }
@@ -247,7 +257,6 @@ void FreeBoard(Board *board) {
     // Frees the board and the pieces
     free(board->Board);
     board->Board = NULL;
-
     free(board);
     board = NULL;
 }

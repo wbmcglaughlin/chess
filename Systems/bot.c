@@ -44,4 +44,5 @@ Move CaptureFirstBot(Board *board) {
             captureInd++;
         }
     }
+    free(moves);
 }

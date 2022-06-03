@@ -61,8 +61,8 @@ void DrawPieces(BoardDimensions *boardDimensions, Board *board, Texture2D *piece
                     }
                 }
             }
-            free(boardSquare);
         }
+        free(boardSquare);
     }
 }
 
