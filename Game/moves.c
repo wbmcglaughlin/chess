@@ -293,6 +293,7 @@ int IsMoveLegal(Board *board, int selected, int move, int moveType) {
     Board *boardUpdated = CopyBoard(board);
     UpdateBoard(boardUpdated, selected, move, moveType);
     if (!IsKingInCheck(boardUpdated, col)) {
+        FreeBoard(boardUpdated);
         return 1;
     }
     FreeBoard(boardUpdated);
@@ -471,30 +472,66 @@ void GetAllLegalMoves(Board *board, Move *moves, int *movesCount) {
     free(movesArr);
 }
 
-void GetAllLegalMovesToDepthCount(Board *board, int *movesCount, int depth) {
-    if (depth == 0) {
-        return;
+int GetAllLegalMovesToDepthCount(Board *board, int depth) {
+    int *boardsCount = malloc(sizeof (int) * (depth + 1)); // Count of boards in each depth
+    boardsCount[0] = 1; // One board to start
+    Board **currentBoards = malloc(sizeof (Board) * boardsCount[0]);
+    currentBoards[0] = board;
+
+    for (int d = 0; d < depth; d++) {
+        Board **newBoards = GetNewBoards(currentBoards, &boardsCount[d], &boardsCount[d+1]);
+        currentBoards = newBoards;
     }
 
-    int movesCountInner;
-    int loopMoves = 0;
-    Move *movesArr = malloc(sizeof (Move) * SQUARES);
-    GetAllLegalMoves(board, movesArr, &loopMoves);
-    *movesCount += loopMoves;
+    free(currentBoards);
+    int ret = boardsCount[depth];
 
-    if (depth - 1 == 0) {
-        return;
+    free(boardsCount);
+    return ret;
+}
+
+Board **GetNewBoards(Board **currentBoards, const int *currentBoardsCount, int *newBoardsCount) {
+    Move **moves = malloc(sizeof (Move) * MAX_MOVES * *currentBoardsCount);
+    int *movesCounts = malloc(sizeof (int) * *currentBoardsCount);
+    int movesSum = 0;
+
+    for (int i = 0; i < *currentBoardsCount; i++) {
+        Move *movesArr = malloc(sizeof (Move) * MAX_MOVES); // Array of moves for current board
+
+        int loopMoves = 0; // Moves in current loop
+        GetAllLegalMoves(currentBoards[i], movesArr, &loopMoves);
+
+        moves[i] = movesArr;
+        movesCounts[i] = loopMoves;
+        movesSum += loopMoves;
     }
-    for (int i = 0; i < loopMoves; i++) {
-        Board *boardNew = CopyBoard(board);
-        if (movesArr[i].pos >= SQUARES || movesArr[i].target >= SQUARES) {
-            exit(-1);
+
+    Board **newBoards = malloc(sizeof (Board) * movesSum);
+    *newBoardsCount = 0;
+    for (int i = 0; i < *currentBoardsCount; i++) {
+        for (int j = 0; j < movesCounts[i]; j++) {
+            Board *newBoard = CopyBoard(currentBoards[i]);
+            UpdateBoard(newBoard, moves[i][j].pos, moves[i][j].target, moves[i][j].moveType);
+            newBoards[*newBoardsCount] = newBoard;
+            (*newBoardsCount)++;
         }
-        UpdateBoard(boardNew, movesArr[i].pos, movesArr[i].target, movesArr[i].moveType);
-        GetAllLegalMovesToDepthCount(boardNew, movesCount, depth - 1);
-        FreeBoard(boardNew);
     }
-    free(movesArr);
+
+    free(currentBoards);
+    currentBoards = NULL;
+
+    for (int i = 0; i < *currentBoardsCount; i++) {
+        free(moves[i]);
+        moves[i] = NULL;
+    }
+
+    free(moves);
+    moves = NULL;
+
+    free(movesCounts);
+    movesCounts = NULL;
+
+    return newBoards;
 }
 
 int GetAllMovesCount(Board *board) {

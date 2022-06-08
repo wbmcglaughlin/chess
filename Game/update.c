@@ -19,7 +19,7 @@ void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, int *moveSq
         *movesCount = 0;
 
         Move *movesArr = malloc(SQUARES * sizeof (Move));
-        GetAllLegalMovesToDepthCount(board, movesCount, DEPTH_SEARCH);
+        *movesCount = GetAllLegalMovesToDepthCount(board, DEPTH_SEARCH);
         free(movesArr);
 
         board->turn = PLAYER;
