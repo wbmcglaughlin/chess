@@ -13,7 +13,7 @@
 #include "moves.h"
 #include "../Systems/bot.h"
 
-#define DEPTH_SEARCH 3
+#define DEPTH_SEARCH 1
 
 void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, int *moveSquares, int *movesCount, Move *moves,
                      int *getMoves, int *selected, int *pieceHeld);

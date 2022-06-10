@@ -479,18 +479,25 @@ int GetAllLegalMovesToDepthCount(Board *board, int depth) {
     currentBoards[0] = board;
 
     for (int d = 0; d < depth; d++) {
-        Board **newBoards = GetNewBoards(currentBoards, &boardsCount[d], &boardsCount[d+1]);
+        Board **newBoards = NULL;
+        GetNewBoards(currentBoards, newBoards, &boardsCount[d], &boardsCount[d+1]);
+        free(currentBoards);
         currentBoards = newBoards;
+        free(newBoards);
     }
 
-    free(currentBoards);
     int ret = boardsCount[depth];
 
+    free(currentBoards);
+    currentBoards = NULL;
+
     free(boardsCount);
+    boardsCount = NULL;
+
     return ret;
 }
 
-Board **GetNewBoards(Board **currentBoards, const int *currentBoardsCount, int *newBoardsCount) {
+void GetNewBoards(Board **currentBoards, Board **newBoards, const int *currentBoardsCount, int *newBoardsCount) {
     Move **moves = malloc(sizeof (Move) * MAX_MOVES * *currentBoardsCount);
     int *movesCounts = malloc(sizeof (int) * *currentBoardsCount);
     int movesSum = 0;
@@ -506,7 +513,7 @@ Board **GetNewBoards(Board **currentBoards, const int *currentBoardsCount, int *
         movesSum += loopMoves;
     }
 
-    Board **newBoards = malloc(sizeof (Board) * movesSum);
+    newBoards = malloc(sizeof (Board) * movesSum);
     *newBoardsCount = 0;
     for (int i = 0; i < *currentBoardsCount; i++) {
         for (int j = 0; j < movesCounts[i]; j++) {
@@ -516,9 +523,6 @@ Board **GetNewBoards(Board **currentBoards, const int *currentBoardsCount, int *
             (*newBoardsCount)++;
         }
     }
-
-    free(currentBoards);
-    currentBoards = NULL;
 
     for (int i = 0; i < *currentBoardsCount; i++) {
         free(moves[i]);
@@ -530,8 +534,6 @@ Board **GetNewBoards(Board **currentBoards, const int *currentBoardsCount, int *
 
     free(movesCounts);
     movesCounts = NULL;
-
-    return newBoards;
 }
 
 int GetAllMovesCount(Board *board) {

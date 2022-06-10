@@ -28,7 +28,7 @@ void GetAllLegalMoves(Board *board, Move *moves, int *movesCount);
 int GetAllLegalMovesToDepthCount(Board *board, int depth);
 int GetAllMovesCount(Board *board);
 
-Board** GetNewBoards(Board **currentBoards, const int *currentBoardsCount, int *newBoardsCount);
+void GetNewBoards(Board **currentBoards, Board **newBoards, const int *currentBoardsCount, int *newBoardsCount);
 
 void GetPawnMoves(Board *board, int *moves, int selected);
 void GetRookMoves(Board *board, int *moves, int selected, int findLegal);
