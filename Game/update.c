@@ -14,7 +14,7 @@ void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, int *moveSq
     if (board->turn == PLAYER) {
         PlayerTurnCheck(board, boardDimensions, moveSquares, movesCount, moves, getMoves, selected, pieceHeld);
     } else {
-        Move botMove = BestScoreBot(board);
+        Move botMove = CaptureFirstBot(board);
         UpdateBoard(board, botMove.pos, botMove.target, botMove.moveType);
         *movesCount = 0;
 
