@@ -29,7 +29,9 @@ Move CaptureFirstBot(Board *board) {
         }
     }
     if (captureCount == 0) {
-        return moves[rand() % movesCount];
+        Move ret = moves[rand() % movesCount];
+        free(moves);
+        return ret;
     }
 
     int captureInd = 0;
