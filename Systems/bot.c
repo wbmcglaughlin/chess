@@ -46,3 +46,36 @@ Move CaptureFirstBot(Board *board) {
     }
     free(moves);
 }
+
+Move BestScoreBot(Board *board) {
+    // Makes every move and finds the board with the best score
+    Move *moves = malloc(sizeof (Move) * MAX_MOVES);
+    Move move;
+    int movesCount = 0;
+    GetAllLegalMoves(board, moves, &movesCount);
+
+    float bestScore = -WORST_SCORE;
+    if (board->turn == 0) {
+        bestScore = WORST_SCORE;
+    }
+
+    for (int i = 0; i < movesCount; i++) {
+        Board *newBoard = CopyBoard(board);
+        UpdateBoard(newBoard, moves[i].pos, moves[i].target, moves[i].moveType);
+        float score = GetBoardScore(newBoard);
+
+        if (board->turn == 1) {
+            if (score >= bestScore) {
+                move = moves[i];
+                bestScore = score;
+            }
+        } else {
+            if (score <= bestScore) {
+                move = moves[i];
+                bestScore = score;
+            }
+        }
+    }
+
+    return move;
+}
