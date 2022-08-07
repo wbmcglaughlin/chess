@@ -8,21 +8,26 @@
 
 struct BoardState {
     Board *board;
-    Move *bestMove;
+    Move bestMove;
     float eval;
 };
 
 struct MoveEval {
-    Move *move;
+    Move move;
     float eval;
+};
+
+enum MinMax {
+    Min = 0,
+    Max = 1
 };
 
 typedef struct BoardState BoardState;
 typedef struct MoveEval MoveEval;
 
 void GetBoardMoves(BoardState *boardMoves);
-MoveEval MiniMax(BoardState *boardState, int depth, int minMax);
-BoardState CreateBoardState();
-void FreeBoardState();
+MoveEval MiniMax(Board *boardState, int depth, enum MinMax minMax);
+BoardState *CreateBoardState();
+void FreeBoardState(BoardState *boardState);
 
 #endif

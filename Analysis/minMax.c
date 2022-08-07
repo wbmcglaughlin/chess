@@ -4,69 +4,85 @@
 
 #include "minMax.h"
 
-MoveEval MiniMax(BoardState *boardState, int depth, int minMax) {
-    if (depth == 0 || GetAllMovesCount(boardState->board) == 0) {
-        return (MoveEval) {boardState->bestMove, boardState->eval};
+void FreeBoardState(BoardState *boardState) {
+    FreeBoard(boardState->board);
+
+    free(boardState);
+    boardState = NULL;
+}
+
+BoardState *CreateBoardState() {
+    BoardState *boardState = malloc(sizeof (BoardState) + sizeof (Move));
+    if (boardState == NULL) {
+        return NULL;
     }
 
-    if (minMax == 0) {
-        float maxEval = -INFINITY;
-        Move *bestMove = NULL;
+    boardState->board = CreateBoard();
+    if (boardState->board == NULL) {
+        free(boardState);
+        boardState = NULL;
 
-        Move *moves = malloc(sizeof(Move) * MAX_MOVES);
-        int moveCount = 0;
-        GetAllLegalMoves(boardState->board, moves, &moveCount);
-
-        for (int i = 0; i < moveCount; i++) {
-            Board *newBoard = CopyBoard(boardState->board);
-            UpdateBoard(newBoard, moves[i].pos, moves[i].target, moves[i].moveType);
-
-            BoardState *boardStateNew = malloc(sizeof (BoardState) + sizeof (Board) + sizeof (Move));
-            boardStateNew->board = newBoard;
-            boardState->bestMove = &moves[i];
-            boardState->eval = 0;
-
-            MoveEval moveEval = MiniMax(boardStateNew, depth - 1, 0);
-            if (moveEval.eval > maxEval) {
-                maxEval = moveEval.eval;
-                bestMove = &moves[i];
-            }
-            free(newBoard);
-            free(boardStateNew);
-        }
-
-        free(moves);
-
-        return (MoveEval) {bestMove, maxEval};
-
-    } else if (minMax == 1) {
-        float minEval = INFINITY;
-        Move *bestMove = NULL;
-
-        Move *moves = malloc(sizeof(Move) * MAX_MOVES);
-        int moveCount = 0;
-        GetAllLegalMoves(boardState->board, moves, &moveCount);
-
-        for (int i = 0; i < moveCount; i++) {
-            Board *newBoard = CopyBoard(boardState->board);
-            UpdateBoard(newBoard, moves[i].pos, moves[i].target, moves[i].moveType);
-
-            BoardState *boardStateNew = malloc(sizeof (BoardState) + sizeof (Board) + sizeof (Move));
-            boardStateNew->board = newBoard;
-            boardState->bestMove = &moves[i];
-            boardState->eval = 0;
-
-            MoveEval moveEval = MiniMax(boardStateNew, depth - 1, 1);
-            if (moveEval.eval < minEval) {
-                minEval = moveEval.eval;
-                bestMove = &moves[i];
-            }
-            free(newBoard);
-            free(boardStateNew);
-        }
-
-        free(moves);
-
-        return (MoveEval) {bestMove, minEval};
+        return NULL;
     }
+
+    return boardState;
+}
+
+MoveEval MiniMax(Board *board, int depth, enum MinMax minMax) {
+    // Checking if you have reached maximum depth or there are no legal moves
+    if (depth == 0 || GetAllMovesCount(board) == 0) {
+        float eval = GetBoardScore(board);
+        Move move = (Move) {0, 0, 0};
+        MoveEval moveEval = (MoveEval) {move, eval};
+
+        return moveEval;
+    }
+
+    // Getting the worst possible case
+    float bestEval = -INFINITY;
+    if (minMax == Min) {
+        bestEval = INFINITY;
+    }
+
+    // Allocating memory to get moves
+    Move *moves = malloc(sizeof(Move) * MAX_MOVES); // NEED TO FREE
+    Move bestMove = moves[0];
+
+    int moveCount = 0;
+    GetAllLegalMoves(board, moves, &moveCount);
+
+    for (int i = 0; i < moveCount; i++) {
+        Board *newBoard = CopyBoard(board);
+        UpdateBoard(newBoard, moves[i].pos, moves[i].target, moves[i].moveType);
+
+        Move newBestMove = moves[i];
+
+        enum MinMax nextMinMax = minMax;
+        if (nextMinMax == minMax) {
+            nextMinMax = Max;
+        } else {
+            nextMinMax = Min;
+        }
+
+        // Dive further into minimax
+        MoveEval moveEval = MiniMax(newBoard, depth - 1, nextMinMax);
+
+        if (minMax == Max) {
+            if (moveEval.eval > bestEval) {
+                bestEval = moveEval.eval;
+                bestMove = newBestMove;
+            }
+        } else {
+            if (moveEval.eval < bestEval) {
+                bestEval = moveEval.eval;
+                bestMove = newBestMove;
+            }
+        }
+
+        FreeBoard(newBoard);
+    }
+
+    free(moves);
+
+    return (MoveEval) {bestMove, bestEval};
 }

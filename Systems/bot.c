@@ -83,10 +83,7 @@ Move BestScoreBot(Board *board) {
 }
 
 Move MiniMaxBot(Board *board) {
-    Move *bestMove = malloc(sizeof (Move));
-    float eval = 0.0f;
-    BoardState boardState = (BoardState) {board, bestMove, eval};
+    MoveEval moveEval = MiniMax(board, 3, Min);
 
-    MoveEval moveEval = MiniMax(&boardState, 4, 1);
-    return *moveEval.move;
+    return moveEval.move;
 }
