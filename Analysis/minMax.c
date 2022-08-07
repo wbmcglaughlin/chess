@@ -4,30 +4,6 @@
 
 #include "minMax.h"
 
-void FreeBoardState(BoardState *boardState) {
-    FreeBoard(boardState->board);
-
-    free(boardState);
-    boardState = NULL;
-}
-
-BoardState *CreateBoardState() {
-    BoardState *boardState = malloc(sizeof (BoardState) + sizeof (Move));
-    if (boardState == NULL) {
-        return NULL;
-    }
-
-    boardState->board = CreateBoard();
-    if (boardState->board == NULL) {
-        free(boardState);
-        boardState = NULL;
-
-        return NULL;
-    }
-
-    return boardState;
-}
-
 MoveEval MiniMax(Board *board, int depth, enum MinMax minMax) {
     // Checking if you have reached maximum depth or there are no legal moves
     if (depth == 0 || GetAllMovesCount(board) == 0) {
