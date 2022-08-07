@@ -4,13 +4,25 @@
 #include "../Game/board.h"
 #include "../Game/moves.h"
 
-struct BoardMoves {
+#define INFINITY 100000
+
+struct BoardState {
     Board *board;
-    Move *moves;
+    Move *bestMove;
+    float eval;
 };
 
-typedef struct BoardMoves BoardMoves;
+struct MoveEval {
+    Move *move;
+    float eval;
+};
 
-void GetBoardMoves(BoardMoves *boardMoves);
+typedef struct BoardState BoardState;
+typedef struct MoveEval MoveEval;
+
+void GetBoardMoves(BoardState *boardMoves);
+MoveEval MiniMax(BoardState *boardState, int depth, int minMax);
+BoardState CreateBoardState();
+void FreeBoardState();
 
 #endif

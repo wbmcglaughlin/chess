@@ -455,7 +455,9 @@ void GetAllLegalMoves(Board *board, Move *moves, int *movesCount) {
     *movesCount = 0;
     int *movesArr = malloc(SQUARES * sizeof (int));
     int movesCountInner = 0;
+
     ClearMoves(movesArr);
+
     for (int i = 0; i < SQUARES; i++) {
         if (board->Board[i].type != 'e' && board->Board[i].color == board->turn) {
             GetMoves(board, movesArr, i);
@@ -468,6 +470,7 @@ void GetAllLegalMoves(Board *board, Move *moves, int *movesCount) {
             ClearMoves(movesArr);
         }
     }
+
     *movesCount = movesCountInner;
     free(movesArr);
 }

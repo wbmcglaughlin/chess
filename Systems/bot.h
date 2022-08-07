@@ -8,11 +8,13 @@
 #include "../Game/board.h"
 #include "../Game/moves.h"
 #include "math.h"
+#include "../Analysis/minMax.h"
 
 #define WORST_SCORE 10000
 
 Move RandomBot(Board *board);
 Move CaptureFirstBot(Board *board);
 Move BestScoreBot(Board *board);
+Move MiniMaxBot(Board *board);
 
 #endif //CHESS_BOT_H
