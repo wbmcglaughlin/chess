@@ -59,6 +59,7 @@ struct Piece {
 
 struct Board {
     struct Piece *Board;
+    float eval;
     int turn;
     int movesCount;
     int castle[4];

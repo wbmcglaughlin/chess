@@ -82,8 +82,8 @@ Move BestScoreBot(Board *board) {
     return move;
 }
 
-Move MiniMaxBot(Board *board) {
+MoveEval MiniMaxBot(Board *board) {
     MoveEval moveEval = MiniMax(board, 3, Min);
 
-    return moveEval.move;
+    return moveEval;
 }

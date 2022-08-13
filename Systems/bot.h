@@ -15,6 +15,6 @@
 Move RandomBot(Board *board);
 Move CaptureFirstBot(Board *board);
 Move BestScoreBot(Board *board);
-Move MiniMaxBot(Board *board);
+MoveEval MiniMaxBot(Board *board);
 
 #endif //CHESS_BOT_H

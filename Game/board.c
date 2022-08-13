@@ -119,6 +119,10 @@ float GetBoardScore(Board *board) {
     return score;
 }
 
+float GetBoardEval(Board *board) {
+    return board->eval;
+}
+
 void FenToBoard(const char *fen, Board *board) {
     int row = 7;
     int col = 0;
@@ -226,6 +230,7 @@ Board* CopyBoard(Board *oldBoard) {
         newBoard->kingPos[i] = oldBoard->kingPos[i];
     }
 
+    newBoard->eval = oldBoard->eval;
     newBoard->enpassant = oldBoard->enpassant;
     newBoard->halfMoveClock = oldBoard->halfMoveClock;
     newBoard->moveCount = oldBoard->movesCount;
@@ -249,6 +254,7 @@ Board* CreateBoard(void) {
 
     // Reasonable values
     board->checkMate = 0; // gets checked on fen
+    board->eval = 0.0f;
 
     return board;
 }

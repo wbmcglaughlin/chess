@@ -81,7 +81,7 @@ int main(void) {
         DrawBoard(boardDimensions, moveSquares, selected);
         DrawPieces(boardDimensions, board, textures, pieceHeld, selected, GetMousePosition());
 
-        DrawText(TextFormat("Score: %.2f", GetBoardScore(board)),
+        DrawText(TextFormat("Score: %.2f", board->eval),
                  (int) (1.2 * boardDimensions->cornerX * 2 + boardDimensions->sideSize),
                  boardDimensions->cornerY,
                  FONT_SIZE,

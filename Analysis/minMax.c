@@ -30,11 +30,10 @@ MoveEval MiniMax(Board *board, int depth, enum MinMax minMax) {
     for (int i = 0; i < moveCount; i++) {
         Board *newBoard = CopyBoard(board);
         UpdateBoard(newBoard, moves[i].pos, moves[i].target, moves[i].moveType);
-
         Move newBestMove = moves[i];
 
         enum MinMax nextMinMax = minMax;
-        if (nextMinMax == minMax) {
+        if (nextMinMax == Min) {
             nextMinMax = Max;
         } else {
             nextMinMax = Min;
