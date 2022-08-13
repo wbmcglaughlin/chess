@@ -16,7 +16,6 @@
 #define SQUARES SQUARE_COUNT * SQUARE_COUNT
 #define MAX_FEN_LENGTH 90
 #define UNIQUE_PIECE_TEXTURES 12
-#define UNIQUE_PIECE_TYPES 6
 
 #define PIECES "PpRrNnBbQqKk"
 
@@ -77,7 +76,6 @@ typedef struct BoardDimensions BoardDimensions;
 
 void BoardUpdateLoop();
 
-void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType);
 void SwapPieces(Board *board, int pos1, int pos2);
 void GetSelected(int *selected, float mousePosX, float mousePosY, BoardDimensions *boardDimensions);
 int PosIsValid(int pos);
@@ -85,6 +83,7 @@ int PosIsValid(int pos);
 float GetBoardScore(Board *board);
 void GetSquare(BoardSquare *boardSquare, int i, int sideSize, int cornerX, int cornerY);
 void FenToBoard(const char *fen, Board *board);
+void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType);
 
 Board* CopyBoard(Board *oldBoard);
 Board* CreateBoard(void);

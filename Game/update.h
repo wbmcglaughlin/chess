@@ -11,6 +11,7 @@
 #include "ctype.h"
 #include "string.h"
 #include "moves.h"
+#include "board.h"
 #include "../Systems/bot.h"
 
 #define DEPTH_SEARCH 1
