@@ -16,7 +16,7 @@ Move RandomBot(Board *board) {
 }
 
 Move CaptureFirstBot(Board *board) {
-    // Prefers captures over other moves
+    // Prefer captures to other moves
     Move *moves = malloc(sizeof (Move) * MAX_MOVES);
     Move move;
     int movesCount = 0;
@@ -82,8 +82,13 @@ Move BestScoreBot(Board *board) {
     return move;
 }
 
-MoveEval MiniMaxBot(Board *board) {
-    MoveEval moveEval = MiniMax(board, 3, Min);
+MoveEval MiniMaxBot(Board *board, int depth) {
+    MoveEval moveEval;
+    if (board->turn == 0) {
+        moveEval = MiniMax(board, depth, Min);
+    } else {
+        moveEval = MiniMax(board, depth, Max);
+    }
 
     return moveEval;
 }

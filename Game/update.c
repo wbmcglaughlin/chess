@@ -14,7 +14,7 @@ void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, int *moveSq
     if (board->turn == PLAYER) {
         PlayerTurnCheck(board, boardDimensions, moveSquares, movesCount, moves, getMoves, selected, pieceHeld);
     } else {
-        MoveEval botMoveEval = MiniMaxBot(board);
+        MoveEval botMoveEval = MiniMaxBot(board, 4);
         Move botMove = botMoveEval.move;
         UpdateBoard(board, botMove.pos, botMove.target, botMove.moveType);
         *movesCount = 0;
@@ -62,7 +62,7 @@ void PlayerTurnCheck(Board *board, BoardDimensions *boardDimensions, int *moveSq
         if (*selected != -1 && *selected != pieceSquare && moveSquares[*selected] > 0) {
             UpdateBoard(board, pieceSquare, *selected, moveSquares[*selected]);
         }
-        pieceHeld = 0;
+
         *getMoves = (*getMoves + 1) % 2;
         ClearMoves(moveSquares);
         *selected = -1;

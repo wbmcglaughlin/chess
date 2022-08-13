@@ -35,7 +35,7 @@ MoveEval MiniMax(Board *board, int depth, enum MinMax minMax) {
         enum MinMax nextMinMax = minMax;
         if (nextMinMax == Min) {
             nextMinMax = Max;
-        } else {
+        } else if (nextMinMax == Max) {
             nextMinMax = Min;
         }
 
@@ -47,7 +47,7 @@ MoveEval MiniMax(Board *board, int depth, enum MinMax minMax) {
                 bestEval = moveEval.eval;
                 bestMove = newBestMove;
             }
-        } else {
+        } else if (minMax == Min){
             if (moveEval.eval < bestEval) {
                 bestEval = moveEval.eval;
                 bestMove = newBestMove;
@@ -60,4 +60,9 @@ MoveEval MiniMax(Board *board, int depth, enum MinMax minMax) {
     free(moves);
 
     return (MoveEval) {bestMove, bestEval};
+}
+
+MoveEval GetEmptyMoveEval() {
+    MoveEval moveEval = (MoveEval) {(Move) {-1, -1, -1}, 0.0f};
+    return moveEval;
 }

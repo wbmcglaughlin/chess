@@ -5,7 +5,7 @@
 #include "Game/draw.h"
 #include "Game/update.h"
 
-#define TARGET_FPS 120
+#define TARGET_FPS 240
 
 int main(void) {
     // Initialization
@@ -63,9 +63,6 @@ int main(void) {
 
     board->turn = 1;
 
-    int playerWhite = PLAYER;
-    int playerBlack = BOT;
-
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -93,8 +90,6 @@ int main(void) {
                  FONT_SIZE,
                  BLACK);
 
-        // ListLegalMoves(moves, movesCount, boardDimensions);
-        DrawFPS(5, 5);
         if (board->checkMate) {
             DrawText("Checkmate!", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);
         }
