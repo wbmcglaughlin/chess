@@ -10,15 +10,18 @@
 #include "stdio.h"
 #include "ctype.h"
 #include "string.h"
+#include <pthread.h>
+
 #include "moves.h"
 #include "board.h"
 #include "../Systems/bot.h"
 
 #define DEPTH_SEARCH 1
 
-void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, int *moveSquares, int *movesCount, Move *moves,
+void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, BotInput *botInput, int *threadStarted, int *moveSquares, int *movesCount, Move *moves,
                      int *getMoves, int *selected, int *pieceHeld);
 void PlayerTurnCheck(Board *board, BoardDimensions *boardDimensions, int *moveSquares, int *movesCount, Move *moves,
                      int *getMoves, int *selected, int *pieceHeld);
+void BotTurnCheck(BotInput *botInput, int *threadStarted, int *movesCount);
 
 #endif //CHESS_UPDATE_H

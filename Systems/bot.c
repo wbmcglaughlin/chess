@@ -82,13 +82,24 @@ Move BestScoreBot(Board *board) {
     return move;
 }
 
-MoveEval MiniMaxBot(Board *board, int depth) {
-    MoveEval moveEval;
+void* MiniMaxBot(void *botInput) {
+    int depth = 4;
+
+    BotInput *botInputStruct = (BotInput*) botInput;
+    Board *board = botInputStruct->board;
+
     if (board->turn == 0) {
-        moveEval = MiniMax(board, depth, Min);
+        *botInputStruct->moveEval = MiniMax(board, depth, Min);
     } else {
-        moveEval = MiniMax(board, depth, Max);
+        *botInputStruct->moveEval = MiniMax(board, depth, Max);
     }
 
-    return moveEval;
+    *botInputStruct->hasMove = 1;
+    *botInputStruct->move = *botInputStruct->moveEval->move;
+
+    pthread_exit(NULL);
+}
+
+MoveEval MiniMaxTimeLimitBot(Board *board, float time) {
+
 }

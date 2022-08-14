@@ -6,18 +6,30 @@
 
 MoveEval MiniMax(Board *board, int depth, enum MinMax minMax) {
     // Checking if you have reached maximum depth or there are no legal moves
-    if (depth == 0 || GetAllMovesCount(board) == 0) {
+    if (depth == 0) {
         float eval = GetBoardScore(board);
         Move move = (Move) {0, 0, 0};
-        MoveEval moveEval = (MoveEval) {move, eval};
+        MoveEval moveEval = (MoveEval) {&move, eval};
+
+        return moveEval;
+    }
+    if (GetAllMovesCount(board) == 0) {
+        float eval = BOARD_INFINITY;
+
+        if (minMax == Min) {
+            eval = -BOARD_INFINITY;
+        }
+
+        Move move = (Move) {0, 0, 0};
+        MoveEval moveEval = (MoveEval) {&move, eval};
 
         return moveEval;
     }
 
     // Getting the worst possible case
-    float bestEval = -INFINITY;
+    float bestEval = -BOARD_INFINITY;
     if (minMax == Min) {
-        bestEval = INFINITY;
+        bestEval = BOARD_INFINITY;
     }
 
     // Allocating memory to get moves
@@ -59,10 +71,13 @@ MoveEval MiniMax(Board *board, int depth, enum MinMax minMax) {
 
     free(moves);
 
-    return (MoveEval) {bestMove, bestEval};
+    return (MoveEval) {&bestMove, bestEval};
 }
 
-MoveEval GetEmptyMoveEval() {
-    MoveEval moveEval = (MoveEval) {(Move) {-1, -1, -1}, 0.0f};
+MoveEval * GetEmptyMoveEval() {
+    MoveEval *moveEval = malloc(sizeof (MoveEval));
+    Move *move = malloc(sizeof (Move));
+    moveEval->move = move;
+    moveEval->eval = 0.0f;
     return moveEval;
 }

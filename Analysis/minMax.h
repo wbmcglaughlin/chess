@@ -4,10 +4,10 @@
 #include "../Game/board.h"
 #include "../Game/moves.h"
 
-#define INFINITY 100000
+#define BOARD_INFINITY 100000
 
 struct MoveEval {
-    Move move;
+    Move *move;
     float eval;
 };
 
@@ -19,6 +19,6 @@ enum MinMax {
 typedef struct MoveEval MoveEval;
 
 MoveEval MiniMax(Board *boardState, int depth, enum MinMax minMax);
-MoveEval GetEmptyMoveEval();
+MoveEval * GetEmptyMoveEval();
 
 #endif

@@ -4,7 +4,7 @@
 
 #include "update.h"
 
-void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, int *moveSquares, int *movesCount, Move *moves,
+void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, BotInput *botInput, int *threadStarted, int *moveSquares, int *movesCount, Move *moves,
                      int *getMoves, int *selected, int *pieceHeld) {
     // Update Board Check
     if (board->checkMate) {
@@ -14,21 +14,39 @@ void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, int *moveSq
     if (board->turn == PLAYER) {
         PlayerTurnCheck(board, boardDimensions, moveSquares, movesCount, moves, getMoves, selected, pieceHeld);
     } else {
-        MoveEval botMoveEval = MiniMaxBot(board, 4);
-        Move botMove = botMoveEval.move;
-        UpdateBoard(board, botMove.pos, botMove.target, botMove.moveType);
-        *movesCount = 0;
-
-        Move *movesArr = malloc(SQUARES * sizeof (Move));
-        *movesCount = GetAllLegalMovesToDepthCount(board, DEPTH_SEARCH);
-        free(movesArr);
-
-        board->eval = botMoveEval.eval;
-        board->turn = PLAYER;
+        BotTurnCheck(botInput, threadStarted, movesCount);
     }
 
     if (GetAllMovesCount(board) == 0) {
         board->checkMate = 1;
+    }
+}
+
+void BotTurnCheck(BotInput *botInput, int *threadStarted, int *movesCount) {
+    if (!*threadStarted) {
+        pthread_t thread_id;
+        pthread_create(&thread_id, NULL, MiniMaxBot, (void *)botInput);
+
+        *threadStarted = 1;
+        return;
+    }
+
+    if (!*botInput->hasMove) {
+        return;
+    }
+
+    if (*botInput->hasMove) {
+        Move botMove = *botInput->move;
+        UpdateBoard(botInput->board, botMove.pos, botMove.target, botMove.moveType);
+        *movesCount = 0;
+        Move *movesArr = malloc(SQUARES * sizeof(Move));
+        *movesCount = GetAllLegalMovesToDepthCount(botInput->board, DEPTH_SEARCH);
+        free(movesArr);
+        botInput->moveEval->eval = botInput->moveEval->eval;
+        botInput->board->turn = PLAYER;
+
+        *botInput->hasMove = 0;
+        *threadStarted = 0;
     }
 }
 
