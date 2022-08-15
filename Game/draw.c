@@ -102,6 +102,8 @@ void ListLegalMoves(Move *moves, int movesCount, BoardDimensions *boardDimension
 }
 
 void DrawArrow(int startSquare, int endSquare, Color color, BoardDimensions *bd) {
+    float arrowSize = 17.0f;
+
     float squareSideDim = (float) (bd->sideSize) / SQUARE_COUNT;
 
     int r_s = (int) startSquare / SQUARE_COUNT;
@@ -117,37 +119,31 @@ void DrawArrow(int startSquare, int endSquare, Color color, BoardDimensions *bd)
         (float) c_e * squareSideDim + (float) bd->cornerX + squareSideDim / 2.0f,
         (float) -r_e * squareSideDim + (float) bd->cornerY - squareSideDim / 2.0f + (float) bd->sideSize};
 
-    DrawLineEx(s, e, 5.0f, GREEN);
+    DrawLineEx(s, e, 12.0f, color);
 
     float angle = 0.0f;
-    float perpAngle = 0.0f;
-    if (r_e != r_s && c_e != c_s) {
+
+    float rise = e.y - s.y;
+    float run = e.x - s.x;
+
+    if (rise != 0 && run != 0) {
         angle = atanf((e.y - s.y) / (e.x - s.x));
-        perpAngle = atanf(-(e.x - s.x) / (e.y - s.y));
     }
-    if (c_e == c_s) {
-        angle = PI / 2;
-        perpAngle = 0.0f;
-    }
-    if (r_e == r_s) {
+
+    if (rise == 0) {
         angle = 0.0f;
-        perpAngle = PI / 2;
     }
 
+    if (run == 0) {
+        angle = PI / 2;
+    }
+
+    float perpAngle = angle + PI / 2;
     if (c_e < c_s) {
-        angle = 180 - angle;
-        perpAngle = 180 - perpAngle;
+        angle = PI - angle;
+        perpAngle += PI;
     }
 
-    float size = 17.0f;
-    Vector2 bl = (Vector2) {e.x + size * cosf(perpAngle), e.y + size * sinf(perpAngle)};
-    Vector2 br = (Vector2) {e.x - size * cosf(perpAngle), e.y - size * sinf(perpAngle)};
-    Vector2 t = (Vector2) {e.x + size * cosf(angle), e.y + size * sinf(angle)};
-
-    if (c_e > c_s) {
-        DrawTriangle(bl, br, t, GREEN);
-    } else {
-        DrawTriangle(br, bl, t, GREEN);
-    }
+    DrawPoly(e, 3, arrowSize, (perpAngle + PI) * 180 / PI, color);
 
 }

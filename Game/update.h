@@ -14,6 +14,7 @@
 
 #include "moves.h"
 #include "board.h"
+#include "draw.h"
 #include "../Systems/bot.h"
 
 #define DEPTH_SEARCH 1
@@ -22,6 +23,6 @@ void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, BotInput *b
                      int *getMoves, int *selected, int *pieceHeld);
 void PlayerTurnCheck(Board *board, BoardDimensions *boardDimensions, int *moveSquares, int *movesCount, Move *moves,
                      int *getMoves, int *selected, int *pieceHeld);
-void BotTurnCheck(BotInput *botInput, int *threadStarted, int *movesCount);
+void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *threadStarted, int *movesCount);
 
 #endif //CHESS_UPDATE_H

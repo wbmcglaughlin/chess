@@ -64,17 +64,14 @@ int main(void) {
     board->turn = 1;
     int hasMove = 0;
     int threadStarted = 0;
-    MoveEval *moveEval = GetEmptyMoveEval();
+
     Move move = (Move) {-1, -1};
-    BotInput botInput = (BotInput) {board, moveEval, &hasMove, &move};
+    float eval = 0.0f;
+    BotInput botInput = (BotInput) {board, &move, &eval, &hasMove};
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        // Update
-        //----------------------------------------------------------------------------------
-        BoardUpdateLoop(board, boardDimensions, &botInput, &threadStarted, moveSquares, &movesCount, moves, &getMoves, &selected, &pieceHeld);
-
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
@@ -82,6 +79,10 @@ int main(void) {
         ClearBackground(BROWN);
         DrawBoard(boardDimensions, moveSquares, selected);
         DrawPieces(boardDimensions, board, textures, pieceHeld, selected, GetMousePosition());
+
+        // Update
+        //----------------------------------------------------------------------------------
+        BoardUpdateLoop(board, boardDimensions, &botInput, &threadStarted, moveSquares, &movesCount, moves, &getMoves, &selected, &pieceHeld);
 
         DrawText(TextFormat("Score: %.2f", board->eval),
                  (int) (1.2 * boardDimensions->cornerX * 2 + boardDimensions->sideSize),

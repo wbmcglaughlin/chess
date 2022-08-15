@@ -16,9 +16,9 @@
 
 struct BotInput {
     Board *board;
-    MoveEval *moveEval;
-    int *hasMove;
     Move *move;
+    float *eval;
+    int *hasMove;
 };
 
 typedef struct BotInput BotInput;

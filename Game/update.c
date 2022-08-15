@@ -14,7 +14,7 @@ void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, BotInput *b
     if (board->turn == PLAYER) {
         PlayerTurnCheck(board, boardDimensions, moveSquares, movesCount, moves, getMoves, selected, pieceHeld);
     } else {
-        BotTurnCheck(botInput, threadStarted, movesCount);
+        BotTurnCheck(botInput, boardDimensions, threadStarted, movesCount);
     }
 
     if (GetAllMovesCount(board) == 0) {
@@ -22,7 +22,7 @@ void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, BotInput *b
     }
 }
 
-void BotTurnCheck(BotInput *botInput, int *threadStarted, int *movesCount) {
+void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *threadStarted, int *movesCount) {
     if (!*threadStarted) {
         pthread_t thread_id;
         pthread_create(&thread_id, NULL, MiniMaxBot, (void *)botInput);
@@ -32,6 +32,7 @@ void BotTurnCheck(BotInput *botInput, int *threadStarted, int *movesCount) {
     }
 
     if (!*botInput->hasMove) {
+        DrawArrow(botInput->move->pos, botInput->move->target, ORANGE, boardDimensions);
         return;
     }
 
@@ -42,7 +43,6 @@ void BotTurnCheck(BotInput *botInput, int *threadStarted, int *movesCount) {
         Move *movesArr = malloc(SQUARES * sizeof(Move));
         *movesCount = GetAllLegalMovesToDepthCount(botInput->board, DEPTH_SEARCH);
         free(movesArr);
-        botInput->moveEval->eval = botInput->moveEval->eval;
         botInput->board->turn = PLAYER;
 
         *botInput->hasMove = 0;

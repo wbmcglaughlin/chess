@@ -83,19 +83,29 @@ Move BestScoreBot(Board *board) {
 }
 
 void* MiniMaxBot(void *botInput) {
-    int depth = 4;
-
     BotInput *botInputStruct = (BotInput*) botInput;
     Board *board = botInputStruct->board;
 
-    if (board->turn == 0) {
-        *botInputStruct->moveEval = MiniMax(board, depth, Min);
-    } else {
-        *botInputStruct->moveEval = MiniMax(board, depth, Max);
+    MoveEval *moveEval = GetEmptyMoveEval();
+
+    int maxDepth = 4;
+    int currentDepth = 1;
+
+    while (currentDepth <= maxDepth) {
+        if (board->turn == 0) {
+            *moveEval = MiniMax(board, currentDepth, Min);
+        } else {
+            *moveEval = MiniMax(board, currentDepth, Max);
+        }
+
+        currentDepth++;
+
+        *botInputStruct->move = *moveEval->move;
     }
 
     *botInputStruct->hasMove = 1;
-    *botInputStruct->move = *botInputStruct->moveEval->move;
+
+    free(moveEval);
 
     pthread_exit(NULL);
 }
