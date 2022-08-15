@@ -67,7 +67,8 @@ int main(void) {
 
     Move move = (Move) {-1, -1};
     float eval = 0.0f;
-    BotInput botInput = (BotInput) {board, &move, &eval, &hasMove};
+    int *calls = malloc(sizeof (int) * 100);
+    BotInput botInput = (BotInput) {board, &move, &eval, &hasMove, calls};
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
@@ -93,6 +94,12 @@ int main(void) {
         DrawText(TextFormat("Moves: %i", movesCount),
                  (int) (1.2 * boardDimensions->cornerX * 2 + boardDimensions->sideSize),
                  boardDimensions->cornerY + 20,
+                 FONT_SIZE,
+                 BLACK);
+
+        DrawText(TextFormat("Calls: %i", calls[board->moveCount]),
+                 (int) (1.2 * boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+                 boardDimensions->cornerY + 40,
                  FONT_SIZE,
                  BLACK);
 

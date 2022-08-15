@@ -4,7 +4,8 @@
 
 #include "minMax.h"
 
-MoveEval MiniMax(Board *board, int depth, enum MinMax minMax) {
+MoveEval MiniMax(Board *board, int depth, enum MinMax minMax, int *calls) {
+    (*calls) += 1;
     // Checking if you have reached maximum depth or there are no legal moves
     if (depth == 0) {
         float eval = GetBoardScore(board);
@@ -52,7 +53,7 @@ MoveEval MiniMax(Board *board, int depth, enum MinMax minMax) {
         }
 
         // Dive further into minimax
-        MoveEval moveEval = MiniMax(newBoard, depth - 1, nextMinMax);
+        MoveEval moveEval = MiniMax(newBoard, depth - 1, nextMinMax, calls);
 
         if (minMax == Max) {
             if (moveEval.eval > bestEval) {

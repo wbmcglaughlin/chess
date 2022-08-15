@@ -44,7 +44,7 @@ void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *thr
         *movesCount = GetAllLegalMovesToDepthCount(botInput->board, DEPTH_SEARCH);
         free(movesArr);
         botInput->board->turn = PLAYER;
-
+        botInput->board->moveCount++;
         *botInput->hasMove = 0;
         *threadStarted = 0;
     }
@@ -79,6 +79,7 @@ void PlayerTurnCheck(Board *board, BoardDimensions *boardDimensions, int *moveSq
         // If valid square and not the same square
         if (*selected != -1 && *selected != pieceSquare && moveSquares[*selected] > 0) {
             UpdateBoard(board, pieceSquare, *selected, moveSquares[*selected]);
+            board->moveCount++;
         }
 
         *getMoves = (*getMoves + 1) % 2;

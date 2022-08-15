@@ -9,6 +9,7 @@
 #include "../Game/moves.h"
 #include "math.h"
 #include "../Analysis/minMax.h"
+#include "../Game/draw.h"
 
 #include <pthread.h>
 
@@ -19,6 +20,7 @@ struct BotInput {
     Move *move;
     float *eval;
     int *hasMove;
+    int *calls;
 };
 
 typedef struct BotInput BotInput;
