@@ -1,11 +1,13 @@
 #include "stdlib.h"
 #include "raylib.h"
+#include "time.h"
 #include "Game/board.h"
 #include "Game/moves.h"
 #include "Game/draw.h"
 #include "Game/update.h"
 
 #define TARGET_FPS 240
+#define MAX_TURNS 5000
 
 int main(void) {
     // Initialization
@@ -62,12 +64,14 @@ int main(void) {
     int getMoves = 1;
 
     board->turn = 1;
+
+    // Bot Information
     int hasMove = 0;
     int threadStarted = 0;
 
     Move move = (Move) {-1, -1};
     float eval = 0.0f;
-    int *calls = malloc(sizeof (int) * 100);
+    int *calls = malloc(sizeof (int) * MAX_TURNS);
     BotInput botInput = (BotInput) {board, &move, &eval, &hasMove, calls};
 
     // Main game loop

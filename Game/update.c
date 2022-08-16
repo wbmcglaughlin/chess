@@ -23,6 +23,9 @@ void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, BotInput *b
 }
 
 void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *threadStarted, int *movesCount) {
+    // Bot runs on a different thread
+
+    // Check if the thread has started, if not, start the thread.
     if (!*threadStarted) {
         pthread_t thread_id;
         pthread_create(&thread_id, NULL, MiniMaxBot, (void *)botInput);
@@ -31,18 +34,23 @@ void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *thr
         return;
     }
 
+    // Checks if the bot has found the move it wants to play, if not, return.
     if (!*botInput->hasMove) {
+        // Current best move is displayed to screen.
         DrawArrow(botInput->move->pos, botInput->move->target, ORANGE, boardDimensions);
         return;
     }
 
+    // If the bot has a move, update the board.
     if (*botInput->hasMove) {
         Move botMove = *botInput->move;
         UpdateBoard(botInput->board, botMove.pos, botMove.target, botMove.moveType);
+
         *movesCount = 0;
         Move *movesArr = malloc(SQUARES * sizeof(Move));
         *movesCount = GetAllLegalMovesToDepthCount(botInput->board, DEPTH_SEARCH);
         free(movesArr);
+
         botInput->board->turn = PLAYER;
         botInput->board->moveCount++;
         *botInput->hasMove = 0;

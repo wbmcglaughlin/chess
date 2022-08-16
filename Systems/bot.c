@@ -4,6 +4,34 @@
 
 #include "bot.h"
 
+void* MiniMaxBot(void *botInput) {
+    BotInput *botInputStruct = (BotInput*) botInput;
+    Board *board = botInputStruct->board;
+
+    MoveEval *moveEval = GetEmptyMoveEval();
+
+    int maxDepth = 4;
+    int currentDepth = 1;
+
+    while (currentDepth <= maxDepth) {
+        if (board->turn == 0) {
+            *moveEval = MiniMax(board, currentDepth, Min, &botInputStruct->calls[board->moveCount]);
+        } else {
+            *moveEval = MiniMax(board, currentDepth, Max, &botInputStruct->calls[board->moveCount]);
+        }
+
+        currentDepth++;
+
+        *botInputStruct->move = *moveEval->move;
+    }
+
+    *botInputStruct->hasMove = 1;
+
+    free(moveEval);
+
+    pthread_exit(NULL);
+}
+
 Move RandomBot(Board *board) {
     // Makes a random move out of all possible moves
     Move *moves = malloc(sizeof (Move) * MAX_MOVES);
@@ -80,34 +108,6 @@ Move BestScoreBot(Board *board) {
     }
 
     return move;
-}
-
-void* MiniMaxBot(void *botInput) {
-    BotInput *botInputStruct = (BotInput*) botInput;
-    Board *board = botInputStruct->board;
-
-    MoveEval *moveEval = GetEmptyMoveEval();
-
-    int maxDepth = 5;
-    int currentDepth = 1;
-
-    while (currentDepth <= maxDepth) {
-        if (board->turn == 0) {
-            *moveEval = MiniMax(board, currentDepth, Min, &botInputStruct->calls[board->moveCount]);
-        } else {
-            *moveEval = MiniMax(board, currentDepth, Max, &botInputStruct->calls[board->moveCount]);
-        }
-
-        currentDepth++;
-
-        *botInputStruct->move = *moveEval->move;
-    }
-
-    *botInputStruct->hasMove = 1;
-
-    free(moveEval);
-
-    pthread_exit(NULL);
 }
 
 MoveEval MiniMaxTimeLimitBot(Board *board, float time) {
