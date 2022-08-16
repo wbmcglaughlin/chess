@@ -36,6 +36,12 @@ int PosIsValid(int pos) {
 }
 
 void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
+    if (board->Board[pieceSquare].type == 'p' || board->Board[pieceSquare].type == 'P'  || moveType == CAPTURE) {
+        board->halfMoveClock = 0;
+    } else {
+        board->halfMoveClock += 1;
+    }
+
     // Check if enpassant
     board->enpassant = -1;
     if (board->Board[pieceSquare].type == 'p' || board->Board[pieceSquare].type == 'P') {
@@ -102,12 +108,6 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
 
     board->moveCount++;
     board->turn = (board->turn + 1) % 2;
-
-    if (board->Board[pieceSquare].type == 'p' || moveType == CAPTURE) {
-        board->halfMoveClock = 0;
-    } else {
-        board->halfMoveClock += 1;
-    }
 
     if (board->halfMoveClock >= 50) {
         board->draw = 1;
