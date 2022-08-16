@@ -18,6 +18,7 @@ enum MinMax {
 
 typedef struct MoveEval MoveEval;
 
+MoveEval MiniMaxAB(Board *board, int depth, enum MinMax minMax, float *alpha, float *beta, int *calls);
 MoveEval MiniMax(Board *boardState, int depth, enum MinMax minMax, int *calls);
 MoveEval * GetEmptyMoveEval();
 

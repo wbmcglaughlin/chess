@@ -6,7 +6,7 @@
 #include "Game/draw.h"
 #include "Game/update.h"
 
-#define TARGET_FPS 240
+#define TARGET_FPS 60
 #define MAX_TURNS 5000
 
 int main(void) {
