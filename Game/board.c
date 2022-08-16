@@ -103,6 +103,16 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
     board->moveCount++;
     board->turn = (board->turn + 1) % 2;
 
+    if (board->Board[pieceSquare].type == 'p' || moveType == CAPTURE) {
+        board->halfMoveClock = 0;
+    } else {
+        board->halfMoveClock += 1;
+    }
+
+    if (board->halfMoveClock >= 50) {
+        board->draw = 1;
+    }
+
     // Cleaning Up
     free(piece);
 }
@@ -239,6 +249,7 @@ Board* CopyBoard(Board *oldBoard) {
     newBoard->halfMoveClock = oldBoard->halfMoveClock;
     newBoard->moveCount = oldBoard->movesCount;
     newBoard->checkMate = oldBoard->checkMate;
+    newBoard->draw = oldBoard->draw;
 
     return newBoard;
 }
@@ -258,6 +269,7 @@ Board* CreateBoard(void) {
 
     // Reasonable values
     board->checkMate = 0; // gets checked on fen
+    board->draw = 0;
     board->eval = 0.0f;
 
     return board;

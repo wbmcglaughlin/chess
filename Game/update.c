@@ -7,7 +7,7 @@
 void BoardUpdateLoop(int players[2], Board *board, BoardDimensions *boardDimensions, BotInput *botInput, int *threadStarted, int *moveSquares, int *movesCount, Move *moves,
                      int *getMoves, int *selected, int *pieceHeld) {
     // Update Board Check
-    if (board->checkMate) {
+    if (board->checkMate || board->draw) {
         return;
     }
 

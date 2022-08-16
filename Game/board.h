@@ -68,6 +68,7 @@ struct Board {
     int halfMoveClock;
     int moveCount;
     int checkMate;
+    int draw;
 };
 
 typedef struct BoardSquare BoardSquare;

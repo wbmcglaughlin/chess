@@ -90,28 +90,48 @@ int main(void) {
 
         // Update
         //----------------------------------------------------------------------------------
-        BoardUpdateLoop(players, board, boardDimensions, &botInput, &threadStarted, moveSquares, &movesCount, moves, &getMoves, &selected, &pieceHeld);
+        BoardUpdateLoop(players,
+                        board,
+                        boardDimensions,
+                        &botInput,
+                        &threadStarted,
+                        moveSquares,
+                        &movesCount,
+                        moves,
+                        &getMoves,
+                        &selected,
+                        &pieceHeld);
 
         DrawText(TextFormat("Score: %.2f", board->eval),
-                 (int) (1.2 * boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+                 (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
                  boardDimensions->cornerY,
                  FONT_SIZE,
                  BLACK);
 
         DrawText(TextFormat("Moves: %i", movesCount),
-                 (int) (1.2 * boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+                 (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
                  boardDimensions->cornerY + 20,
                  FONT_SIZE,
                  BLACK);
 
         DrawText(TextFormat("Calls: %i", calls[board->moveCount]),
-                 (int) (1.2 * boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+                 (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
                  boardDimensions->cornerY + 40,
+                 FONT_SIZE,
+                 BLACK);
+
+        DrawText(TextFormat("Half Move Clock: %i", board->halfMoveClock),
+                 (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+                 boardDimensions->cornerY + 60,
                  FONT_SIZE,
                  BLACK);
 
         if (board->checkMate) {
             DrawText("Checkmate!", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);
+        }
+
+        if (board->draw) {
+            DrawText("Draw :(", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);
         }
 
         EndDrawing();
