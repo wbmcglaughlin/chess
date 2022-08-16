@@ -41,6 +41,8 @@ int main(void) {
     InitWindow(boardDimensions->screenWidth, boardDimensions->screenHeight, "Chess - v.0.2 [Will McGlaughlin]");
     SetTargetFPS(TARGET_FPS);
 
+    static Color backgroundColor = (Color) {120, 120, 120, 255};
+
     // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
     SetTextureFilter(GetFontDefault().texture, TEXTURE_FILTER_POINT);
     Texture2D pw = LoadTexture("resources/pieces/pw.png");
@@ -64,6 +66,7 @@ int main(void) {
     int getMoves = 1;
 
     board->turn = 1;
+    int players[2] = {BOT, BOT};
 
     // Bot Information
     int hasMove = 0;
@@ -81,13 +84,13 @@ int main(void) {
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-        ClearBackground(BROWN);
+        ClearBackground(backgroundColor);
         DrawBoard(boardDimensions, moveSquares, selected);
         DrawPieces(boardDimensions, board, textures, pieceHeld, selected, GetMousePosition());
 
         // Update
         //----------------------------------------------------------------------------------
-        BoardUpdateLoop(board, boardDimensions, &botInput, &threadStarted, moveSquares, &movesCount, moves, &getMoves, &selected, &pieceHeld);
+        BoardUpdateLoop(players, board, boardDimensions, &botInput, &threadStarted, moveSquares, &movesCount, moves, &getMoves, &selected, &pieceHeld);
 
         DrawText(TextFormat("Score: %.2f", board->eval),
                  (int) (1.2 * boardDimensions->cornerX * 2 + boardDimensions->sideSize),

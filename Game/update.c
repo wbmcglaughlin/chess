@@ -4,14 +4,14 @@
 
 #include "update.h"
 
-void BoardUpdateLoop(Board *board, BoardDimensions *boardDimensions, BotInput *botInput, int *threadStarted, int *moveSquares, int *movesCount, Move *moves,
+void BoardUpdateLoop(int players[2], Board *board, BoardDimensions *boardDimensions, BotInput *botInput, int *threadStarted, int *moveSquares, int *movesCount, Move *moves,
                      int *getMoves, int *selected, int *pieceHeld) {
     // Update Board Check
     if (board->checkMate) {
         return;
     }
 
-    if (board->turn == PLAYER) {
+    if (players[board->turn] == PLAYER) {
         PlayerTurnCheck(board, boardDimensions, moveSquares, movesCount, moves, getMoves, selected, pieceHeld);
     } else {
         BotTurnCheck(botInput, boardDimensions, threadStarted, movesCount);
@@ -51,8 +51,6 @@ void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *thr
         *movesCount = GetAllLegalMovesToDepthCount(botInput->board, DEPTH_SEARCH);
         free(movesArr);
 
-        botInput->board->turn = PLAYER;
-        botInput->board->moveCount++;
         *botInput->hasMove = 0;
         *threadStarted = 0;
     }

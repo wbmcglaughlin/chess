@@ -10,7 +10,7 @@ void* MiniMaxBot(void *botInput) {
 
     MoveEval *moveEval = GetEmptyMoveEval();
 
-    int maxDepth = 4;
+    int maxDepth = 3;
     int currentDepth = 1;
 
     while (currentDepth <= maxDepth) {

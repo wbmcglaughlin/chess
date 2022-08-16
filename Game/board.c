@@ -99,7 +99,11 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
             SwapPieces(board, selected - 1, selected + 1);
         }
     }
+
+    board->moveCount++;
     board->turn = (board->turn + 1) % 2;
+
+    // Cleaning Up
     free(piece);
 }
 
