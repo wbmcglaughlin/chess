@@ -127,6 +127,13 @@ int main(void) {
             GetSelected(&squarePressed, GetMousePosition().x, GetMousePosition().y, boardDimensions);
         }
 
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            while (firstArrow->next != NULL) {
+                DeleteMoveNode(&firstArrow);
+            }
+            DeleteMoveNode(&firstArrow);
+        }
+
         if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) {
             GetSelected(&squareReleased, GetMousePosition().x, GetMousePosition().y, boardDimensions);
 
@@ -173,10 +180,10 @@ int main(void) {
 
         MoveNodePtr startPtr = firstArrow;
         if (!IsMoveNodeListEmpty(firstArrow)) {
-            DrawArrow(startPtr->move.pos, startPtr->move.target, ORANGE, boardDimensions);
+            DrawArrow(startPtr->move.pos, startPtr->move.target, BLUE, boardDimensions);
             while (startPtr->next != NULL) {
                 startPtr = startPtr->next;
-                DrawArrow(startPtr->move.pos, startPtr->move.target, ORANGE, boardDimensions);
+                DrawArrow(startPtr->move.pos, startPtr->move.target, BLUE, boardDimensions);
             }
         }
 
