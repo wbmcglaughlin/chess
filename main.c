@@ -22,26 +22,19 @@ int main(void) {
     boardDimensions->cornerY = (int) (boardDimensions->definingLength * (1 - BOARD_PERCENT) / 2);
     boardDimensions->sideSize = (int) (boardDimensions->definingLength * BOARD_PERCENT);
 
-    char *fen;
-    fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-
-    Board *board = CreateBoard();
-    if (board == NULL) {
-        exit(-1);
-    }
-
-    int *moveSquares = malloc(sizeof(int) * SQUARE_COUNT * SQUARE_COUNT);
-    ClearMoves(moveSquares);
-
-    int movesCount = 0;
-    Move *moves = malloc(sizeof(Move) * MAX_MOVES);
-
-    FenToBoard(fen, board);
-
     InitWindow(boardDimensions->screenWidth, boardDimensions->screenHeight, "Chess - v.0.2 [Will McGlaughlin]");
     SetTargetFPS(TARGET_FPS);
 
+    // Menu
+    // -----------------------------------------------------------------------------------------------------------------
     static Color backgroundColor = (Color) {120, 120, 120, 255};
+
+    Vector2 restartButtonCorner = (Vector2) {2.0f * boardDimensions->cornerX + boardDimensions->sideSize,
+                                             (float) boardDimensions->cornerY + (float) boardDimensions->sideSize - 100.0f};
+    Rectangle restartButtonRec = (Rectangle) {restartButtonCorner.x,
+                                              restartButtonCorner.y,
+                                              160.0f,
+                                              40.0f};
 
     // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
     SetTextureFilter(GetFontDefault().texture, TEXTURE_FILTER_POINT);
@@ -59,6 +52,22 @@ int main(void) {
     Texture2D kb = LoadTexture("resources/pieces/kb.png");
 
     Texture2D *textures[] = {&pw, &pb, &rw, &rb, &nw, &nb, &bw, &bb, &qw, &qb, &kw, &kb};
+
+    char *fen;
+    fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+    Board *board = CreateBoard();
+    if (board == NULL) {
+        exit(-1);
+    }
+
+    int *moveSquares = malloc(sizeof(int) * SQUARE_COUNT * SQUARE_COUNT);
+    ClearMoves(moveSquares);
+
+    int movesCount = 0;
+    Move *moves = malloc(sizeof(Move) * MAX_MOVES);
+
+    FenToBoard(fen, board);
 
     // Game Variables
     int selected = -1;
@@ -87,6 +96,12 @@ int main(void) {
         ClearBackground(backgroundColor);
         DrawBoard(boardDimensions, moveSquares, selected);
         DrawPieces(boardDimensions, board, textures, pieceHeld, selected, GetMousePosition());
+
+        if (CheckCollisionPointRec(GetMousePosition(), restartButtonRec)) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                FenToBoard(fen, board);
+            }
+        }
 
         // Update
         //----------------------------------------------------------------------------------
@@ -125,6 +140,10 @@ int main(void) {
                  boardDimensions->cornerY + 60,
                  FONT_SIZE,
                  BLACK);
+
+        // Restart Game Button Drawing
+        DrawRectangleRec(restartButtonRec, GRAY);
+        DrawText("Restart", restartButtonCorner.x + 5.0f, restartButtonCorner.y + 5.0f, restartButtonRec.height / 1.1f, DARKGRAY);
 
         if (board->checkMate) {
             DrawText("Checkmate!", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);

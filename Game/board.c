@@ -222,6 +222,8 @@ void FenToBoard(const char *fen, Board *board) {
             board->moveCount = (int) strtol(&character, &ptr, 10);
         }
     }
+
+    board->draw = 0;
 }
 
 // Functions for Operating on the Board Struct
