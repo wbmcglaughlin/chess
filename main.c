@@ -5,6 +5,7 @@
 #include "Game/moves.h"
 #include "Game/draw.h"
 #include "Game/update.h"
+#include "Game/moveList.h"
 
 #define TARGET_FPS 60
 #define MAX_TURNS 5000
@@ -86,6 +87,11 @@ int main(void) {
     int *calls = malloc(sizeof (int) * MAX_TURNS);
     BotInput botInput = (BotInput) {board, &move, &eval, &hasMove, calls};
 
+    // Player Drawn Arrows
+    MoveNodePtr firstArrow = NULL;
+    int squarePressed = -1;
+    int squareReleased = -1;
+
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -117,6 +123,26 @@ int main(void) {
                         &selected,
                         &pieceHeld);
 
+        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+            GetSelected(&squarePressed, GetMousePosition().x, GetMousePosition().y, boardDimensions);
+        }
+
+        if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) {
+            GetSelected(&squareReleased, GetMousePosition().x, GetMousePosition().y, boardDimensions);
+
+            if (squarePressed != -1 && squareReleased != -1) {
+                Move arrowMove = (Move) {squarePressed, squareReleased, 0};
+                InsertMoveNode(&firstArrow, arrowMove);
+            }
+
+            squarePressed = -1;
+            squareReleased = -1;
+        }
+
+        if (!IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+            squarePressed = -1;
+        }
+
         DrawText(TextFormat("Score: %.2f", board->eval),
                  (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
                  boardDimensions->cornerY,
@@ -144,6 +170,15 @@ int main(void) {
         // Restart Game Button Drawing
         DrawRectangleRec(restartButtonRec, GRAY);
         DrawText("Restart", restartButtonCorner.x + 5.0f, restartButtonCorner.y + 5.0f, restartButtonRec.height / 1.1f, DARKGRAY);
+
+        MoveNodePtr startPtr = firstArrow;
+        if (!IsMoveNodeListEmpty(firstArrow)) {
+            DrawArrow(startPtr->move.pos, startPtr->move.target, ORANGE, boardDimensions);
+            while (startPtr->next != NULL) {
+                startPtr = startPtr->next;
+                DrawArrow(startPtr->move.pos, startPtr->move.target, ORANGE, boardDimensions);
+            }
+        }
 
         if (board->checkMate) {
             DrawText("Checkmate!", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);
