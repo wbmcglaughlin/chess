@@ -144,6 +144,10 @@ void DrawArrow(int startSquare, int endSquare, Color color, BoardDimensions *bd)
         perpAngle += PI;
     }
 
+    if (r_e > r_s && run == 0 ) {
+        perpAngle -= PI;
+    }
+
     DrawPoly(e, 3, arrowSize, (perpAngle + PI) * 180 / PI, color);
 
 }
