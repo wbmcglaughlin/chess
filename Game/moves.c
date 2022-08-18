@@ -452,6 +452,9 @@ int IsKingInCheck(Board *board, int col) {
 }
 
 void GetAllLegalMoves(Board *board, Move *moves, int *movesCount) {
+    ///
+    // Function to get all legal moves given a current board.
+    ///
     *movesCount = 0;
     int *movesArr = malloc(SQUARES * sizeof (int));
     int movesCountInner = 0;
@@ -474,6 +477,21 @@ void GetAllLegalMoves(Board *board, Move *moves, int *movesCount) {
     *movesCount = movesCountInner;
     free(movesArr);
 }
+
+int compt(const void *f, const void *s) {
+    Move *move1 = (Move*)f;
+    Move *move2 = (Move*)s;
+    return (int) -(move1->moveType - move2->moveType);
+}
+
+void GetAllLegalMovesSorted(Board *board, Move *moves, int *movesCount) {
+    GetAllLegalMoves(board, moves, movesCount);
+
+    if (*movesCount > 1) {
+        qsort(moves, *movesCount, sizeof (Move), &compt);
+    }
+}
+
 
 int GetAllLegalMovesToDepthCount(Board *board, int depth) {
     int *boardsCount = malloc(sizeof (int) * (depth + 1)); // Count of boards in each depth

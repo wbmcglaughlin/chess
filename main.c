@@ -212,7 +212,7 @@ int main(void) {
 
     FILE *fptr;
 
-    fptr = fopen("resources/Results/game.csv", "w");
+    fptr = fopen("resources/Results/game_sorted.csv", "w");
     fprintf(fptr, "move, calls, \n");
     for (int i = 0; i < board->moveCount; i++) {
         fprintf(fptr, "%i, %i\n", i, botInput.calls[i]);

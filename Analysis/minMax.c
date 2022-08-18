@@ -58,7 +58,7 @@ MoveEval MiniMaxAB(Board *board, int depth, enum MinMax minMax, float *alpha, fl
     Move bestMove = moves[0];
 
     int moveCount = 0;
-    GetAllLegalMoves(board, moves, &moveCount);
+    GetAllLegalMovesSorted(board, moves, &moveCount);
 
     float alpha_new = *alpha;
     float beta_new = *beta;
