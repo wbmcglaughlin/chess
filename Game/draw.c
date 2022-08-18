@@ -121,7 +121,7 @@ void DrawArrow(int startSquare, int endSquare, Color color, BoardDimensions *bd)
 
     DrawLineEx(s, e, 12.0f, color);
 
-    float angle = 0.0f;
+    float angle;
 
     float rise = e.y - s.y;
     float run = e.x - s.x;

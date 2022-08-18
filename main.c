@@ -1,6 +1,9 @@
 #include "stdlib.h"
 #include "raylib.h"
 #include "time.h"
+#include "sys/types.h"
+#include "sys/stat.h"
+#include "unistd.h"
 #include "Game/board.h"
 #include "Game/moves.h"
 #include "Game/draw.h"
@@ -25,6 +28,12 @@ int main(void) {
 
     InitWindow(boardDimensions->screenWidth, boardDimensions->screenHeight, "Chess - v.0.2 [Will McGlaughlin]");
     SetTargetFPS(TARGET_FPS);
+
+    struct stat st = {0};
+
+    if (stat("resources/Results", &st) == -1) {
+        mkdir("resources/Results", 0700);
+    }
 
     // Menu
     // -----------------------------------------------------------------------------------------------------------------
@@ -128,10 +137,12 @@ int main(void) {
         }
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            while (firstArrow->next != NULL) {
+            if (!IsMoveNodeListEmpty(firstArrow)) {
+                while (firstArrow->next != NULL) {
+                    DeleteMoveNode(&firstArrow);
+                }
                 DeleteMoveNode(&firstArrow);
             }
-            DeleteMoveNode(&firstArrow);
         }
 
         if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) {
@@ -198,6 +209,16 @@ int main(void) {
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
+
+    FILE *fptr;
+
+    fptr = fopen("resources/Results/game.csv", "w");
+    fprintf(fptr, "move, calls, \n");
+    for (int i = 0; i < board->moveCount; i++) {
+        fprintf(fptr, "%i, %i\n", i, botInput.calls[i]);
+    }
+
+    fclose(fptr);
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
