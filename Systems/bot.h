@@ -21,6 +21,7 @@ struct BotInput {
     float *eval;
     int *hasMove;
     int *calls;
+    int *threadStarted;
 };
 
 typedef struct BotInput BotInput;

@@ -19,10 +19,10 @@
 
 #define DEPTH_SEARCH 1
 
-void BoardUpdateLoop(int players[2], Board *board, BoardDimensions *boardDimensions, BotInput *botInput, int *threadStarted, int *moveSquares, int *movesCount, Move *moves,
+void BoardUpdateLoop(int players[2], Board *board, BoardDimensions *boardDimensions, BotInput *botInput, int *moveSquares, int *movesCount, Move *moves,
                      int *getMoves, int *selected, int *pieceHeld);
 void PlayerTurnCheck(Board *board, BoardDimensions *boardDimensions, int *moveSquares, int *movesCount, Move *moves,
                      int *getMoves, int *selected, int *pieceHeld);
-void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *threadStarted, int *movesCount);
+void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *movesCount);
 
 #endif //CHESS_UPDATE_H

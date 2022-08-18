@@ -4,7 +4,7 @@
 
 #include "update.h"
 
-void BoardUpdateLoop(int players[2], Board *board, BoardDimensions *boardDimensions, BotInput *botInput, int *threadStarted, int *moveSquares, int *movesCount, Move *moves,
+void BoardUpdateLoop(int players[2], Board *board, BoardDimensions *boardDimensions, BotInput *botInput, int *moveSquares, int *movesCount, Move *moves,
                      int *getMoves, int *selected, int *pieceHeld) {
     // Update Board Check
     if (board->checkMate || board->draw) {
@@ -14,7 +14,7 @@ void BoardUpdateLoop(int players[2], Board *board, BoardDimensions *boardDimensi
     if (players[board->turn] == PLAYER) {
         PlayerTurnCheck(board, boardDimensions, moveSquares, movesCount, moves, getMoves, selected, pieceHeld);
     } else {
-        BotTurnCheck(botInput, boardDimensions, threadStarted, movesCount);
+        BotTurnCheck(botInput, boardDimensions, movesCount);
     }
 
     if (GetAllMovesCount(board) == 0) {
@@ -22,15 +22,15 @@ void BoardUpdateLoop(int players[2], Board *board, BoardDimensions *boardDimensi
     }
 }
 
-void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *threadStarted, int *movesCount) {
+void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *movesCount) {
     // Bot runs on a different thread
 
     // Check if the thread has started, if not, start the thread.
-    if (!*threadStarted) {
+    if (!*botInput->threadStarted) {
         pthread_t thread_id;
         pthread_create(&thread_id, NULL, MiniMaxBot, (void *)botInput);
 
-        *threadStarted = 1;
+        *botInput->threadStarted = 1;
         return;
     }
 
@@ -52,7 +52,7 @@ void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *thr
         free(movesArr);
 
         *botInput->hasMove = 0;
-        *threadStarted = 0;
+        *botInput->threadStarted = 0;
     }
 }
 

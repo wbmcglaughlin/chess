@@ -94,7 +94,7 @@ int main(void) {
     Move move = (Move) {-1, -1};
     float eval = 0.0f;
     int *calls = malloc(sizeof (int) * MAX_TURNS);
-    BotInput botInput = (BotInput) {board, &move, &eval, &hasMove, calls};
+    BotInput botInput = (BotInput) {board, &move, &eval, &hasMove, calls, &threadStarted};
 
     // Player Drawn Arrows
     MoveNodePtr firstArrow = NULL;
@@ -124,7 +124,6 @@ int main(void) {
                         board,
                         boardDimensions,
                         &botInput,
-                        &threadStarted,
                         moveSquares,
                         &movesCount,
                         moves,
