@@ -4,21 +4,21 @@
 
 #include "update.h"
 
-void BoardUpdateLoop(int players[2], Board *board, BoardDimensions *boardDimensions, BotInput *botInput, int *moveSquares, int *movesCount, Move *moves,
+void BoardUpdateLoop(Game *gameInstance, BoardDimensions *boardDimensions,
                      int *getMoves, int *selected, int *pieceHeld) {
     // Update Board Check
-    if (board->checkMate || board->draw) {
+    if (gameInstance->board->checkMate || gameInstance->board->draw) {
         return;
     }
 
-    if (players[board->turn] == PLAYER) {
-        PlayerTurnCheck(board, boardDimensions, moveSquares, movesCount, moves, getMoves, selected, pieceHeld);
+    if (gameInstance->players[gameInstance->board->turn] == PLAYER) {
+        PlayerTurnCheck(gameInstance->board, boardDimensions, gameInstance->moveSquares, &gameInstance->movesCount, gameInstance->moves, getMoves, selected, pieceHeld);
     } else {
-        BotTurnCheck(botInput, boardDimensions, movesCount);
+        BotTurnCheck(&gameInstance->botInput, boardDimensions, &gameInstance->movesCount);
     }
 
-    if (GetAllMovesCount(board) == 0) {
-        board->checkMate = 1;
+    if (GetAllMovesCount(gameInstance->board) == 0) {
+        gameInstance->board->checkMate = 1;
     }
 }
 

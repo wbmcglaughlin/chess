@@ -9,9 +9,9 @@
 #include "Game/draw.h"
 #include "Game/update.h"
 #include "Game/moveList.h"
+#include "Game/gameInstance.h"
 
 #define TARGET_FPS 60
-#define MAX_TURNS 5000
 
 int main(void) {
     // Initialization
@@ -66,35 +66,12 @@ int main(void) {
     char *fen;
     fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-    Board *board = CreateBoard();
-    if (board == NULL) {
-        exit(-1);
-    }
-
-    int *moveSquares = malloc(sizeof(int) * SQUARE_COUNT * SQUARE_COUNT);
-    ClearMoves(moveSquares);
-
-    int movesCount = 0;
-    Move *moves = malloc(sizeof(Move) * MAX_MOVES);
-
-    FenToBoard(fen, board);
+    Game *gameInstance = NewGameInstanceFromFen(fen);
 
     // Game Variables
     int selected = -1;
     int pieceHeld = 0;
     int getMoves = 1;
-
-    board->turn = 1;
-    int players[2] = {BOT, BOT};
-
-    // Bot Information
-    int hasMove = 0;
-    int threadStarted = 0;
-
-    Move move = (Move) {-1, -1};
-    float eval = 0.0f;
-    int *calls = malloc(sizeof (int) * MAX_TURNS);
-    BotInput botInput = (BotInput) {board, &move, &eval, &hasMove, calls, &threadStarted};
 
     // Player Drawn Arrows
     MoveNodePtr firstArrow = NULL;
@@ -109,24 +86,19 @@ int main(void) {
         BeginDrawing();
 
         ClearBackground(backgroundColor);
-        DrawBoard(boardDimensions, moveSquares, selected);
-        DrawPieces(boardDimensions, board, textures, pieceHeld, selected, GetMousePosition());
+        DrawBoard(boardDimensions, gameInstance->moveSquares, selected);
+        DrawPieces(boardDimensions, gameInstance->board, textures, pieceHeld, selected, GetMousePosition());
 
         if (CheckCollisionPointRec(GetMousePosition(), restartButtonRec)) {
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                FenToBoard(fen, board);
+                FenToBoard(fen, gameInstance->board);
             }
         }
 
         // Update
         //----------------------------------------------------------------------------------
-        BoardUpdateLoop(players,
-                        board,
+        BoardUpdateLoop(gameInstance,
                         boardDimensions,
-                        &botInput,
-                        moveSquares,
-                        &movesCount,
-                        moves,
                         &getMoves,
                         &selected,
                         &pieceHeld);
@@ -160,25 +132,25 @@ int main(void) {
             squarePressed = -1;
         }
 
-        DrawText(TextFormat("Score: %.2f", board->eval),
+        DrawText(TextFormat("Score: %.2f", gameInstance->board->eval),
                  (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
                  boardDimensions->cornerY,
                  FONT_SIZE,
                  BLACK);
 
-        DrawText(TextFormat("Moves: %i", movesCount),
+        DrawText(TextFormat("Moves: %i", gameInstance->movesCount),
                  (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
                  boardDimensions->cornerY + 20,
                  FONT_SIZE,
                  BLACK);
 
-        DrawText(TextFormat("Calls: %i", calls[board->moveCount]),
+        DrawText(TextFormat("Calls: %i", gameInstance->botInput.calls[gameInstance->board->moveCount]),
                  (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
                  boardDimensions->cornerY + 40,
                  FONT_SIZE,
                  BLACK);
 
-        DrawText(TextFormat("Half Move Clock: %i", board->halfMoveClock),
+        DrawText(TextFormat("Half Move Clock: %i", gameInstance->board->halfMoveClock),
                  (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
                  boardDimensions->cornerY + 60,
                  FONT_SIZE,
@@ -197,11 +169,11 @@ int main(void) {
             }
         }
 
-        if (board->checkMate) {
+        if (gameInstance->board->checkMate) {
             DrawText("Checkmate!", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);
         }
 
-        if (board->draw) {
+        if (gameInstance->board->draw) {
             DrawText("Draw :(", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);
         }
 
@@ -213,8 +185,8 @@ int main(void) {
 
     fptr = fopen("resources/Results/game_sorted.csv", "w");
     fprintf(fptr, "move, calls, \n");
-    for (int i = 0; i < board->moveCount; i++) {
-        fprintf(fptr, "%i, %i\n", i, botInput.calls[i]);
+    for (int i = 0; i < gameInstance->board->moveCount; i++) {
+        fprintf(fptr, "%i, %i\n", i, gameInstance->botInput.calls[i]);
     }
 
     fclose(fptr);
@@ -229,9 +201,7 @@ int main(void) {
     CloseWindow();                // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
-    FreeBoard(board);
-    free(moves);
-    free(moveSquares);
+    FreeGameInstance(gameInstance);
     free(boardDimensions);
 
     return 0;

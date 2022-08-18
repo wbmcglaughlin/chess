@@ -16,10 +16,11 @@
 #include "board.h"
 #include "draw.h"
 #include "../Systems/bot.h"
+#include "gameInstance.h"
 
 #define DEPTH_SEARCH 1
 
-void BoardUpdateLoop(int players[2], Board *board, BoardDimensions *boardDimensions, BotInput *botInput, int *moveSquares, int *movesCount, Move *moves,
+void BoardUpdateLoop(Game *gameInstance, BoardDimensions *boardDimensions,
                      int *getMoves, int *selected, int *pieceHeld);
 void PlayerTurnCheck(Board *board, BoardDimensions *boardDimensions, int *moveSquares, int *movesCount, Move *moves,
                      int *getMoves, int *selected, int *pieceHeld);
