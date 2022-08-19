@@ -41,3 +41,29 @@ void FreeGameInstance(Game *game) {
     free(game);
 }
 
+void DrawGameInstanceInfo(Game *gameInstance, BoardDimensions *boardDimensions) {
+    DrawText(TextFormat("Score: %.2f", gameInstance->board->eval),
+             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+             boardDimensions->cornerY,
+             FONT_SIZE,
+             BLACK);
+
+    DrawText(TextFormat("Moves: %i", gameInstance->movesCount),
+             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+             boardDimensions->cornerY + 20,
+             FONT_SIZE,
+             BLACK);
+
+    DrawText(TextFormat("Calls: %i", gameInstance->botInput.calls[gameInstance->board->moveCount]),
+             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+             boardDimensions->cornerY + 40,
+             FONT_SIZE,
+             BLACK);
+
+    DrawText(TextFormat("Half Move Clock: %i", gameInstance->board->halfMoveClock),
+             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+             boardDimensions->cornerY + 60,
+             FONT_SIZE,
+             BLACK);
+}
+

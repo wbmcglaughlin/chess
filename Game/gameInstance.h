@@ -23,6 +23,7 @@ struct Game {
 
 typedef struct Game Game;
 
+void DrawGameInstanceInfo(Game *gameInstance, BoardDimensions *boardDimensions);
 Game *NewGameInstanceFromFen(char*fen);
 void FreeGameInstance(Game *game);
 

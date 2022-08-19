@@ -288,18 +288,6 @@ void UpdateMovesLegality(Board *board, int *moves, int selected) {
     }
 }
 
-int IsMoveLegal(Board *board, int selected, int move, int moveType) {
-    int col = board->turn;
-    Board *boardUpdated = CopyBoard(board);
-    UpdateBoard(boardUpdated, selected, move, moveType);
-    if (!IsKingInCheck(boardUpdated, col)) {
-        FreeBoard(boardUpdated);
-        return 1;
-    }
-    FreeBoard(boardUpdated);
-    return 0;
-}
-
 int IsKingInCheck(Board *board, int col) {
     int kingPos = board->kingPos[col];
 
@@ -453,7 +441,7 @@ int IsKingInCheck(Board *board, int col) {
 
 void GetAllLegalMoves(Board *board, Move *moves, int *movesCount) {
     ///
-    // Function to get all legal moves given a current board.
+    /// Function to get all legal moves given a current board.
     ///
     *movesCount = 0;
     int *movesArr = malloc(SQUARES * sizeof (int));
@@ -491,7 +479,6 @@ void GetAllLegalMovesSorted(Board *board, Move *moves, int *movesCount) {
         qsort(moves, *movesCount, sizeof (Move), &compt);
     }
 }
-
 
 int GetAllLegalMovesToDepthCount(Board *board, int depth) {
     int *boardsCount = malloc(sizeof (int) * (depth + 1)); // Count of boards in each depth
@@ -555,6 +542,18 @@ void GetNewBoards(Board **currentBoards, Board **newBoards, const int *currentBo
 
     free(movesCounts);
     movesCounts = NULL;
+}
+
+int IsMoveLegal(Board *board, int selected, int move, int moveType) {
+    int col = board->turn;
+    Board *boardUpdated = CopyBoard(board);
+    UpdateBoard(boardUpdated, selected, move, moveType);
+    if (!IsKingInCheck(boardUpdated, col)) {
+        FreeBoard(boardUpdated);
+        return 1;
+    }
+    FreeBoard(boardUpdated);
+    return 0;
 }
 
 int GetAllMovesCount(Board *board) {

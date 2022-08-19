@@ -132,29 +132,7 @@ int main(void) {
             squarePressed = -1;
         }
 
-        DrawText(TextFormat("Score: %.2f", gameInstance->board->eval),
-                 (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
-                 boardDimensions->cornerY,
-                 FONT_SIZE,
-                 BLACK);
-
-        DrawText(TextFormat("Moves: %i", gameInstance->movesCount),
-                 (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
-                 boardDimensions->cornerY + 20,
-                 FONT_SIZE,
-                 BLACK);
-
-        DrawText(TextFormat("Calls: %i", gameInstance->botInput.calls[gameInstance->board->moveCount]),
-                 (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
-                 boardDimensions->cornerY + 40,
-                 FONT_SIZE,
-                 BLACK);
-
-        DrawText(TextFormat("Half Move Clock: %i", gameInstance->board->halfMoveClock),
-                 (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
-                 boardDimensions->cornerY + 60,
-                 FONT_SIZE,
-                 BLACK);
+        DrawGameInstanceInfo(gameInstance, boardDimensions);
 
         // Restart Game Button Drawing
         DrawRectangleRec(restartButtonRec, GRAY);
@@ -183,7 +161,7 @@ int main(void) {
 
     FILE *fptr;
 
-    fptr = fopen("resources/Results/game_sorted.csv", "w");
+    fptr = fopen("resources/Results/game.csv", "w");
     fprintf(fptr, "move, calls, \n");
     for (int i = 0; i < gameInstance->board->moveCount; i++) {
         fprintf(fptr, "%i, %i\n", i, gameInstance->botInput.calls[i]);

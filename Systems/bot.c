@@ -130,7 +130,3 @@ Move BestScoreBot(Board *board) {
 
     return move;
 }
-
-MoveEval MiniMaxTimeLimitBot(Board *board, float time) {
-
-}
