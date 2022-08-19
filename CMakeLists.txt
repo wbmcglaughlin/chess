@@ -20,7 +20,7 @@ endif()
 
 # Our Project
 
-add_executable(${PROJECT_NAME} main.c Game/board.c Game/board.h Game/moves.h Game/moves.c Game/draw.h Game/draw.c Systems/arrayFunc.h Systems/arrayFunc.c Systems/bot.h Systems/bot.c Analysis/minMax.c Game/update.h Game/update.c Game/moveList.h Game/moveList.c Game/gameInstance.h Game/gameInstance.c)
+add_executable(${PROJECT_NAME} main.c Game/board.c Game/board.h Game/moves.h Game/moves.c Game/draw.h Game/draw.c Systems/arrayFunc.h Systems/arrayFunc.c Systems/bot.h Systems/bot.c Analysis/minMax.c Game/update.h Game/update.c Game/moveList.h Game/moveList.c Game/gameInstance.h Game/gameInstance.c Game/arrows.h Game/arrows.c)
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
 

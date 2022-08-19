@@ -1,15 +1,14 @@
 #include "stdlib.h"
 #include "raylib.h"
 #include "time.h"
-#include "sys/types.h"
 #include "sys/stat.h"
-#include "unistd.h"
 #include "Game/board.h"
 #include "Game/moves.h"
 #include "Game/draw.h"
 #include "Game/update.h"
 #include "Game/moveList.h"
 #include "Game/gameInstance.h"
+#include "Game/arrows.h"
 
 #define TARGET_FPS 60
 
@@ -68,6 +67,8 @@ int main(void) {
 
     Game *gameInstance = NewGameInstanceFromFen(fen);
 
+    Vector2 *mousePosition = malloc(sizeof (Vector2));
+
     // Game Variables
     int selected = -1;
     int pieceHeld = 0;
@@ -81,6 +82,7 @@ int main(void) {
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
+        *mousePosition = GetMousePosition();
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
@@ -89,7 +91,7 @@ int main(void) {
         DrawBoard(boardDimensions, gameInstance->moveSquares, selected);
         DrawPieces(boardDimensions, gameInstance->board, textures, pieceHeld, selected, GetMousePosition());
 
-        if (CheckCollisionPointRec(GetMousePosition(), restartButtonRec)) {
+        if (CheckCollisionPointRec(*mousePosition, restartButtonRec)) {
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 FenToBoard(fen, gameInstance->board);
             }
@@ -103,49 +105,17 @@ int main(void) {
                         &selected,
                         &pieceHeld);
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-            GetSelected(&squarePressed, GetMousePosition().x, GetMousePosition().y, boardDimensions);
-        }
-
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            if (!IsMoveNodeListEmpty(firstArrow)) {
-                while (firstArrow->next != NULL) {
-                    DeleteMoveNode(&firstArrow);
-                }
-                DeleteMoveNode(&firstArrow);
-            }
-        }
-
-        if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) {
-            GetSelected(&squareReleased, GetMousePosition().x, GetMousePosition().y, boardDimensions);
-
-            if (squarePressed != -1 && squareReleased != -1) {
-                Move arrowMove = (Move) {squarePressed, squareReleased, 0};
-                InsertMoveNode(&firstArrow, arrowMove);
-            }
-
-            squarePressed = -1;
-            squareReleased = -1;
-        }
-
-        if (!IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-            squarePressed = -1;
-        }
-
         DrawGameInstanceInfo(gameInstance, boardDimensions);
 
         // Restart Game Button Drawing
         DrawRectangleRec(restartButtonRec, GRAY);
-        DrawText("Restart", restartButtonCorner.x + 5.0f, restartButtonCorner.y + 5.0f, restartButtonRec.height / 1.1f, DARKGRAY);
+        DrawText("Restart",
+                 (int) (restartButtonCorner.x + 5.0f),
+                 (int) (restartButtonCorner.y + 5.0f),
+                 (int) (restartButtonRec.height / 1.1f),
+                 DARKGRAY);
 
-        MoveNodePtr startPtr = firstArrow;
-        if (!IsMoveNodeListEmpty(firstArrow)) {
-            DrawArrow(startPtr->move.pos, startPtr->move.target, BLUE, boardDimensions);
-            while (startPtr->next != NULL) {
-                startPtr = startPtr->next;
-                DrawArrow(startPtr->move.pos, startPtr->move.target, BLUE, boardDimensions);
-            }
-        }
+        DrawArrows(&firstArrow, &squarePressed, &squareReleased, mousePosition, boardDimensions);
 
         if (gameInstance->board->checkMate) {
             DrawText("Checkmate!", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);
