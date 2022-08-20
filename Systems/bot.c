@@ -22,14 +22,23 @@ BotInput *CreateBotInput(Board *board) {
     return botInput;
 }
 
+void FreeBotInput(BotInput *botInput) {
+    free(botInput->threadStarted);
+    free(botInput->hasMove);
+    free(botInput->eval);
+    free(botInput->move);
+    FreeBoard(botInput->board);
+    free(botInput);
+}
+
 void* MiniMaxBot(void *botInput) {
     BotInput *botInputStruct = (BotInput*) botInput;
     Board *board = botInputStruct->board;
 
     MoveEval *moveEval = GetEmptyMoveEval();
 
-    int maxDepth = 5;
-    int currentDepth = 5;
+    int maxDepth = 4;
+    int currentDepth = 4;
 
     while (currentDepth <= maxDepth) {
         float alpha = -BOARD_INFINITY;

@@ -27,6 +27,8 @@ struct BotInput {
 typedef struct BotInput BotInput;
 
 BotInput *CreateBotInput(Board *board);
+void FreeBotInput(BotInput *botInput);
+
 Move RandomBot(Board *board);
 Move CaptureFirstBot(Board *board);
 Move BestScoreBot(Board *board);

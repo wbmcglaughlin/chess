@@ -480,69 +480,69 @@ void GetAllLegalMovesSorted(Board *board, Move *moves, int *movesCount) {
     }
 }
 
-int GetAllLegalMovesToDepthCount(Board *board, int depth) {
-    int *boardsCount = malloc(sizeof (int) * (depth + 1)); // Count of boards in each depth
-    boardsCount[0] = 1; // One board to start
-    Board **currentBoards = malloc(sizeof (Board) * boardsCount[0]);
-    currentBoards[0] = board;
-
-    for (int d = 0; d < depth; d++) {
-        Board **newBoards = NULL;
-        GetNewBoards(currentBoards, newBoards, &boardsCount[d], &boardsCount[d+1]);
-        free(currentBoards);
-        currentBoards = newBoards;
-        free(newBoards);
-    }
-
-    int ret = boardsCount[depth];
-
-    free(currentBoards);
-    currentBoards = NULL;
-
-    free(boardsCount);
-    boardsCount = NULL;
-
-    return ret;
-}
-
-void GetNewBoards(Board **currentBoards, Board **newBoards, const int *currentBoardsCount, int *newBoardsCount) {
-    Move **moves = malloc(sizeof (Move) * MAX_MOVES * *currentBoardsCount);
-    int *movesCounts = malloc(sizeof (int) * *currentBoardsCount);
-    int movesSum = 0;
-
-    for (int i = 0; i < *currentBoardsCount; i++) {
-        Move *movesArr = malloc(sizeof (Move) * MAX_MOVES); // Array of moves for current board
-
-        int loopMoves = 0; // Moves in current loop
-        GetAllLegalMoves(currentBoards[i], movesArr, &loopMoves);
-
-        moves[i] = movesArr;
-        movesCounts[i] = loopMoves;
-        movesSum += loopMoves;
-    }
-
-    newBoards = malloc(sizeof (Board) * movesSum);
-    *newBoardsCount = 0;
-    for (int i = 0; i < *currentBoardsCount; i++) {
-        for (int j = 0; j < movesCounts[i]; j++) {
-            Board *newBoard = CopyBoard(currentBoards[i]);
-            UpdateBoard(newBoard, moves[i][j].pos, moves[i][j].target, moves[i][j].moveType);
-            newBoards[*newBoardsCount] = newBoard;
-            (*newBoardsCount)++;
-        }
-    }
-
-    for (int i = 0; i < *currentBoardsCount; i++) {
-        free(moves[i]);
-        moves[i] = NULL;
-    }
-
-    free(moves);
-    moves = NULL;
-
-    free(movesCounts);
-    movesCounts = NULL;
-}
+//int GetAllLegalMovesToDepthCount(Board *board, int depth) {
+//    int *boardsCount = malloc(sizeof (int) * (depth + 1)); // Count of boards in each depth
+//    boardsCount[0] = 1; // One board to start
+//    Board **currentBoards = malloc(sizeof (Board) * boardsCount[0]);
+//    currentBoards[0] = board;
+//
+//    for (int d = 0; d < depth; d++) {
+//        Board **newBoards = NULL;
+//        GetNewBoards(currentBoards, newBoards, &boardsCount[d], &boardsCount[d+1]);
+//        free(currentBoards);
+//        currentBoards = newBoards;
+//        free(newBoards);
+//    }
+//
+//    int ret = boardsCount[depth];
+//
+//    free(currentBoards);
+//    currentBoards = NULL;
+//
+//    free(boardsCount);
+//    boardsCount = NULL;
+//
+//    return ret;
+//}
+//
+//void GetNewBoards(Board **currentBoards, Board **newBoards, const int *currentBoardsCount, int *newBoardsCount) {
+//    Move **moves = malloc(sizeof (Move) * MAX_MOVES * *currentBoardsCount);
+//    int *movesCounts = malloc(sizeof (int) * *currentBoardsCount);
+//    int movesSum = 0;
+//
+//    for (int i = 0; i < *currentBoardsCount; i++) {
+//        Move *movesArr = malloc(sizeof (Move) * MAX_MOVES); // Array of moves for current board
+//
+//        int loopMoves = 0; // Moves in current loop
+//        GetAllLegalMoves(currentBoards[i], movesArr, &loopMoves);
+//
+//        moves[i] = movesArr;
+//        movesCounts[i] = loopMoves;
+//        movesSum += loopMoves;
+//    }
+//
+//    newBoards = malloc(sizeof (Board) * movesSum);
+//    *newBoardsCount = 0;
+//    for (int i = 0; i < *currentBoardsCount; i++) {
+//        for (int j = 0; j < movesCounts[i]; j++) {
+//            Board *newBoard = CopyBoard(currentBoards[i]);
+//            UpdateBoard(newBoard, moves[i][j].pos, moves[i][j].target, moves[i][j].moveType);
+//            newBoards[*newBoardsCount] = newBoard;
+//            (*newBoardsCount)++;
+//        }
+//    }
+//
+//    for (int i = 0; i < *currentBoardsCount; i++) {
+//        free(moves[i]);
+//        moves[i] = NULL;
+//    }
+//
+//    free(moves);
+//    moves = NULL;
+//
+//    free(movesCounts);
+//    movesCounts = NULL;
+//}
 
 int IsMoveLegal(Board *board, int selected, int move, int moveType) {
     int col = board->turn;

@@ -150,6 +150,7 @@ int main(void) {
 
     FreeGameInstance(gameInstance);
     free(boardDimensions);
+    free(mousePosition);
 
     return 0;
 }

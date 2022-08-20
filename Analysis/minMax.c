@@ -89,6 +89,7 @@ MoveEval MiniMaxAB(Board *board, int depth, enum MinMax minMax, float *alpha, fl
 
             if (beta_new <= bestEval) {
                 FreeBoard(newBoard);
+                free(moves);
                 return (MoveEval) {&bestMove, bestEval};
             }
         } else if (minMax == Min) {
@@ -103,6 +104,7 @@ MoveEval MiniMaxAB(Board *board, int depth, enum MinMax minMax, float *alpha, fl
 
             if (bestEval <= alpha_new) {
                 FreeBoard(newBoard);
+                free(moves);
                 return (MoveEval) {&bestMove, bestEval};
             }
         }

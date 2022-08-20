@@ -38,6 +38,7 @@ Game *NewGameInstanceFromFen(char* fen) {
 void FreeGameInstance(Game *game) {
     FreeBoard(game->board);
     free(game->botInput.calls);
+    FreeBotInput(&game->botInput);
     free(game->moves);
     free(game->moveSquares);
     free(game);
