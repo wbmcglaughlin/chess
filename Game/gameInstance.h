@@ -19,6 +19,7 @@ struct Game {
     int moveCount;
     int players[2];
     BotInput botInput;
+    float eval;
 };
 
 typedef struct Game Game;

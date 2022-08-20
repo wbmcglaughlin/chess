@@ -3,7 +3,6 @@
 #include "time.h"
 #include "sys/stat.h"
 #include "Game/board.h"
-#include "Game/moves.h"
 #include "Game/draw.h"
 #include "Game/update.h"
 #include "Game/moveList.h"
@@ -30,15 +29,15 @@ int main(void) {
 
     struct stat st = {0};
 
-    if (stat("resources/Results", &st) == -1) {
-        mkdir("resources/Results", 0700);
+    if (stat("resources/results", &st) == -1) {
+        mkdir("resources/results", 0700);
     }
 
     // Menu
     // -----------------------------------------------------------------------------------------------------------------
     static Color backgroundColor = (Color) {120, 120, 120, 255};
 
-    Vector2 restartButtonCorner = (Vector2) {2.0f * boardDimensions->cornerX + boardDimensions->sideSize,
+    Vector2 restartButtonCorner = (Vector2) {2.0f * (float) boardDimensions->cornerX + (float) boardDimensions->sideSize,
                                              (float) boardDimensions->cornerY + (float) boardDimensions->sideSize - 100.0f};
     Rectangle restartButtonRec = (Rectangle) {restartButtonCorner.x,
                                               restartButtonCorner.y,
@@ -131,8 +130,8 @@ int main(void) {
 
     FILE *fptr;
 
-    fptr = fopen("resources/Results/game.csv", "w");
-    fprintf(fptr, "move, calls, \n");
+    fptr = fopen("resources/results/game.csv", "w");
+    fprintf(fptr, "move, calls \n");
     for (int i = 0; i < gameInstance->board->moveCount; i++) {
         fprintf(fptr, "%i, %i\n", i, gameInstance->botInput.calls[i]);
     }

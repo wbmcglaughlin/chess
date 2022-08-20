@@ -14,7 +14,7 @@ void BoardUpdateLoop(Game *gameInstance, BoardDimensions *boardDimensions,
     if (gameInstance->players[gameInstance->board->turn] == PLAYER) {
         PlayerTurnCheck(gameInstance->board, boardDimensions, gameInstance->moveSquares, &gameInstance->movesCount, gameInstance->moves, getMoves, selected, pieceHeld);
     } else {
-        BotTurnCheck(&gameInstance->botInput, boardDimensions, &gameInstance->movesCount);
+        BotTurnCheck(gameInstance, boardDimensions, &gameInstance->movesCount);
     }
 
     if (GetAllMovesCount(gameInstance->board) == 0) {
@@ -22,8 +22,9 @@ void BoardUpdateLoop(Game *gameInstance, BoardDimensions *boardDimensions,
     }
 }
 
-void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *movesCount) {
+void BotTurnCheck(Game *gameInstance, BoardDimensions *boardDimensions, int *movesCount) {
     // Bot runs on a different thread
+    BotInput *botInput = &gameInstance->botInput;
 
     // Check if the thread has started, if not, start the thread.
     if (!*botInput->threadStarted) {
@@ -45,6 +46,7 @@ void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *mov
     if (*botInput->hasMove) {
         Move botMove = *botInput->move;
         UpdateBoard(botInput->board, botMove.pos, botMove.target, botMove.moveType);
+        gameInstance->eval = *botInput->eval;
 
         *movesCount = 0;
         Move *movesArr = malloc(SQUARES * sizeof(Move));

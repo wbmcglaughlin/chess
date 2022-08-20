@@ -24,6 +24,6 @@ void BoardUpdateLoop(Game *gameInstance, BoardDimensions *boardDimensions,
                      int *getMoves, int *selected, int *pieceHeld);
 void PlayerTurnCheck(Board *board, BoardDimensions *boardDimensions, int *moveSquares, int *movesCount, Move *moves,
                      int *getMoves, int *selected, int *pieceHeld);
-void BotTurnCheck(BotInput *botInput, BoardDimensions *boardDimensions, int *movesCount);
+void BotTurnCheck(Game *gameInstance, BoardDimensions *boardDimensions, int *movesCount);
 
 #endif //CHESS_UPDATE_H

@@ -30,6 +30,8 @@ Game *NewGameInstanceFromFen(char* fen) {
     game->botInput = *CreateBotInput(board);
     game->botInput.calls = malloc(sizeof (int ) * MAX_MOVES);
 
+    game->eval = 0.0f;
+
     return game;
 }
 
@@ -42,7 +44,7 @@ void FreeGameInstance(Game *game) {
 }
 
 void DrawGameInstanceInfo(Game *gameInstance, BoardDimensions *boardDimensions) {
-    DrawText(TextFormat("Score: %.2f", gameInstance->board->eval),
+    DrawText(TextFormat("Score: %.2f", gameInstance->eval),
              (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
              boardDimensions->cornerY,
              FONT_SIZE,

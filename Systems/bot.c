@@ -28,8 +28,8 @@ void* MiniMaxBot(void *botInput) {
 
     MoveEval *moveEval = GetEmptyMoveEval();
 
-    int maxDepth = 4;
-    int currentDepth = 4;
+    int maxDepth = 5;
+    int currentDepth = 5;
 
     while (currentDepth <= maxDepth) {
         float alpha = -BOARD_INFINITY;
@@ -42,7 +42,7 @@ void* MiniMaxBot(void *botInput) {
         }
 
         currentDepth++;
-
+        botInputStruct->eval = &moveEval->eval;
         *botInputStruct->move = *moveEval->move;
     }
 
