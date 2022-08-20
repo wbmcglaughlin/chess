@@ -5,7 +5,7 @@
 #include "bot.h"
 
 BotInput *CreateBotInput(Board *board) {
-    BotInput *botInput = malloc(sizeof (*botInput));
+    BotInput *botInput = malloc(sizeof (BotInput));
     botInput->board = board;
 
     Move *move = malloc(sizeof (Move));
@@ -18,6 +18,8 @@ BotInput *CreateBotInput(Board *board) {
     *botInput->hasMove = 0;
     botInput->threadStarted = malloc(sizeof (int ));
     *botInput->threadStarted = 0;
+    botInput->threadRunning = malloc(sizeof (int ));
+    *botInput->threadRunning = 0;
 
     return botInput;
 }
@@ -25,10 +27,7 @@ BotInput *CreateBotInput(Board *board) {
 void FreeBotInput(BotInput *botInput) {
     free(botInput->threadStarted);
     free(botInput->hasMove);
-    free(botInput->eval);
     free(botInput->move);
-    FreeBoard(botInput->board);
-    free(botInput);
 }
 
 void* MiniMaxBot(void *botInput) {
@@ -37,8 +36,8 @@ void* MiniMaxBot(void *botInput) {
 
     MoveEval *moveEval = GetEmptyMoveEval();
 
-    int maxDepth = 4;
-    int currentDepth = 4;
+    int maxDepth = 6;
+    int currentDepth = 6;
 
     while (currentDepth <= maxDepth) {
         float alpha = -BOARD_INFINITY;
@@ -56,6 +55,7 @@ void* MiniMaxBot(void *botInput) {
     }
 
     *botInputStruct->hasMove = 1;
+    *botInputStruct->threadRunning = 0;
 
     free(moveEval);
 

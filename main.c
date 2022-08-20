@@ -147,6 +147,12 @@ int main(void) {
 
     CloseWindow();                // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
+    int wait_time = 1;
+
+    while (*gameInstance->botInput.threadRunning == 1) {
+        wait(&wait_time);
+        printf("\rWaiting for thread to finish!");
+    }
 
     FreeGameInstance(gameInstance);
     free(boardDimensions);

@@ -32,6 +32,7 @@ void BotTurnCheck(Game *gameInstance, BoardDimensions *boardDimensions, int *mov
         pthread_create(&thread_id, NULL, MiniMaxBot, (void *)botInput);
 
         *botInput->threadStarted = 1;
+        *botInput->threadRunning = 1;
         return;
     }
 

@@ -22,6 +22,7 @@ struct BotInput {
     int *hasMove;
     int *calls;
     int *threadStarted;
+    int *threadRunning;
 };
 
 typedef struct BotInput BotInput;
