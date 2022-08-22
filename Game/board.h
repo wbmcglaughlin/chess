@@ -17,7 +17,33 @@
 #define MAX_FEN_LENGTH 90
 #define UNIQUE_PIECE_TEXTURES 12
 
-#define PIECES "PpRrNnBbQqKk"
+#define PIECES "PpNnBbRrQqKk"
+#define PAWN 0
+#define KNIGHT 1
+#define BISHOP 2
+#define ROOK 3
+#define QUEEN 4
+#define KING 5
+
+/* board representation */
+#define WHITE_PIECE  0
+#define BLACK_PIECE  1
+
+#define WHITE_PAWN      (2*PAWN   + WHITE_PIECE)
+#define BLACK_PAWN      (2*PAWN   + BLACK_PIECE)
+#define WHITE_KNIGHT    (2*KNIGHT + WHITE_PIECE)
+#define BLACK_KNIGHT    (2*KNIGHT + BLACK_PIECE)
+#define WHITE_BISHOP    (2*BISHOP + WHITE_PIECE)
+#define BLACK_BISHOP    (2*BISHOP + BLACK_PIECE)
+#define WHITE_ROOK      (2*ROOK   + WHITE_PIECE)
+#define BLACK_ROOK      (2*ROOK   + BLACK_PIECE)
+#define WHITE_QUEEN     (2*QUEEN  + WHITE_PIECE)
+#define BLACK_QUEEN     (2*QUEEN  + BLACK_PIECE)
+#define WHITE_KING      (2*KING   + WHITE_PIECE)
+#define BLACK_KING      (2*KING   + BLACK_PIECE)
+#define EMPTY           (BLACK_KING  +  1)
+
+#define PCOLOR(p) ((p)&1)
 
 enum MoveType {
     INVALID = 0,
@@ -51,7 +77,7 @@ struct BoardSquare {
 };
 
 struct Piece {
-    char type;
+    int type;
     int pos;
     int color;
     float score;

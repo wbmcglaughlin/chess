@@ -36,7 +36,7 @@ int PosIsValid(int pos) {
 }
 
 void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
-    if (board->Board[pieceSquare].type == 'p' || board->Board[pieceSquare].type == 'P'  || moveType == CAPTURE) {
+    if (board->Board[pieceSquare].type == BLACK_PAWN || board->Board[pieceSquare].type == WHITE_PAWN  || moveType == CAPTURE) {
         board->halfMoveClock = 0;
     } else {
         board->halfMoveClock += 1;
@@ -44,12 +44,12 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
 
     // Check if enpassant
     board->enpassant = -1;
-    if (board->Board[pieceSquare].type == 'p' || board->Board[pieceSquare].type == 'P') {
+    if (board->Board[pieceSquare].type == BLACK_PAWN || board->Board[pieceSquare].type == WHITE_PAWN) {
         if (abs(pieceSquare - selected) == SQUARE_COUNT * 2) {
             board->enpassant = (pieceSquare + selected) / 2;
         }
     }
-    if (board->Board[pieceSquare].type == 'r' || board->Board[pieceSquare].type == 'R') {
+    if (board->Board[pieceSquare].type == BLACK_ROOK || board->Board[pieceSquare].type == WHITE_ROOK) {
         if (board->Board[pieceSquare].color == 0) {
             if (pieceSquare == SQUARES - 1) {
                 board->castle[2] = 0;
@@ -64,9 +64,9 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
             }
         }
     }
-    if (board->Board[pieceSquare].type == 'k' || board->Board[pieceSquare].type == 'K') {
+    if (board->Board[pieceSquare].type == BLACK_KING || board->Board[pieceSquare].type == WHITE_KING) {
         board->kingPos[board->Board[pieceSquare].color] = selected;
-        if (board->Board[pieceSquare].type == 'k') {
+        if (board->Board[pieceSquare].type == BLACK_KING) {
             board->castle[2] = 0;
             board->castle[3] = 0;
         } else {
@@ -77,18 +77,18 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
 
     Piece *piece = malloc(sizeof (Piece));
     *piece = board->Board[pieceSquare];
-    board->Board[pieceSquare] = (Piece) {'e', pieceSquare, -1};
+    board->Board[pieceSquare] = (Piece) {EMPTY, pieceSquare, -1};
     if (moveType == ENPASSANT) {
         int takenSquare = pieceSquare;
         takenSquare += ((pieceSquare % SQUARE_COUNT - selected % SQUARE_COUNT) == 1 ? -1 : 1);
-        board->Board[takenSquare] = (Piece) {'e', takenSquare, -1};
+        board->Board[takenSquare] = (Piece) {EMPTY, takenSquare, -1};
     }
     board->Board[selected] = *piece;
     if (moveType == PROMOTION) {
         if (board->Board[selected].color == 1) {
-            board->Board[selected] = (Piece) {'Q', selected, 1};
+            board->Board[selected] = (Piece) {WHITE_QUEEN, selected, 1};
         } else {
-            board->Board[selected] = (Piece) {'q', selected, 0};
+            board->Board[selected] = (Piece) {BLACK_QUEEN, selected, 0};
         }
     }
     if (moveType == CASTLE) {
@@ -152,7 +152,7 @@ void FenToBoard(const char *fen, Board *board) {
                 int index;
                 e = strchr(PIECES, character);
                 index = (int) (e - PIECES);
-                board->Board[pos] = (Piece) {character, pos, isupper(character) ? 1 : 0, (float) values[index]};
+                board->Board[pos] = (Piece) {index, pos, isupper(character) ? 1 : 0, (float) values[index]};
                 if (character == 'k') {
                     board->kingPos[0] = pos;
                 } else if (character == 'K') {
@@ -165,7 +165,7 @@ void FenToBoard(const char *fen, Board *board) {
                     if (posChange <= 8) {
                         for (int i = 0; i < posChange; i++) {
                             pos = row * SQUARE_COUNT + col;
-                            board->Board[pos] = (Piece) {'e', pos, -1, 0.0f};
+                            board->Board[pos] = (Piece) {EMPTY, pos, -1, 0.0f};
                             ++col;
                         }
                     } else {

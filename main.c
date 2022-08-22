@@ -48,18 +48,18 @@ int main(void) {
     SetTextureFilter(GetFontDefault().texture, TEXTURE_FILTER_POINT);
     Texture2D pw = LoadTexture("resources/pieces/pw.png");
     Texture2D pb = LoadTexture("resources/pieces/pb.png");
-    Texture2D rw = LoadTexture("resources/pieces/rw.png");
-    Texture2D rb = LoadTexture("resources/pieces/rb.png");
     Texture2D nw = LoadTexture("resources/pieces/nw.png");
     Texture2D nb = LoadTexture("resources/pieces/nb.png");
     Texture2D bw = LoadTexture("resources/pieces/bw.png");
     Texture2D bb = LoadTexture("resources/pieces/bb.png");
+    Texture2D rw = LoadTexture("resources/pieces/rw.png");
+    Texture2D rb = LoadTexture("resources/pieces/rb.png");
     Texture2D qw = LoadTexture("resources/pieces/qw.png");
     Texture2D qb = LoadTexture("resources/pieces/qb.png");
     Texture2D kw = LoadTexture("resources/pieces/kw.png");
     Texture2D kb = LoadTexture("resources/pieces/kb.png");
 
-    Texture2D *textures[] = {&pw, &pb, &rw, &rb, &nw, &nb, &bw, &bb, &qw, &qb, &kw, &kb};
+    Texture2D *textures[] = {&pw, &pb, &nw, &nb, &bw, &bb, &rw, &rb, &qw, &qb, &kw, &kb};
 
     char *fen;
     fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";

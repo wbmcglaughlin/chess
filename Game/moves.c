@@ -5,19 +5,19 @@
 #include "moves.h"
 
 void GetMoves(Board *board, int *moves, int selected) {
-    char c = board->Board[selected].type;
-    if (c == 'p' || c == 'P') {
+    int c = board->Board[selected].type;
+    if (c == BLACK_PAWN || c == WHITE_PAWN) {
         GetPawnMoves(board, moves, selected);
-    } else if (c == 'r' || c == 'R') {
+    } else if (c == BLACK_ROOK || c == WHITE_ROOK) {
         GetRookMoves(board, moves, selected, 1);
-    } else if (c == 'b' || c == 'B') {
+    } else if (c == BLACK_BISHOP || c == WHITE_BISHOP) {
         GetBishopMoves(board, moves, selected);
-    } else if (c == 'q' || c == 'Q') {
+    } else if (c == BLACK_QUEEN || c == WHITE_QUEEN) {
         GetRookMoves(board, moves, selected, 0);
         GetBishopMoves(board, moves, selected);
-    } else if (c == 'k' || c == 'K') {
+    } else if (c == BLACK_KING || c == WHITE_KING) {
         GetKingMoves(board, moves, selected);
-    } else if (c == 'n' || c == 'N') {
+    } else if (c == BLACK_KNIGHT || c == WHITE_KNIGHT) {
         GetKnightMoves(board, moves, selected);
     }
 }
@@ -35,9 +35,9 @@ void GetPawnMoves(Board *board, int *moves, int selected) {
         f2 = selected + dir * 2 * SQUARE_COUNT;
     }
 
-    if (f1 >= 0 && f1 < SQUARES && board->Board[f1].type == 'e') {
+    if (f1 >= 0 && f1 < SQUARES && board->Board[f1].type == EMPTY) {
         moves[f1] = TO_EMPTY;
-        if (f2 >= 0 && f2 < SQUARES && board->Board[f2].type == 'e') {
+        if (f2 >= 0 && f2 < SQUARES && board->Board[f2].type == EMPTY) {
             moves[f2] = TO_EMPTY;
         }
         if (((int) f1 / SQUARE_COUNT == 0 && col == 0) || ((int) f1 / SQUARE_COUNT == SQUARE_COUNT - 1 && col == 1)) {
@@ -80,7 +80,7 @@ void GetRookMoves(Board *board, int *moves, int selected, int findLegal) {
         int pos = selected + dirUpDown[i];
         int blocked = 0;
         while (PosIsValid(pos) && !blocked) {
-            if (board->Board[pos].type == 'e') {
+            if (board->Board[pos].type == EMPTY) {
                 moves[pos] = TO_EMPTY;
             } else if (board->Board[pos].color != col) {
                 moves[pos] = CAPTURE;
@@ -94,7 +94,7 @@ void GetRookMoves(Board *board, int *moves, int selected, int findLegal) {
         pos = selected + dirLeftRight[i];
         blocked = 0;
         while (selected / SQUARE_COUNT == pos / SQUARE_COUNT && !blocked && PosIsValid(pos)) {
-            if (board->Board[pos].type == 'e') {
+            if (board->Board[pos].type == EMPTY) {
                 moves[pos] = TO_EMPTY;
             } else if (board->Board[pos].color != col) {
                 moves[pos] = CAPTURE;
@@ -122,7 +122,7 @@ void GetBishopMoves(Board *board, int *moves, int selected) {
         int blocked = 0;
         int diagDir = (pos % SQUARE_COUNT - pos_old % SQUARE_COUNT);
         while (PosIsValid(pos) && !blocked && diagDir == correctDiagDir[i]) {
-            if (board->Board[pos].type == 'e') {
+            if (board->Board[pos].type == EMPTY) {
                 moves[pos] = TO_EMPTY;
             } else if (board->Board[pos].color != col) {
                 moves[pos] = CAPTURE;
@@ -150,7 +150,7 @@ void GetKingMoves(Board *board, int *moves, int selected) {
 
         int diagDir = (pos % SQUARE_COUNT - pos_old % SQUARE_COUNT);
         if (PosIsValid(pos) && diagDir == correctDiagDir[i]) {
-            if (board->Board[pos].type == 'e') {
+            if (board->Board[pos].type == EMPTY) {
                 moves[pos] = TO_EMPTY;
             } else if (board->Board[pos].color != col) {
                 moves[pos] = CAPTURE;
@@ -164,7 +164,7 @@ void GetKingMoves(Board *board, int *moves, int selected) {
     for (int i = 0; i < 2; i++) {
         int pos = selected + dirUpDown[i];
         if (PosIsValid(pos)) {
-            if (board->Board[pos].type == 'e') {
+            if (board->Board[pos].type == EMPTY) {
                 moves[pos] = TO_EMPTY;
             } else if (board->Board[pos].color != col) {
                 moves[pos] = CAPTURE;
@@ -173,7 +173,7 @@ void GetKingMoves(Board *board, int *moves, int selected) {
 
         pos = selected + dirLeftRight[i];
         if (selected / SQUARE_COUNT == pos / SQUARE_COUNT) {
-            if (board->Board[pos].type == 'e') {
+            if (board->Board[pos].type == EMPTY) {
                 moves[pos] = TO_EMPTY;
             } else if (board->Board[pos].color != col) {
                 moves[pos] = CAPTURE;
@@ -186,7 +186,7 @@ void GetKingMoves(Board *board, int *moves, int selected) {
         // King Side Castle White
         if (board->castle[0] == 1) {
             for (int i = board->kingPos[1] + 1; i < SQUARE_COUNT - 1; i++) {
-                if (board->Board[i].type != 'e' || !IsMoveLegal(board, board->kingPos[1], i, TO_EMPTY)) {
+                if (board->Board[i].type != EMPTY || !IsMoveLegal(board, board->kingPos[1], i, TO_EMPTY)) {
                     isempty = 0;
                 }
             }
@@ -198,7 +198,7 @@ void GetKingMoves(Board *board, int *moves, int selected) {
         isempty = 1;
         if (board->castle[1] == 1) {
             for (int i = board->kingPos[1] - 1; i > 1; i--) {
-                if (board->Board[i].type != 'e' || !IsMoveLegal(board, board->kingPos[1], i, TO_EMPTY)) {
+                if (board->Board[i].type != EMPTY || !IsMoveLegal(board, board->kingPos[1], i, TO_EMPTY)) {
                     isempty = 0;
                 }
             }
@@ -211,7 +211,7 @@ void GetKingMoves(Board *board, int *moves, int selected) {
         isempty = 1;
         if (board->castle[2] == 1) {
             for (int i = board->kingPos[0] + 1; i < SQUARES - 1; i++) {
-                if (board->Board[i].type != 'e' || !IsMoveLegal(board, board->kingPos[0], i, TO_EMPTY)) {
+                if (board->Board[i].type != EMPTY || !IsMoveLegal(board, board->kingPos[0], i, TO_EMPTY)) {
                     isempty = 0;
                 }
             }
@@ -223,7 +223,7 @@ void GetKingMoves(Board *board, int *moves, int selected) {
         isempty = 1;
         if (board->castle[3] == 1) {
             for (int i = board->kingPos[0] - 1; i > SQUARES - SQUARE_COUNT + 1; i--) {
-                if (board->Board[i].type != 'e' || !IsMoveLegal(board, board->kingPos[0], i, TO_EMPTY)) {
+                if (board->Board[i].type != EMPTY || !IsMoveLegal(board, board->kingPos[0], i, TO_EMPTY)) {
                     isempty = 0;
                 }
             }
@@ -244,7 +244,7 @@ void GetKnightMoves(Board *board, int *moves, int selected) {
     for (int i = 0; i < 4; i++) {
         pos = selected + dir[i];
         if (PosIsValid(pos) && selected % SQUARE_COUNT - pos % SQUARE_COUNT == -rowDif[i]) {
-            if (board->Board[pos].type == 'e') {
+            if (board->Board[pos].type == EMPTY) {
                 moves[pos] = TO_EMPTY;
             } else if (board->Board[pos].color != col) {
                 moves[pos] = CAPTURE;
@@ -253,7 +253,7 @@ void GetKnightMoves(Board *board, int *moves, int selected) {
 
         pos = selected - dir[i];
         if (PosIsValid(pos) && selected % SQUARE_COUNT - pos % SQUARE_COUNT == rowDif[i]) {
-            if (board->Board[pos].type == 'e') {
+            if (board->Board[pos].type == EMPTY) {
                 moves[pos] = TO_EMPTY;
             } else if (board->Board[pos].color != col) {
                 moves[pos] = CAPTURE;
@@ -292,9 +292,9 @@ int IsKingInCheck(Board *board, int col) {
     int kingPos = board->kingPos[col];
 
     // Check for Pawns
-    char type = 'p';
+    char type = BLACK_PAWN;
     if (col == 0) {
-        type = (char) toupper(type);
+        type = WHITE_PAWN;
     }
     int dirPawn = 1;
     if (col == 0) {
@@ -314,9 +314,9 @@ int IsKingInCheck(Board *board, int col) {
     }
 
     // Check For Knights
-    type = 'n';
+    type = BLACK_KNIGHT;
     if (col == 0) {
-        type = (char) toupper(type);
+        type = WHITE_KNIGHT;
     }
     int dir[4] = {-SQUARE_COUNT - 2, -SQUARE_COUNT + 2, -2 * SQUARE_COUNT - 1, -2 * SQUARE_COUNT + 1};
     int rowDif[4] = {-2, 2, -1, 1};
@@ -338,11 +338,11 @@ int IsKingInCheck(Board *board, int col) {
     }
 
     // Check For Rooks or Queens
-    type = 'r';
-    char type2 = 'q';
+    type = BLACK_ROOK;
+    char type2 = BLACK_QUEEN;
     if (col == 0) {
-        type = (char) toupper(type);
-        type2 = (char) toupper(type2);
+        type = WHITE_ROOK;
+        type2 = WHITE_QUEEN;
     }
     int dirUpDown[2] = {SQUARE_COUNT, -SQUARE_COUNT};
     int dirLeftRight[2] = {1, -1};
@@ -350,7 +350,7 @@ int IsKingInCheck(Board *board, int col) {
     for (int i = 0; i < 2; i++) {
         pos = kingPos + dirUpDown[i];
         while (PosIsValid(pos)) {
-            if (board->Board[pos].type == 'e') {
+            if (board->Board[pos].type == EMPTY) {
                 pos += dirUpDown[i];
                 continue;
             } else if (board->Board[pos].type == type || board->Board[pos].type == type2) {
@@ -362,7 +362,7 @@ int IsKingInCheck(Board *board, int col) {
 
         pos = kingPos + dirLeftRight[i];
         while (kingPos / SQUARE_COUNT == pos / SQUARE_COUNT && PosIsValid(pos)) {
-            if (board->Board[pos].type == 'e') {
+            if (board->Board[pos].type == EMPTY) {
                 pos += dirLeftRight[i];
                 continue;
             } else if (board->Board[pos].type == type || board->Board[pos].type == type2) {
@@ -374,11 +374,11 @@ int IsKingInCheck(Board *board, int col) {
     }
 
     // Check for Bishop or Queens
-    type = 'b';
-    type2 = 'q';
+    type = BLACK_BISHOP;
+    type2 = BLACK_QUEEN;
     if (col == 0) {
-        type = (char) toupper(type);
-        type2 = (char) toupper(type2);
+        type = WHITE_BISHOP;
+        type2 = WHITE_QUEEN;
     }
     int dirBishop[4] = {SQUARE_COUNT + 1, SQUARE_COUNT - 1,- SQUARE_COUNT + 1, - SQUARE_COUNT - 1};
     int correctDiagDir[4] = {1, -1, 1, -1};
@@ -389,7 +389,7 @@ int IsKingInCheck(Board *board, int col) {
 
         int diagDir = (pos % SQUARE_COUNT - pos_old % SQUARE_COUNT);
         while (PosIsValid(pos) && diagDir == correctDiagDir[i]) {
-            if (board->Board[pos].type == 'e') {
+            if (board->Board[pos].type == EMPTY) {
                 pos_old = pos;
                 pos += dirBishop[i];
                 diagDir = (pos % SQUARE_COUNT - pos_old % SQUARE_COUNT);
@@ -402,9 +402,9 @@ int IsKingInCheck(Board *board, int col) {
         }
     }
 
-    type = 'k';
+    type = BLACK_KING;
     if (col == 0) {
-        type = (char) toupper(type);
+        type = WHITE_KING;
     }
     int kingDirDiag[4] = {SQUARE_COUNT + 1, SQUARE_COUNT - 1,- SQUARE_COUNT + 1, - SQUARE_COUNT - 1};
 
@@ -450,7 +450,7 @@ void GetAllLegalMoves(Board *board, Move *moves, int *movesCount) {
     ClearMoves(movesArr);
 
     for (int i = 0; i < SQUARES; i++) {
-        if (board->Board[i].type != 'e' && board->Board[i].color == board->turn) {
+        if (board->Board[i].type != EMPTY && board->Board[i].color == board->turn) {
             GetMoves(board, movesArr, i);
             for (int j = 0; j < SQUARES; j++) {
                 if (movesArr[j] != 0) {
@@ -561,7 +561,7 @@ int GetAllMovesCount(Board *board) {
     ClearMoves(moves);
     int moveCount = 0;
     for (int i = 0; i < SQUARES; i++) {
-        if (board->Board[i].type != 'e' && board->Board[i].color == board->turn) {
+        if (board->Board[i].type != EMPTY && board->Board[i].color == board->turn) {
             GetMoves(board, moves, i);
             moveCount += GetNonZeroCountArray(moves, SQUARES);
             ClearMoves(moves);

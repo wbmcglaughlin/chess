@@ -42,10 +42,10 @@ void DrawPieces(BoardDimensions *boardDimensions, Board *board, Texture2D *piece
     for (int i = 0; i < SQUARES; i++) {
         BoardSquare *boardSquare = malloc(sizeof (BoardSquare));
         GetSquare(boardSquare, i, squareWidth, boardDimensions->cornerX, boardDimensions->cornerY);
-        char type = board->Board[i].type;
-        if (type != 'e') {
+        int type = board->Board[i].type;
+        if (type != EMPTY) {
             for (int j = 0; j < UNIQUE_PIECE_TEXTURES; j++) {
-                if (type == PIECES[j]) {
+                if (type == j) {
                     if (pieceHeld && i == selected) {
                         DrawTextureEx(*pieceTextures[j],
                                       (Vector2) {mousePosition.x - (float) squareWidth / 2, mousePosition.y - (float) squareWidth / 2},
