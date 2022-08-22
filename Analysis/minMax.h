@@ -3,6 +3,7 @@
 
 #include "../Game/board.h"
 #include "../Game/moves.h"
+#include "../Analysis/boardScore.h"
 
 #define BOARD_INFINITY 100000
 

@@ -104,7 +104,10 @@ Move CaptureFirstBot(Board *board) {
             captureInd++;
         }
     }
+
     free(moves);
+
+    return move;
 }
 
 Move BestScoreBot(Board *board) {

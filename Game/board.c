@@ -125,14 +125,6 @@ void SwapPieces(Board *board, int pos1, int pos2) {
     free(tempPiece);
 }
 
-float GetBoardScore(Board *board) {
-    float score = 0.0f;
-    for (int i = 0; i < SQUARES; i++) {
-        score += board->Board[i].score;
-    }
-    return score;
-}
-
 float GetBoardEval(Board *board) {
     return board->eval;
 }

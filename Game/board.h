@@ -82,7 +82,6 @@ void SwapPieces(Board *board, int pos1, int pos2);
 void GetSelected(int *selected, float mousePosX, float mousePosY, BoardDimensions *boardDimensions);
 int PosIsValid(int pos);
 
-float GetBoardScore(Board *board);
 void GetSquare(BoardSquare *boardSquare, int i, int sideSize, int cornerX, int cornerY);
 void FenToBoard(const char *fen, Board *board);
 void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType);

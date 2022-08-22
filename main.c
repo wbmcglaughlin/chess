@@ -68,6 +68,9 @@ int main(void) {
 
     Vector2 *mousePosition = malloc(sizeof (Vector2));
 
+    // Piece Position Array Loading to Memory
+    InitPiecePositionEvalTables();
+
     // Game Variables
     int selected = -1;
     int pieceHeld = 0;
