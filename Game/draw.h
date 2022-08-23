@@ -15,6 +15,7 @@
 
 void DrawBoard(BoardDimensions *boardDimensions, const int *moves, int selected);
 void DrawPieces(BoardDimensions *boardDimensions, Board *board, Texture2D *pieceTextures[12], int pieceHeld, int selected, Vector2 mousePosition);
+void DrawSquareValues(BoardDimensions *boardDimensions, Board *board);
 void ListLegalMoves(Move *moves, int movesCount, BoardDimensions *boardDimensions);
 void DrawArrow(int startSquare, int endSquare, Color color, BoardDimensions *bd);
 

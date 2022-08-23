@@ -27,13 +27,13 @@ int PiecePositionEval(Board *board)
     eg[1] = 0;
     eg[0] = 0;
 
-    /* evaluate each piece */
+    // Evaluate each piece
     for (int sq = 0; sq < 64; ++sq) {
         int pc = board->Board[sq].type;
         if (pc != EMPTY) {
             mg[PCOLOR(pc)] += mg_table[pc][sq];
             eg[PCOLOR(pc)] += eg_table[pc][sq];
-            gamePhase += gamephaseInc[pc];
+            gamePhase += gamePhaseInc[pc];
         }
     }
 

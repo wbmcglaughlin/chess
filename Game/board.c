@@ -36,6 +36,8 @@ int PosIsValid(int pos) {
 }
 
 void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
+    int values[12] = {1, -1, 3, -3, 3, -3, 5, -5, 9, -9, 1000, -1000};
+
     if (board->Board[pieceSquare].type == BLACK_PAWN || board->Board[pieceSquare].type == WHITE_PAWN  || moveType == CAPTURE) {
         board->halfMoveClock = 0;
     } else {
@@ -50,13 +52,13 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
         }
     }
     if (board->Board[pieceSquare].type == BLACK_ROOK || board->Board[pieceSquare].type == WHITE_ROOK) {
-        if (board->Board[pieceSquare].color == 0) {
+        if (board->Board[pieceSquare].color == BLACK_PIECE) {
             if (pieceSquare == SQUARES - 1) {
                 board->castle[2] = 0;
             } else if (pieceSquare == SQUARES - SQUARE_COUNT) {
                 board->castle[3] = 0;
             }
-        } else if (board->Board[pieceSquare].color == 1) {
+        } else if (board->Board[pieceSquare].color == WHITE_PIECE) {
             if (pieceSquare == SQUARE_COUNT - 1) {
                 board->castle[0] = 0;
             } else if (pieceSquare == 0) {
@@ -85,14 +87,14 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
     }
     board->Board[selected] = *piece;
     if (moveType == PROMOTION) {
-        if (board->Board[selected].color == 1) {
-            board->Board[selected] = (Piece) {WHITE_QUEEN, selected, 1};
+        if (board->Board[selected].color == WHITE_PIECE) {
+            board->Board[selected] = (Piece) {WHITE_QUEEN, selected, WHITE_PIECE, (float) values[WHITE_QUEEN]};
         } else {
-            board->Board[selected] = (Piece) {BLACK_QUEEN, selected, 0};
+            board->Board[selected] = (Piece) {BLACK_QUEEN, selected, BLACK_PIECE, (float) values[BLACK_QUEEN]};
         }
     }
     if (moveType == CASTLE) {
-        if (board->turn == 1) {
+        if (board->turn == WHITE_PIECE) {
             board->castle[0] = 0;
             board->castle[1] = 0;
         } else {
@@ -134,7 +136,7 @@ void FenToBoard(const char *fen, Board *board) {
     int col = 0;
     int pos;
 
-    int values[12] = {1, -1, 5, -5, 3, -3, 3, -3, 9, -9, 1000, -1000};
+    int values[12] = {1, -1, 3, -3, 3, -3, 5, -5, 9, -9, 1000, -1000};
 
     int section = 0;
     char *ptr;
@@ -152,11 +154,11 @@ void FenToBoard(const char *fen, Board *board) {
                 int index;
                 e = strchr(PIECES, character);
                 index = (int) (e - PIECES);
-                board->Board[pos] = (Piece) {index, pos, isupper(character) ? 1 : 0, (float) values[index]};
+                board->Board[pos] = (Piece) {index, pos, isupper(character) ? WHITE_PIECE : BLACK_PIECE, (float) values[index]};
                 if (character == 'k') {
-                    board->kingPos[0] = pos;
+                    board->kingPos[BLACK_PIECE] = pos;
                 } else if (character == 'K') {
-                    board->kingPos[1] = pos;
+                    board->kingPos[WHITE_PIECE] = pos;
                 }
                 ++col;
             } else if (character != '/') {
@@ -178,9 +180,9 @@ void FenToBoard(const char *fen, Board *board) {
             }
         } else if (section == 1) {
             if (character == 'w') {
-                board->turn = 1;
+                board->turn = WHITE_PIECE;
             } else {
-                board->turn = 0;
+                board->turn = BLACK_PIECE;
             }
         } else if (section == 2) {
             if (character == 'K') {

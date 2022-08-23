@@ -37,6 +37,19 @@ void DrawBoard(BoardDimensions *boardDimensions, const int *moves, int selected)
     }
 }
 
+void DrawSquareValues(BoardDimensions *boardDimensions, Board *board) {
+    int squareWidth = (int) boardDimensions->sideSize / SQUARE_COUNT;
+    for (int i = 0; i < SQUARES; i++) {
+        BoardSquare *boardSquare = malloc(sizeof (BoardSquare));
+        GetSquare(boardSquare, i, squareWidth, boardDimensions->cornerX, boardDimensions->cornerY);
+        DrawText(TextFormat("%.2f", board->Board[i].score),
+                  boardSquare->cornerX + 2,
+                  boardSquare->cornerY + 2,
+                  10, DARKBLUE);
+        free(boardSquare);
+    }
+}
+
 void DrawPieces(BoardDimensions *boardDimensions, Board *board, Texture2D *pieceTextures[12], int pieceHeld, int selected, Vector2 mousePosition) {
     int squareWidth = (int) boardDimensions->sideSize / SQUARE_COUNT;
     for (int i = 0; i < SQUARES; i++) {

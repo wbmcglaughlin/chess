@@ -13,8 +13,8 @@ struct MoveEval {
 };
 
 enum MinMax {
-    Min = 0,
-    Max = 1
+    Min = BLACK_PIECE,
+    Max = WHITE_PIECE
 };
 
 typedef struct MoveEval MoveEval;

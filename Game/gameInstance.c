@@ -23,9 +23,8 @@ Game *NewGameInstanceFromFen(char* fen) {
 
     game->moves = malloc(sizeof(Move) * MAX_MOVES);
 
-    game->board->turn = 1;
-    game->players[0] = BOT;
-    game->players[1] = BOT;
+    game->players[WHITE_PIECE] = BOT;
+    game->players[BLACK_PIECE] = BOT;
 
     game->botInput = *CreateBotInput(board);
     game->botInput.calls = malloc(sizeof (int ) * MAX_MOVES);

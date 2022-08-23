@@ -12,7 +12,7 @@ float GetBoardScore(Board *board) {
 
     float positionalScore = (float) PiecePositionEval(board) / 100.0f;
 
-    score += -(2.0f * (board->turn) - 1) * positionalScore;
+    score += -((2 * board->turn) - 1) * positionalScore;
 
     return score;
 }

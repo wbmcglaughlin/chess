@@ -127,6 +127,8 @@ int main(void) {
             DrawText("Draw :(", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);
         }
 
+        DrawSquareValues(boardDimensions, gameInstance->board);
+
         EndDrawing();
         //----------------------------------------------------------------------------------
     }

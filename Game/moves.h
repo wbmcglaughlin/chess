@@ -22,15 +22,12 @@ void GetMoves(Board *board, int *moves, int selected);
 void ClearMoves(int *moves);
 void UpdateMovesLegality(Board *board, int *moves, int selected);
 int IsMoveLegal(Board *board, int selected, int move, int moveType);
-int IsKingInCheck(Board *board, int col);
+int IsKingInCheck(Board *board, int color);
 
 void GetAllLegalMoves(Board *board, Move *moves, int *movesCount);
-int compt(const void *f, const void *s);
+int MoveSortFunc(const void *f, const void *s);
 void GetAllLegalMovesSorted(Board *board, Move *moves, int *movesCount);
-int GetAllLegalMovesToDepthCount(Board *board, int depth);
 int GetAllMovesCount(Board *board);
-
-void GetNewBoards(Board **currentBoards, Board **newBoards, const int *currentBoardsCount, int *newBoardsCount);
 
 void GetPawnMoves(Board *board, int *moves, int selected);
 void GetRookMoves(Board *board, int *moves, int selected, int findLegal);

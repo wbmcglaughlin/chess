@@ -43,7 +43,7 @@ void* MiniMaxBot(void *botInput) {
         float alpha = -BOARD_INFINITY;
         float beta = BOARD_INFINITY;
 
-        if (board->turn == 0) {
+        if (board->turn == BLACK_PIECE) {
             *moveEval = MiniMaxAB(board, currentDepth, Min, &alpha, &beta, &botInputStruct->calls[board->moveCount]);
         } else {
             *moveEval = MiniMaxAB(board, currentDepth, Max, &alpha, &beta, &botInputStruct->calls[board->moveCount]);

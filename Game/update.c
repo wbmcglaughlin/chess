@@ -49,11 +49,6 @@ void BotTurnCheck(Game *gameInstance, BoardDimensions *boardDimensions, int *mov
         UpdateBoard(botInput->board, botMove.pos, botMove.target, botMove.moveType);
         gameInstance->eval = *botInput->eval;
 
-//        *movesCount = 0;
-//        Move *movesArr = malloc(SQUARES * sizeof(Move));
-//        *movesCount = GetAllLegalMovesToDepthCount(botInput->board, DEPTH_SEARCH);
-//        free(movesArr);
-
         *botInput->hasMove = 0;
         *botInput->threadStarted = 0;
     }
