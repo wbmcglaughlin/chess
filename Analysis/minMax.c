@@ -14,11 +14,11 @@ MoveEval MiniMaxAB(Board *board, int depth, enum MinMax minMax, float *alpha, fl
 
         return moveEval;
     }
-    if (GetAllMovesCount(board) == 0) {
-        float eval = BOARD_INFINITY;
+    if (board->checkMate) {
+        float eval = -BOARD_INFINITY;
 
         if (minMax == Min) {
-            eval = -BOARD_INFINITY;
+            eval = BOARD_INFINITY;
         }
 
         Move move = (Move) {0, 0, 0};
@@ -26,11 +26,11 @@ MoveEval MiniMaxAB(Board *board, int depth, enum MinMax minMax, float *alpha, fl
 
         return moveEval;
     }
-    if (board->checkMate) {
-        float eval = BOARD_INFINITY;
+    if (GetAllMovesCount(board) == 0) {
+        float eval = -BOARD_INFINITY;
 
         if (minMax == Min) {
-            eval = -BOARD_INFINITY;
+            eval = BOARD_INFINITY;
         }
 
         Move move = (Move) {0, 0, 0};

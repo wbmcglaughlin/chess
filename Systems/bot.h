@@ -21,6 +21,7 @@ struct BotInput {
     float *eval;
     int *hasMove;
     int *calls;
+    float *calculatedBoardEvaluation;
     int *threadStarted;
     int *threadRunning;
 };

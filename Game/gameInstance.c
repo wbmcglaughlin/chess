@@ -29,6 +29,7 @@ Game *NewGameInstanceFromFen(char* fen) {
     game->botInput = *CreateBotInput(board);
     game->botInput.calls = malloc(sizeof (int ) * MAX_MOVES);
 
+    game->botInput.calculatedBoardEvaluation = malloc(sizeof (float ) * MAX_MOVES);
     game->eval = 0.0f;
 
     return game;
@@ -37,6 +38,7 @@ Game *NewGameInstanceFromFen(char* fen) {
 void FreeGameInstance(Game *game) {
     FreeBoard(game->board);
     free(game->botInput.calls);
+    free(game->botInput.calculatedBoardEvaluation);
     FreeBotInput(&game->botInput);
     free(game->moves);
     free(game->moveSquares);
@@ -65,6 +67,12 @@ void DrawGameInstanceInfo(Game *gameInstance, BoardDimensions *boardDimensions) 
     DrawText(TextFormat("Half Move Clock: %i", gameInstance->board->halfMoveClock),
              (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
              boardDimensions->cornerY + 60,
+             FONT_SIZE,
+             BLACK);
+
+    DrawText(TextFormat("Turn: %i", gameInstance->board->turn),
+             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+             boardDimensions->cornerY + 80,
              FONT_SIZE,
              BLACK);
 }

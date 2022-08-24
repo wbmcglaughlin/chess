@@ -54,6 +54,7 @@ void* MiniMaxBot(void *botInput) {
         *botInputStruct->move = *moveEval->move;
     }
 
+    botInputStruct->calculatedBoardEvaluation[botInputStruct->board->moveCount] = moveEval->eval;
     *botInputStruct->hasMove = 1;
     *botInputStruct->threadRunning = 0;
 

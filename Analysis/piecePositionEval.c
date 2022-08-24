@@ -6,10 +6,12 @@
 
 void InitPiecePositionEvalTables() {
     int pc, p, sq;
-    for (p = 0, pc = 0; p <= 5; pc += 2, p++) {
+    for (p = PAWN, pc = WHITE_PAWN; p <= KING; pc += 2, p++) {
         for (sq = 0; sq < 64; sq++) {
-            mg_table[pc]  [sq] = mg_value[p] + mg_pesto_table[p][sq];
-            eg_table[pc]  [sq] = eg_value[p] + eg_pesto_table[p][sq];
+            // Values are added to the table, given tables are flipped to
+            // be in whites orientation, so we have to flip the square index.
+            mg_table[pc]  [sq] = mg_value[p] + mg_pesto_table[p][FLIP(sq)];
+            eg_table[pc]  [sq] = eg_value[p] + eg_pesto_table[p][FLIP(sq)];
             mg_table[pc+1][sq] = mg_value[p] + mg_pesto_table[p][FLIP(sq)];
             eg_table[pc+1][sq] = eg_value[p] + eg_pesto_table[p][FLIP(sq)];
         }
@@ -27,7 +29,9 @@ int PiecePositionEval(Board *board)
     eg[1] = 0;
     eg[0] = 0;
 
-    // Evaluate each piece
+    int turn = board->turn;
+
+    // Assign each piece the respective middle game and end game weighting.
     for (int sq = 0; sq < 64; ++sq) {
         int pc = board->Board[sq].type;
         if (pc != EMPTY) {
@@ -37,11 +41,18 @@ int PiecePositionEval(Board *board)
         }
     }
 
-    /* tapered eval */
-    int mgScore = mg[board->turn] - mg[OTHER(board->turn)];
-    int egScore = eg[board->turn] - eg[OTHER(board->turn)];
+    // Comparing the eval of the current players value to the
+    // opponents value.
+    int mgScore = mg[turn] - mg[OTHER(turn)];
+    int egScore = eg[turn] - eg[OTHER(turn)];
+
+    // We want to weight the analysis towards the estimated game phase.
+    // For example, if gamePhase is high (eg. > 12), the mgPhase variable
+    // will be higher than the egPhase, and the returned weighting will be
+    // middle game oriented.
     int mgPhase = gamePhase;
     if (mgPhase > 24) mgPhase = 24; /* in case of early promotion */
     int egPhase = 24 - mgPhase;
-    return (mgScore * mgPhase + egScore * egPhase) / 24;
+
+    return -(2 * turn - 1) * (mgScore * mgPhase + egScore * egPhase) / 24;
 }

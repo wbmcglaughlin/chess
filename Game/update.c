@@ -39,7 +39,7 @@ void BotTurnCheck(Game *gameInstance, BoardDimensions *boardDimensions, int *mov
     // Checks if the bot has found the move it wants to play, if not, return.
     if (!*botInput->hasMove) {
         // Current best move is displayed to screen.
-        DrawArrow(botInput->move->pos, botInput->move->target, ORANGE, boardDimensions);
+        // DrawArrow(botInput->move->pos, botInput->move->target, ORANGE, boardDimensions);
         return;
     }
 

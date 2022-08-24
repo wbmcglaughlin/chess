@@ -127,7 +127,7 @@ int main(void) {
             DrawText("Draw :(", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);
         }
 
-        DrawSquareValues(boardDimensions, gameInstance->board);
+        // DrawSquareValues(boardDimensions, gameInstance->board);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -136,9 +136,12 @@ int main(void) {
     FILE *fptr;
 
     fptr = fopen("resources/results/game.csv", "w");
-    fprintf(fptr, "move, calls \n");
+    fprintf(fptr, "move, calls, eval \n");
     for (int i = 0; i < gameInstance->board->moveCount; i++) {
-        fprintf(fptr, "%i, %i\n", i, gameInstance->botInput.calls[i]);
+        fprintf(fptr, "%i, %i, %.4f\n",
+                i,
+                gameInstance->botInput.calls[i],
+                gameInstance->botInput.calculatedBoardEvaluation[i]);
     }
 
     fclose(fptr);

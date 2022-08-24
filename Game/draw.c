@@ -16,6 +16,11 @@ void DrawBoard(BoardDimensions *boardDimensions, const int *moves, int selected)
                       ((boardSquare->x + boardSquare->y) % 2 == 0) ? DARKGRAY : RAYWHITE
         );
 
+        DrawText(TextFormat("%i", i),
+                 boardSquare->cornerX + 2,
+                 boardSquare->cornerY + 2,
+                 10, DARKBLUE);
+
         if (i == selected) {
             DrawText(TextFormat("Selected: %i", i), 400, 5, 20, BLACK);
             DrawRectangle(boardSquare->cornerX,
