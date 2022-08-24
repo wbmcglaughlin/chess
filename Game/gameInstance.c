@@ -46,34 +46,49 @@ void FreeGameInstance(Game *game) {
 }
 
 void DrawGameInstanceInfo(Game *gameInstance, BoardDimensions *boardDimensions) {
-    DrawText(TextFormat("Score: %.2f", gameInstance->eval),
-             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
-             boardDimensions->cornerY,
-             FONT_SIZE,
-             BLACK);
-
-    DrawText(TextFormat("Moves: %i", gameInstance->movesCount),
-             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
-             boardDimensions->cornerY + 20,
-             FONT_SIZE,
-             BLACK);
-
-    DrawText(TextFormat("Calls: %i", gameInstance->botInput.calls[gameInstance->board->moveCount]),
-             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
-             boardDimensions->cornerY + 40,
-             FONT_SIZE,
-             BLACK);
-
-    DrawText(TextFormat("Half Move Clock: %i", gameInstance->board->halfMoveClock),
-             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
-             boardDimensions->cornerY + 60,
-             FONT_SIZE,
-             BLACK);
+    int i = 0;
 
     DrawText(TextFormat("Turn: %i", gameInstance->board->turn),
              (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
-             boardDimensions->cornerY + 80,
+             (int) boardDimensions->cornerY + i * 20,
              FONT_SIZE,
              BLACK);
+    ++i;
+
+    DrawText(TextFormat("Score: %.2f", gameInstance->eval),
+             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+             (int) boardDimensions->cornerY + i * 20,
+             FONT_SIZE,
+             BLACK);
+    ++i;
+
+    DrawText(TextFormat("Moves: %i", gameInstance->movesCount),
+             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+             (int) boardDimensions->cornerY + i * 20,
+             FONT_SIZE,
+             BLACK);
+    ++i;
+
+    DrawText(TextFormat("Calls: %i", gameInstance->botInput.calls[gameInstance->board->moveCount]),
+             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+             (int) boardDimensions->cornerY + i * 20,
+             FONT_SIZE,
+             BLACK);
+    ++i;
+
+    DrawText(TextFormat("Half Move: %i", gameInstance->board->halfMoveClock),
+             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+             (int) boardDimensions->cornerY + i * 20,
+             FONT_SIZE,
+             BLACK);
+    ++i;
+
+    DrawText(TextFormat("Moves: %i", gameInstance->moves),
+             (int) (boardDimensions->cornerX * 2 + boardDimensions->sideSize),
+             (int) boardDimensions->cornerY + i * 20,
+             FONT_SIZE,
+             BLACK);
+    ++i;
+
 }
 

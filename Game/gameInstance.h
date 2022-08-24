@@ -9,8 +9,6 @@
 #include "moves.h"
 #include "../Systems/bot.h"
 
-#define MAX_TURNS 5000
-
 struct Game {
     Board *board;
     Move *moves;
