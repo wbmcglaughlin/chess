@@ -94,8 +94,16 @@ int main(void) {
         DrawPieces(boardDimensions, gameInstance->board, textures, pieceHeld, selected, GetMousePosition());
 
         if (CheckCollisionPointRec(*mousePosition, restartButtonRec)) {
+            // Wait for thread to finish, then create new game
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                FenToBoard(fen, gameInstance->board);
+                int wait_time = 1;
+
+                while (*gameInstance->botInput.threadRunning == 1) {
+                    wait(&wait_time);
+                    printf("\rWaiting for thread to finish!");
+                }
+
+                gameInstance = NewGameInstanceFromFen(fen);
             }
         }
 
