@@ -444,9 +444,6 @@ int IsKingInCheck(Board *board, int color) {
 }
 
 void GetAllLegalMoves(Board *board, Move *moves, int *movesCount) {
-    ///
-    /// Function to get all legal moves given a current board.
-    ///
     *movesCount = 0;
     int *movesArr = malloc(SQUARES * sizeof (int));
     int movesCountInner = 0;

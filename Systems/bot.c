@@ -36,23 +36,34 @@ void* MiniMaxBot(void *botInput) {
 
     MoveEval *moveEval = GetEmptyMoveEval();
 
-    int maxDepth = 5;
-    int currentDepth = 5;
-
-    while (currentDepth <= maxDepth) {
-        float alpha = -BOARD_INFINITY;
-        float beta = BOARD_INFINITY;
-
-        if (board->turn == BLACK_PIECE) {
-            *moveEval = MiniMaxAB(board, currentDepth, Min, &alpha, &beta, &botInputStruct->calls[board->moveCount]);
-        } else {
-            *moveEval = MiniMaxAB(board, currentDepth, Max, &alpha, &beta, &botInputStruct->calls[board->moveCount]);
+    int gamePhase = 0;
+    for (int sq = 0; sq < 64; ++sq) {
+        int pc = board->Board[sq].type;
+        if (pc != EMPTY) {
+            gamePhase += gamePhaseInc[pc];
         }
-
-        currentDepth++;
-        botInputStruct->eval = &moveEval->eval;
-        *botInputStruct->move = *moveEval->move;
     }
+    if (gamePhase > 24) gamePhase = 24;
+
+    int currentDepth = 2;
+    for (int i = 0; i < DEPTHS; ++i) {
+        if (gamePhase >= depthPhase[i]) {
+            currentDepth = depthStage[i];
+            break;
+        }
+    }
+
+    float alpha = -BOARD_INFINITY;
+    float beta = BOARD_INFINITY;
+
+    if (board->turn == BLACK_PIECE) {
+        *moveEval = MiniMaxAB(board, currentDepth, Min, &alpha, &beta, &botInputStruct->calls[board->moveCount]);
+    } else {
+        *moveEval = MiniMaxAB(board, currentDepth, Max, &alpha, &beta, &botInputStruct->calls[board->moveCount]);
+    }
+
+    botInputStruct->eval = &moveEval->eval;
+    *botInputStruct->move = *moveEval->move;
 
     botInputStruct->calculatedBoardEvaluation[botInputStruct->board->moveCount] = moveEval->eval;
     *botInputStruct->hasMove = 1;

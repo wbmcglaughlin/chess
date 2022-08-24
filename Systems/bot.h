@@ -28,6 +28,10 @@ struct BotInput {
 
 typedef struct BotInput BotInput;
 
+#define DEPTHS 6
+static int depthStage[DEPTHS] = {4, 5, 6, 7, 8, 1};
+static int depthPhase[DEPTHS] = {19, 16, 12, 10, 6, 0};
+
 BotInput *CreateBotInput(Board *board);
 void FreeBotInput(BotInput *botInput);
 
