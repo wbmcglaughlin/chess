@@ -54,5 +54,6 @@ int PiecePositionEval(Board *board)
     if (mgPhase > 24) mgPhase = 24; /* in case of early promotion */
     int egPhase = 24 - mgPhase;
 
+    // Return the negative equivalent of the evaluation for blacks turn
     return (1 - 2 * turn) * (mgScore * mgPhase + egScore * egPhase) / 24;
 }
