@@ -26,18 +26,6 @@ MoveEval MiniMaxAB(Board *board, int depth, enum MinMax minMax, float *alpha, fl
 
         return moveEval;
     }
-    if (GetAllMovesCount(board) == 0) {
-        float eval = -BOARD_INFINITY;
-
-        if (minMax == Min) {
-            eval = BOARD_INFINITY;
-        }
-
-        Move move = (Move) {0, 0, 0};
-        MoveEval moveEval = (MoveEval) {&move, eval};
-
-        return moveEval;
-    }
 
     if (board->draw) {
         Move move = (Move) {0, 0, 0};

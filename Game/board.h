@@ -2,8 +2,8 @@
 // Created by Will McGlaughlin on 27/4/2022.
 //
 
-#ifndef EXAMPLE_BOARD_H
-#define EXAMPLE_BOARD_H
+#ifndef CHESS_BOARD_H
+#define CHESS_BOARD_H
 
 #include "raylib.h"
 #include "stdlib.h"
@@ -116,4 +116,4 @@ Board* CopyBoard(Board *oldBoard);
 Board* CreateBoard(void);
 void FreeBoard(Board *board);
 
-#endif //EXAMPLE_BOARD_H
+#endif //CHESS_BOARD_H

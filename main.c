@@ -2,11 +2,8 @@
 #include "raylib.h"
 #include "time.h"
 #include "sys/stat.h"
-#include "Game/board.h"
-#include "Game/draw.h"
+
 #include "Game/update.h"
-#include "Game/moveList.h"
-#include "Game/gameInstance.h"
 #include "Game/arrows.h"
 
 #define TARGET_FPS 60

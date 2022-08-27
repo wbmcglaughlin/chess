@@ -12,8 +12,6 @@
 #include "string.h"
 #include <pthread.h>
 
-#include "moves.h"
-#include "board.h"
 #include "draw.h"
 #include "../Systems/bot.h"
 #include "gameInstance.h"

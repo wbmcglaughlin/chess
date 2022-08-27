@@ -1,7 +1,6 @@
 #ifndef CHESS_MINMAX
 #define CHESS_MINMAX
 
-#include "../Game/board.h"
 #include "../Game/moves.h"
 #include "../Analysis/boardScore.h"
 

@@ -5,11 +5,13 @@
 #ifndef CHESS_DRAW_H
 #define CHESS_DRAW_H
 
+#include <math.h>
+
 #include "raylib.h"
+
 #include "board.h"
 #include "moves.h"
 
-#include <math.h>
 
 #define FONT_SIZE 20
 

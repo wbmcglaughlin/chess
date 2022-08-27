@@ -5,8 +5,9 @@
 #ifndef CHESS_ARROWS_H
 #define CHESS_ARROWS_H
 
-#include "moveList.h"
 #include "raylib.h"
+
+#include "moveList.h"
 #include "draw.h"
 
 void DrawArrows(MoveNodePtr *firstArrow, int *squarePressed, int *squareReleased, Vector2 *mousePosition, BoardDimensions *boardDimensions);
