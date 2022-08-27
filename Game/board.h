@@ -110,7 +110,6 @@ int PosIsValid(int pos);
 
 void GetSquare(BoardSquare *boardSquare, int i, int sideSize, int cornerX, int cornerY);
 void FenToBoard(const char *fen, Board *board);
-void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType);
 
 Board* CopyBoard(Board *oldBoard);
 Board* CreateBoard(void);

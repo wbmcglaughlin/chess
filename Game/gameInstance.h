@@ -5,8 +5,6 @@
 #ifndef CHESS_GAMEINSTANCE_H
 #define CHESS_GAMEINSTANCE_H
 
-#include "board.h"
-#include "moves.h"
 #include "../Systems/bot.h"
 
 struct Game {

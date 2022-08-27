@@ -137,6 +137,7 @@ Move BestScoreBot(Board *board) {
     for (int i = 0; i < movesCount; i++) {
         Board *newBoard = CopyBoard(board);
         UpdateBoard(newBoard, moves[i].pos, moves[i].target, moves[i].moveType);
+        CheckStatus(board);
         float score = GetBoardScore(newBoard);
 
         if (board->turn == 1) {

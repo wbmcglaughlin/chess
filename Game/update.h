@@ -12,9 +12,10 @@
 #include "string.h"
 #include <pthread.h>
 
+#include "gameInstance.h"
 #include "draw.h"
 #include "../Systems/bot.h"
-#include "gameInstance.h"
+
 
 void BoardUpdateLoop(Game *gameInstance, BoardDimensions *boardDimensions,
                      int *getMoves, int *selected, int *pieceHeld);

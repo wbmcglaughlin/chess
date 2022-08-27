@@ -494,17 +494,13 @@ int IsMoveLegal(Board *board, int selected, int move, int moveType) {
     return 0;
 }
 
-int GetAllMovesCount(Board *board) {
-    int *moves = malloc(SQUARES * sizeof (int));
-    ClearMoves(moves);
-    int moveCount = 0;
-    for (int i = 0; i < SQUARES; i++) {
-        if (board->Board[i].type != EMPTY && board->Board[i].color == board->turn) {
-            GetMoves(board, moves, i);
-            moveCount += GetNonZeroCountArray(moves, SQUARES);
-            ClearMoves(moves);
-        }
-    }
+int GetAllLegalMovesCount(Board *board) {
+    // Function to get all moves in a position
+    Move *moves = malloc(MAX_MOVES * sizeof (Move));
+    int movesCount = 0;
+
+    GetAllLegalMoves(board, moves, &movesCount);
     free(moves);
-    return moveCount;
+
+    return movesCount;
 }

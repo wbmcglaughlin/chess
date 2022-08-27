@@ -13,8 +13,8 @@ int main(void) {
     //--------------------------------------------------------------------------------------
 
     BoardDimensions *boardDimensions = malloc(sizeof(BoardDimensions));
-    boardDimensions->screenWidth = 700;
-    boardDimensions->screenHeight = 500;
+    boardDimensions->screenWidth = 1200;
+    boardDimensions->screenHeight = 720;
     boardDimensions->definingLength = boardDimensions->screenWidth > boardDimensions->screenHeight
                                       ? boardDimensions->screenHeight : boardDimensions->screenWidth;
     boardDimensions->cornerX = (int) (boardDimensions->definingLength * (1 - BOARD_PERCENT) / 2);

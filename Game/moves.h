@@ -5,7 +5,7 @@
 #ifndef CHESS_MOVES_H
 #define CHESS_MOVES_H
 
-#include "board.h"
+#include "updateBoard.h"
 #include "../Systems/arrayFunc.h"
 
 #define MAX_MOVES 218
@@ -27,7 +27,7 @@ int IsKingInCheck(Board *board, int color);
 void GetAllLegalMoves(Board *board, Move *moves, int *movesCount);
 int MoveSortFunc(const void *f, const void *s);
 void GetAllLegalMovesSorted(Board *board, Move *moves, int *movesCount);
-int GetAllMovesCount(Board *board);
+int GetAllLegalMovesCount(Board *board);
 
 void GetPawnMoves(Board *board, int *moves, int selected);
 void GetRookMoves(Board *board, int *moves, int selected, int findLegal);

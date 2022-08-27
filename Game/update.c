@@ -16,10 +16,6 @@ void BoardUpdateLoop(Game *gameInstance, BoardDimensions *boardDimensions,
     } else {
         BotTurnCheck(gameInstance, boardDimensions, &gameInstance->movesCount);
     }
-
-    if (GetAllMovesCount(gameInstance->board) == 0) {
-        gameInstance->board->checkMate = 1;
-    }
 }
 
 void BotTurnCheck(Game *gameInstance, BoardDimensions *boardDimensions, int *movesCount) {
@@ -47,6 +43,7 @@ void BotTurnCheck(Game *gameInstance, BoardDimensions *boardDimensions, int *mov
     if (*botInput->hasMove) {
         Move botMove = *botInput->move;
         UpdateBoard(botInput->board, botMove.pos, botMove.target, botMove.moveType);
+        CheckStatus(botInput->board);
         gameInstance->eval = *botInput->eval;
 
         *botInput->hasMove = 0;
@@ -83,6 +80,7 @@ void PlayerTurnCheck(Board *board, BoardDimensions *boardDimensions, int *moveSq
         // If valid square and not the same square
         if (*selected != -1 && *selected != pieceSquare && moveSquares[*selected] > 0) {
             UpdateBoard(board, pieceSquare, *selected, moveSquares[*selected]);
+            CheckStatus(board);
             board->moveCount++;
         }
 
@@ -91,4 +89,5 @@ void PlayerTurnCheck(Board *board, BoardDimensions *boardDimensions, int *moveSq
         *selected = -1;
     }
 }
+
 

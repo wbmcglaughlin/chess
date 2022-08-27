@@ -53,6 +53,7 @@ MoveEval MiniMaxAB(Board *board, int depth, enum MinMax minMax, float *alpha, fl
     for (int i = 0; i < moveCount; i++) {
         Board *newBoard = CopyBoard(board);
         UpdateBoard(newBoard, moves[i].pos, moves[i].target, moves[i].moveType);
+        CheckStatus(newBoard);
         Move newBestMove = moves[i];
 
         enum MinMax nextMinMax = minMax;
@@ -135,19 +136,6 @@ MoveEval MiniMax(Board *board, int depth, enum MinMax minMax, int *calls) {
         return moveEval;
     }
 
-    if (GetAllMovesCount(board) == 0) {
-        float eval = BOARD_INFINITY;
-
-        if (minMax == Min) {
-            eval = -BOARD_INFINITY;
-        }
-
-        Move move = (Move) {0, 0, 0};
-        MoveEval moveEval = (MoveEval) {&move, eval};
-
-        return moveEval;
-    }
-
     // Getting the worst possible case
     float bestEval = -BOARD_INFINITY;
     if (minMax == Min) {
@@ -164,6 +152,7 @@ MoveEval MiniMax(Board *board, int depth, enum MinMax minMax, int *calls) {
     for (int i = 0; i < moveCount; i++) {
         Board *newBoard = CopyBoard(board);
         UpdateBoard(newBoard, moves[i].pos, moves[i].target, moves[i].moveType);
+        CheckStatus(board);
         Move newBestMove = moves[i];
 
         enum MinMax nextMinMax = minMax;
