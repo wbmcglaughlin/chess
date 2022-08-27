@@ -10,7 +10,7 @@ float GetBoardScore(Board *board) {
         score += board->Board[i].score;
     }
 
-    float centiPawn = 75.0f;
+    float centiPawn = 90.0f;
     float positionalEval = (float) PiecePositionEval(board);
 
     score += positionalEval / centiPawn;

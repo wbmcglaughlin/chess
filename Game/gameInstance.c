@@ -4,7 +4,7 @@
 
 #include "gameInstance.h"
 
-Game *NewGameInstanceFromFen(char* fen) {
+Game *NewGameInstanceFromFen(char* fen, int playerTypes[2]) {
     Board *board = CreateBoard();
     if (board == NULL) {
         exit(-1);
@@ -23,8 +23,8 @@ Game *NewGameInstanceFromFen(char* fen) {
 
     game->moves = malloc(sizeof(Move) * MAX_MOVES);
 
-    game->players[WHITE_PIECE] = BOT;
-    game->players[BLACK_PIECE] = BOT;
+    game->players[WHITE_PIECE] = playerTypes[WHITE_PIECE];
+    game->players[BLACK_PIECE] = playerTypes[BLACK_PIECE];
 
     game->botInput = *CreateBotInput(board);
     game->botInput.calls = malloc(sizeof (int ) * MAX_MOVES);

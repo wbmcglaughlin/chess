@@ -11,7 +11,7 @@
 #include "ctype.h"
 #include "string.h"
 
-#define BOARD_PERCENT .8
+#define BOARD_PERCENT .9
 #define SQUARE_COUNT 8
 #define SQUARES SQUARE_COUNT * SQUARE_COUNT
 #define MAX_FEN_LENGTH 90

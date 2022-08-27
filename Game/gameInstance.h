@@ -21,7 +21,7 @@ struct Game {
 typedef struct Game Game;
 
 void DrawGameInstanceInfo(Game *gameInstance, BoardDimensions *boardDimensions);
-Game *NewGameInstanceFromFen(char*fen);
+Game *NewGameInstanceFromFen(char*fen, int playerTypes[2]);
 void FreeGameInstance(Game *game);
 
 #endif //CHESS_GAMEINSTANCE_H

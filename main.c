@@ -21,7 +21,7 @@ int main(void) {
     boardDimensions->cornerY = (int) (boardDimensions->definingLength * (1 - BOARD_PERCENT) / 2);
     boardDimensions->sideSize = (int) (boardDimensions->definingLength * BOARD_PERCENT);
 
-    InitWindow(boardDimensions->screenWidth, boardDimensions->screenHeight, "Chess - v.0.2 [Will McGlaughlin]");
+    InitWindow(boardDimensions->screenWidth, boardDimensions->screenHeight, "Chess - v.0.3 [Will McGlaughlin]");
     SetTargetFPS(TARGET_FPS);
 
     struct stat st = {0};
@@ -61,7 +61,8 @@ int main(void) {
     char *fen;
     fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-    Game *gameInstance = NewGameInstanceFromFen(fen);
+    int players[2] = {0, 0};
+    Game *gameInstance = NewGameInstanceFromFen(fen, players);
 
     Vector2 *mousePosition = malloc(sizeof (Vector2));
 
@@ -100,7 +101,7 @@ int main(void) {
                     printf("\rWaiting for thread to finish!");
                 }
 
-                gameInstance = NewGameInstanceFromFen(fen);
+                gameInstance = NewGameInstanceFromFen(fen, players);
             }
         }
 
