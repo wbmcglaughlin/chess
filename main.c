@@ -41,6 +41,18 @@ int main(void) {
                                               160.0f,
                                               40.0f};
 
+    int isGameRunning = 0;
+    char statusText[2][6];
+    strcpy(statusText[0], "Start");
+    strcpy(statusText[1], "Stop");
+
+    Vector2 startStopButtonCorner = (Vector2) {2.0f * (float) boardDimensions->cornerX + (float) boardDimensions->sideSize,
+                                             (float) boardDimensions->cornerY + (float) boardDimensions->sideSize - 55.0f};
+    Rectangle startStopButtonRec = (Rectangle) {startStopButtonCorner.x,
+                                              startStopButtonCorner.y,
+                                              160.0f,
+                                              40.0f};
+
     // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
     SetTextureFilter(GetFontDefault().texture, TEXTURE_FILTER_POINT);
     Texture2D pw = LoadTexture("resources/pieces/pw.png");
@@ -91,6 +103,10 @@ int main(void) {
         DrawBoard(boardDimensions, gameInstance->moveSquares, selected);
         DrawPieces(boardDimensions, gameInstance->board, textures, pieceHeld, selected, GetMousePosition());
 
+        // Menu Items
+
+
+        // Restart Game
         if (CheckCollisionPointRec(*mousePosition, restartButtonRec)) {
             // Wait for thread to finish, then create new game
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -105,13 +121,23 @@ int main(void) {
             }
         }
 
+        // Start Stop Game
+        if (CheckCollisionPointRec(*mousePosition, startStopButtonRec)) {
+            // Wait for thread to finish, then create new game
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                isGameRunning = (isGameRunning + 1) % 2;
+            }
+        }
+
         // Update
         //----------------------------------------------------------------------------------
-        BoardUpdateLoop(gameInstance,
-                        boardDimensions,
-                        &getMoves,
-                        &selected,
-                        &pieceHeld);
+        if (isGameRunning) {
+            BoardUpdateLoop(gameInstance,
+                            boardDimensions,
+                            &getMoves,
+                            &selected,
+                            &pieceHeld);
+        }
 
         DrawGameInstanceInfo(gameInstance, boardDimensions);
 
@@ -121,6 +147,14 @@ int main(void) {
                  (int) (restartButtonCorner.x + 5.0f),
                  (int) (restartButtonCorner.y + 5.0f),
                  (int) (restartButtonRec.height / 1.1f),
+                 DARKGRAY);
+
+        // Start Stop Button
+        DrawRectangleRec(startStopButtonRec, GRAY);
+        DrawText(statusText[isGameRunning],
+                 (int) (startStopButtonCorner.x + 5.0f),
+                 (int) (startStopButtonCorner.y + 5.0f),
+                 (int) (startStopButtonRec.height / 1.1f),
                  DARKGRAY);
 
         DrawArrows(&firstArrow, &squarePressed, &squareReleased, mousePosition, boardDimensions);
