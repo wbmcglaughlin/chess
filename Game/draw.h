@@ -12,6 +12,7 @@
 #include "board.h"
 #include "moves.h"
 
+#define NIGHTBLUE CLITERAL(Color) {14, 15, 41, 255}
 
 #define FONT_SIZE 20
 

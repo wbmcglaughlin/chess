@@ -87,7 +87,7 @@ void UpdateBoard(Board *board, int pieceSquare, int selected, int moveType) {
 
 void CheckStatus(Board *board) {
     int newMoves = GetAllLegalMovesCount(board);
-
+    board->movesCount = newMoves;
     if (newMoves == 0) {
         if (!IsKingInCheck(board, board->turn)) {
             board->draw = 1;

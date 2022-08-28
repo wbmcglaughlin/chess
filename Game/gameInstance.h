@@ -20,7 +20,7 @@ struct Game {
 
 typedef struct Game Game;
 
-void DrawGameInstanceInfo(Game *gameInstance, BoardDimensions *boardDimensions);
+void DrawGameInstanceInfo(Game *gameInstance, BoardDimensions *boardDimensions, Color color);
 Game *NewGameInstanceFromFen(char*fen, int playerTypes[2]);
 void FreeGameInstance(Game *game);
 

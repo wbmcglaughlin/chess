@@ -5,6 +5,7 @@
 
 #include "Game/update.h"
 #include "Game/arrows.h"
+#include "Game/evaluationBar.h"
 
 #define TARGET_FPS 60
 
@@ -32,7 +33,7 @@ int main(void) {
 
     // Menu
     // -----------------------------------------------------------------------------------------------------------------
-    static Color backgroundColor = (Color) {120, 120, 120, 255};
+    static Color backgroundColor = NIGHTBLUE;
 
     Vector2 restartButtonCorner = (Vector2) {2.0f * (float) boardDimensions->cornerX + (float) boardDimensions->sideSize,
                                              (float) boardDimensions->cornerY + (float) boardDimensions->sideSize - 100.0f};
@@ -52,6 +53,13 @@ int main(void) {
                                               startStopButtonCorner.y,
                                               160.0f,
                                               40.0f};
+
+    // Evaluation Bar
+    float evalBarPercentage = 0.8f;
+    Rectangle evalBarRec = (Rectangle) {boardDimensions->cornerX - boardDimensions->cornerX * evalBarPercentage,
+                                        boardDimensions->cornerY,
+                                        boardDimensions->cornerX * (2 * evalBarPercentage - 1),
+                                        boardDimensions->sideSize};
 
     // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
     SetTextureFilter(GetFontDefault().texture, TEXTURE_FILTER_POINT);
@@ -139,32 +147,33 @@ int main(void) {
                             &pieceHeld);
         }
 
-        DrawGameInstanceInfo(gameInstance, boardDimensions);
+        DrawGameInstanceInfo(gameInstance, boardDimensions, RAYWHITE);
+        DrawEvaluationBar(&evalBarRec, &gameInstance->eval);
 
         // Restart Game Button Drawing
-        DrawRectangleRec(restartButtonRec, GRAY);
+        DrawRectangleRec(restartButtonRec, RAYWHITE);
         DrawText("Restart",
                  (int) (restartButtonCorner.x + 5.0f),
                  (int) (restartButtonCorner.y + 5.0f),
                  (int) (restartButtonRec.height / 1.1f),
-                 DARKGRAY);
+                 NIGHTBLUE);
 
         // Start Stop Button
-        DrawRectangleRec(startStopButtonRec, GRAY);
+        DrawRectangleRec(startStopButtonRec, RAYWHITE);
         DrawText(statusText[isGameRunning],
                  (int) (startStopButtonCorner.x + 5.0f),
                  (int) (startStopButtonCorner.y + 5.0f),
                  (int) (startStopButtonRec.height / 1.1f),
-                 DARKGRAY);
+                 NIGHTBLUE);
 
         DrawArrows(&firstArrow, &squarePressed, &squareReleased, mousePosition, boardDimensions);
 
         if (gameInstance->board->checkMate) {
-            DrawText("Checkmate!", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);
+            DrawText("Checkmate!", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 40, RED);
         }
 
         if (gameInstance->board->draw) {
-            DrawText("Draw :(", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 20, RED);
+            DrawText("Draw :(", boardDimensions->screenWidth / 2, boardDimensions->screenHeight / 2, 40, RED);
         }
 
         // DrawSquareValues(boardDimensions, gameInstance->board);
