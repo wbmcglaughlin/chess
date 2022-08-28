@@ -7,7 +7,7 @@
 
 #include "raylib.h"
 
-#include "moveList.h"
+#include "../Game/moveList.h"
 #include "draw.h"
 
 void DrawArrows(MoveNodePtr *firstArrow, int *squarePressed, int *squareReleased, Vector2 *mousePosition, BoardDimensions *boardDimensions);

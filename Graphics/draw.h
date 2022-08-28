@@ -9,8 +9,8 @@
 
 #include "raylib.h"
 
-#include "board.h"
-#include "moves.h"
+#include "../Game/board.h"
+#include "../Game/moves.h"
 
 #define NIGHTBLUE CLITERAL(Color) {14, 15, 41, 255}
 

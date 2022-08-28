@@ -8,7 +8,7 @@
 #include <pthread.h>
 #include <math.h>
 
-#include "../Game/draw.h"
+#include "../Graphics/draw.h"
 #include "../Analysis/minMax.h"
 
 struct BotInput {
@@ -27,7 +27,7 @@ typedef struct BotInput BotInput;
 #define WORST_SCORE 10000
 
 #define DEPTHS 6
-static int depthStage[DEPTHS] = {4, 5, 5, 5, 6, 1};
+static int depthStage[DEPTHS] = { 4,  5, 5, 5, 6, 1};
 static int depthPhase[DEPTHS] = {19, 16, 8, 5, 3, 0};
 
 //#define DEPTHS 2

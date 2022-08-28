@@ -4,8 +4,9 @@
 #include "sys/stat.h"
 
 #include "Game/update.h"
-#include "Game/arrows.h"
-#include "Game/evaluationBar.h"
+#include "Graphics/arrows.h"
+#include "Graphics/evaluationBar.h"
+#include "Graphics/guiGrid.h"
 
 #define TARGET_FPS 60
 
@@ -33,6 +34,15 @@ int main(void) {
 
     // Menu
     // -----------------------------------------------------------------------------------------------------------------
+    float gridX = 2.0f * (float) boardDimensions->cornerX + (float) boardDimensions->sideSize;
+    float gridY = (float) boardDimensions->cornerY;
+    Grid *grid = SetGridRectangles(gridX,
+                                   gridY,
+                                   boardDimensions->screenWidth - gridX - boardDimensions->cornerX,
+                                   boardDimensions->sideSize,
+                                   20,
+                                   4);
+
     static Color backgroundColor = NIGHTBLUE;
 
     Vector2 restartButtonCorner = (Vector2) {2.0f * (float) boardDimensions->cornerX + (float) boardDimensions->sideSize,
@@ -54,12 +64,17 @@ int main(void) {
                                               160.0f,
                                               40.0f};
 
+    // Type Selection
+    Rectangle playerChoiceButtonRec = (Rectangle) {2.0f * boardDimensions->cornerX + boardDimensions->sideSize,
+                                                 boardDimensions->cornerY + boardDimensions->sideSize * 0.8f,
+                                                 40.0f, 40.0f};
+
     // Evaluation Bar
     float evalBarPercentage = 0.8f;
-    Rectangle evalBarRec = (Rectangle) {boardDimensions->cornerX - boardDimensions->cornerX * evalBarPercentage,
-                                        boardDimensions->cornerY,
-                                        boardDimensions->cornerX * (2 * evalBarPercentage - 1),
-                                        boardDimensions->sideSize};
+    Rectangle evalBarRec = (Rectangle) {(float) boardDimensions->cornerX - (float) boardDimensions->cornerX * evalBarPercentage,
+                                        (float) boardDimensions->cornerY,
+                                        (float) boardDimensions->cornerX * (2 * evalBarPercentage - 1),
+                                        (float) boardDimensions->sideSize};
 
     // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
     SetTextureFilter(GetFontDefault().texture, TEXTURE_FILTER_POINT);
@@ -112,6 +127,12 @@ int main(void) {
         DrawPieces(boardDimensions, gameInstance->board, textures, pieceHeld, selected, GetMousePosition());
 
         // Menu Items
+        for (int i = 0; i < grid->rows * grid->cols; ++i) {
+            DrawGridRectangle(grid, i, (Color) {0,
+                                                i / ((float) grid->rows * grid->cols) * 100,
+                                                i / ((float) grid->rows * grid->cols) * 255,
+                                                255});
+        }
 
 
         // Restart Game

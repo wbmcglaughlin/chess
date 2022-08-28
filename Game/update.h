@@ -13,7 +13,7 @@
 #include <pthread.h>
 
 #include "gameInstance.h"
-#include "draw.h"
+#include "../Graphics/draw.h"
 #include "../Systems/bot.h"
 
 
