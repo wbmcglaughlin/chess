@@ -36,38 +36,23 @@ int main(void) {
     // -----------------------------------------------------------------------------------------------------------------
     float gridX = 2.0f * (float) boardDimensions->cornerX + (float) boardDimensions->sideSize;
     float gridY = (float) boardDimensions->cornerY;
+    int gridRows = 20;
+    int gridCols = 4;
+    float border = 2.0f;
     Grid *grid = SetGridRectangles(gridX,
                                    gridY,
-                                   boardDimensions->screenWidth - gridX - boardDimensions->cornerX,
-                                   boardDimensions->sideSize,
-                                   20,
-                                   4);
+                                   (float) boardDimensions->screenWidth - gridX - (float) boardDimensions->cornerX,
+                                   (float) boardDimensions->sideSize,
+                                   gridRows,
+                                   gridCols,
+                                   border);
 
     static Color backgroundColor = NIGHTBLUE;
-
-    Vector2 restartButtonCorner = (Vector2) {2.0f * (float) boardDimensions->cornerX + (float) boardDimensions->sideSize,
-                                             (float) boardDimensions->cornerY + (float) boardDimensions->sideSize - 100.0f};
-    Rectangle restartButtonRec = (Rectangle) {restartButtonCorner.x,
-                                              restartButtonCorner.y,
-                                              160.0f,
-                                              40.0f};
 
     int isGameRunning = 0;
     char statusText[2][6];
     strcpy(statusText[0], "Start");
     strcpy(statusText[1], "Stop");
-
-    Vector2 startStopButtonCorner = (Vector2) {2.0f * (float) boardDimensions->cornerX + (float) boardDimensions->sideSize,
-                                             (float) boardDimensions->cornerY + (float) boardDimensions->sideSize - 55.0f};
-    Rectangle startStopButtonRec = (Rectangle) {startStopButtonCorner.x,
-                                              startStopButtonCorner.y,
-                                              160.0f,
-                                              40.0f};
-
-    // Type Selection
-    Rectangle playerChoiceButtonRec = (Rectangle) {2.0f * boardDimensions->cornerX + boardDimensions->sideSize,
-                                                 boardDimensions->cornerY + boardDimensions->sideSize * 0.8f,
-                                                 40.0f, 40.0f};
 
     // Evaluation Bar
     float evalBarPercentage = 0.8f;
@@ -127,16 +112,16 @@ int main(void) {
         DrawPieces(boardDimensions, gameInstance->board, textures, pieceHeld, selected, GetMousePosition());
 
         // Menu Items
-        for (int i = 0; i < grid->rows * grid->cols; ++i) {
-            DrawGridRectangle(grid, i, (Color) {0,
-                                                i / ((float) grid->rows * grid->cols) * 100,
-                                                i / ((float) grid->rows * grid->cols) * 255,
-                                                255});
-        }
+//        for (int i = 0; i < grid->rows * grid->cols; ++i) {
+//            DrawGridRectangle(grid, i, (Color) {0,
+//                                                i / ((float) grid->rows * grid->cols) * 100,
+//                                                i / ((float) grid->rows * grid->cols) * 255,
+//                                                255});
+//        }
 
 
         // Restart Game
-        if (CheckCollisionPointRec(*mousePosition, restartButtonRec)) {
+        if (CheckCollisionPointRec(*mousePosition, grid->rowRecs[6])) {
             // Wait for thread to finish, then create new game
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 int wait_time = 1;
@@ -151,7 +136,7 @@ int main(void) {
         }
 
         // Start Stop Game
-        if (CheckCollisionPointRec(*mousePosition, startStopButtonRec)) {
+        if (CheckCollisionPointRec(*mousePosition, grid->rowRecs[7])) {
             // Wait for thread to finish, then create new game
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 isGameRunning = (isGameRunning + 1) % 2;
@@ -172,19 +157,19 @@ int main(void) {
         DrawEvaluationBar(&evalBarRec, &gameInstance->eval);
 
         // Restart Game Button Drawing
-        DrawRectangleRec(restartButtonRec, RAYWHITE);
+        DrawRectangleRec(grid->rowRecs[6], RAYWHITE);
         DrawText("Restart",
-                 (int) (restartButtonCorner.x + 5.0f),
-                 (int) (restartButtonCorner.y + 5.0f),
-                 (int) (restartButtonRec.height / 1.1f),
+                 (int) (grid->rowRecs[6].x + 5.0f),
+                 (int) (grid->rowRecs[6].y + 5.0f),
+                 (int) (grid->rowRecs[6].height / 1.1f),
                  NIGHTBLUE);
 
         // Start Stop Button
-        DrawRectangleRec(startStopButtonRec, RAYWHITE);
+        DrawRectangleRec(grid->rowRecs[7], RAYWHITE);
         DrawText(statusText[isGameRunning],
-                 (int) (startStopButtonCorner.x + 5.0f),
-                 (int) (startStopButtonCorner.y + 5.0f),
-                 (int) (startStopButtonRec.height / 1.1f),
+                 (int) (grid->rowRecs[7].x + 5.0f),
+                 (int) (grid->rowRecs[7].y + 5.0f),
+                 (int) (grid->rowRecs[7].height / 1.1f),
                  NIGHTBLUE);
 
         DrawArrows(&firstArrow, &squarePressed, &squareReleased, mousePosition, boardDimensions);
