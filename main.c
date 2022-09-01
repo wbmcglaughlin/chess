@@ -47,6 +47,10 @@ int main(void) {
                                    gridCols,
                                    border);
 
+    int restartButtonPos = gridRows - 1;
+    int statusButtonPos = gridRows - 2;
+    int playerSelectionRowPos = gridRows - 3;
+
     static Color backgroundColor = NIGHTBLUE;
 
     int isGameRunning = 0;
@@ -111,17 +115,21 @@ int main(void) {
         DrawBoard(boardDimensions, gameInstance->moveSquares, selected);
         DrawPieces(boardDimensions, gameInstance->board, textures, pieceHeld, selected, GetMousePosition());
 
-        // Menu Items
-//        for (int i = 0; i < grid->rows * grid->cols; ++i) {
-//            DrawGridRectangle(grid, i, (Color) {0,
-//                                                i / ((float) grid->rows * grid->cols) * 100,
-//                                                i / ((float) grid->rows * grid->cols) * 255,
-//                                                255});
-//        }
+        int recPos = playerSelectionRowPos * gridCols;
+        if (CheckCollisionPointRec(*mousePosition, grid->recs[recPos + 1])) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                players[0] = (players[0] + 1) % 2;
+            }
+        }
 
+        if (CheckCollisionPointRec(*mousePosition, grid->recs[recPos + 3])) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                players[1] = (players[1] + 1) % 2;
+            }
+        }
 
         // Restart Game
-        if (CheckCollisionPointRec(*mousePosition, grid->rowRecs[6])) {
+        if (CheckCollisionPointRec(*mousePosition, grid->rowRecs[restartButtonPos])) {
             // Wait for thread to finish, then create new game
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 int wait_time = 1;
@@ -136,7 +144,7 @@ int main(void) {
         }
 
         // Start Stop Game
-        if (CheckCollisionPointRec(*mousePosition, grid->rowRecs[7])) {
+        if (CheckCollisionPointRec(*mousePosition, grid->rowRecs[statusButtonPos])) {
             // Wait for thread to finish, then create new game
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 isGameRunning = (isGameRunning + 1) % 2;
@@ -156,20 +164,39 @@ int main(void) {
         DrawGameInstanceInfo(gameInstance, boardDimensions, RAYWHITE);
         DrawEvaluationBar(&evalBarRec, &gameInstance->eval);
 
+        // Player Type Selection
+        for (int i = 0; i < 2; ++i) {
+            DrawRectangleRec(grid->recs[recPos + 2 * i], RAYWHITE);
+
+            DrawText(TextFormat("P %i:", i),
+                     (int) (grid->recs[recPos + 2 * i].x + 5.0f),
+                     (int) (grid->recs[recPos + 2 * i].y + 5.0f),
+                     (int) (grid->recs[recPos + 2 * i].height / 1.1f),
+                     NIGHTBLUE);
+
+            DrawRectangleRec(grid->recs[recPos + 2 * i + 1], RAYWHITE);
+
+            DrawText(TextFormat("%i", players[i]),
+                     (int) (grid->recs[recPos + 2 * i + 1].x + 5.0f),
+                     (int) (grid->recs[recPos + 2 * i + 1].y + 5.0f),
+                     (int) (grid->recs[recPos + 2 * i + 1].height / 1.1f),
+                     NIGHTBLUE);
+        }
+
         // Restart Game Button Drawing
-        DrawRectangleRec(grid->rowRecs[6], RAYWHITE);
+        DrawRectangleRec(grid->rowRecs[restartButtonPos], RAYWHITE);
         DrawText("Restart",
-                 (int) (grid->rowRecs[6].x + 5.0f),
-                 (int) (grid->rowRecs[6].y + 5.0f),
-                 (int) (grid->rowRecs[6].height / 1.1f),
+                 (int) (grid->rowRecs[restartButtonPos].x + 5.0f),
+                 (int) (grid->rowRecs[restartButtonPos].y + 5.0f),
+                 (int) (grid->rowRecs[restartButtonPos].height / 1.1f),
                  NIGHTBLUE);
 
         // Start Stop Button
-        DrawRectangleRec(grid->rowRecs[7], RAYWHITE);
+        DrawRectangleRec(grid->rowRecs[statusButtonPos], RAYWHITE);
         DrawText(statusText[isGameRunning],
-                 (int) (grid->rowRecs[7].x + 5.0f),
-                 (int) (grid->rowRecs[7].y + 5.0f),
-                 (int) (grid->rowRecs[7].height / 1.1f),
+                 (int) (grid->rowRecs[statusButtonPos].x + 5.0f),
+                 (int) (grid->rowRecs[statusButtonPos].y + 5.0f),
+                 (int) (grid->rowRecs[statusButtonPos].height / 1.1f),
                  NIGHTBLUE);
 
         DrawArrows(&firstArrow, &squarePressed, &squareReleased, mousePosition, boardDimensions);
