@@ -9,6 +9,10 @@
 
 #include "raylib.h"
 
+/// Draws the evaluation bar given a certain rectangle and pointer to evaluation bar.
+///
+/// Evaluation is clamped using atan, between a value a [-1 and 1], and then extended to
+/// the rectangles height.
 void DrawEvaluationBar(Rectangle *rectangle, const float *evaluation);
 
 #endif //CHESS_EVALUATIONBAR_H
